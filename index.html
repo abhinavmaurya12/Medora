@@ -1228,6 +1228,143 @@ body { overflow-anchor: auto; }
 /* 6. Keep the reading sheet on its own paint layer without re-animating */
 .editorial-sheet { transform: none; contain: layout style; }
 .workspace, .home { animation: none !important; }
+
+/* ===== QUIZ ===== */
+body:not(.is-quiz) #quizView { display: none; }
+body.is-quiz #homeView, body.is-quiz .site-footer { display: none; }
+body.is-quiz #homeBtn { display: inline-flex !important; }
+.class-grid .quiz-card { grid-column: 1 / -1; min-height: 0; }
+.class-card.is-quiz::before { background: linear-gradient(90deg, #8b5cf6, var(--brand-teal)); }
+.class-card.is-quiz .class-icon { background: rgba(139,92,246,.16); }
+.class-card.is-quiz .class-chip { color: #8b5cf6; background: rgba(139,92,246,.14); }
+.class-card.is-quiz .class-cta { color: #8b5cf6; }
+.class-card.is-quiz:hover { box-shadow: 0 20px 50px rgba(139,92,246,.18); }
+.quiz { max-width: 920px; margin: 0 auto; padding: 36px 20px 80px; }
+.quiz h1 { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+.quiz .q-sub { color: var(--text-muted); font-size: 14px; margin: 6px 0 20px; }
+.q-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+.q-tabs button, .q-btn { font-family: inherit; font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); transition: .2s; }
+.q-tabs button.on, .q-btn.primary { background: var(--brand-emerald); border-color: var(--brand-emerald); color: #fff; }
+.q-btn:disabled { opacity: .45; cursor: not-allowed; }
+.q-mix { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.q-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.q-item { text-align: left; font-family: inherit; color: var(--text-main); background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: .2s; }
+.q-item:hover { border-color: var(--border-focus); transform: translateY(-2px); }
+.q-item b { font-size: 14px; line-height: 1.4; }
+.q-item span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.q-item span.best { color: var(--brand-emerald); }
+.q-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 18px; padding: 26px; box-shadow: var(--shadow); }
+.q-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; gap: 10px; }
+.q-bar { height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; margin-bottom: 22px; }
+.q-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--brand-emerald), var(--brand-gold)); transition: width .3s; }
+.q-text { font-size: 20px; font-weight: 700; line-height: 1.45; margin-bottom: 18px; }
+.q-opt { display: block; width: 100%; text-align: left; font-family: inherit; font-size: 15px; font-weight: 600; color: var(--text-main); background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 16px; margin-bottom: 10px; cursor: pointer; transition: .15s; }
+.q-opt:hover:not(:disabled) { border-color: var(--brand-emerald); }
+.q-opt.right { border-color: #10b981; background: rgba(16,185,129,.16); }
+.q-opt.wrong { border-color: #ef4444; background: rgba(239,68,68,.14); }
+.q-opt:disabled { cursor: default; }
+.q-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.q-result { text-align: center; padding: 40px 24px; }
+.q-score { font-size: 56px; font-weight: 800; color: var(--brand-emerald); }
+.q-review { text-align: left; margin-top: 22px; }
+.q-review div { padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px; }
+.q-review i { font-style: normal; font-weight: 700; }
+@media (max-width: 700px) { .q-list { grid-template-columns: 1fr; } .q-text { font-size: 18px; } .quiz h1 { font-size: 24px; } }
+
+/* ===== QUIZ: responsive card + screens (desktop & mobile) ===== */
+.class-grid .quiz-card { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 28px; padding: 26px 32px; min-height: 0; }
+.quiz-card .qc-main { display: flex; align-items: center; gap: 20px; min-width: 0; flex: 1; }
+.quiz-card .class-icon { margin: 0; flex: none; width: 64px; height: 64px; font-size: 30px; }
+.quiz-card .qc-text { min-width: 0; flex: 1; }
+.quiz-card .qc-text .card-progress { margin-top: 14px; max-width: 420px; }
+.quiz-card .qc-text .card-progress span { background: linear-gradient(90deg, #8b5cf6, var(--brand-teal)); }
+.quiz-card .qc-side { display: flex; flex-direction: column; align-items: flex-end; gap: 14px; flex: none; }
+.quiz-card .qc-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.quiz-card .qc-btn { display: inline-flex; align-items: center; justify-content: center; padding: 11px 22px; border-radius: 12px; background: #8b5cf6; color: #fff; font-size: 14px; font-weight: 800; box-shadow: 0 8px 20px rgba(139,92,246,.28); transition: transform .2s, box-shadow .2s; }
+.quiz-card:hover .qc-btn { transform: translateX(3px); box-shadow: 0 10px 26px rgba(139,92,246,.38); }
+.quiz { max-width: 1000px; }
+.q-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.q-item { min-height: 88px; justify-content: space-between; }
+@media (max-width: 1000px) { .q-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+  .class-grid .quiz-card { flex-direction: column; align-items: stretch; gap: 16px; padding: 20px 18px; }
+  .quiz-card .qc-main { gap: 14px; align-items: flex-start; }
+  .quiz-card .class-icon { width: 50px; height: 50px; font-size: 24px; border-radius: 14px; }
+  .quiz-card h2 { font-size: 22px; }
+  .quiz-card .class-sub { font-size: 13px; }
+  .quiz-card .qc-text .card-progress { max-width: none; margin-top: 12px; }
+  .quiz-card .qc-side { align-items: stretch; flex-direction: column-reverse; gap: 12px; }
+  .quiz-card .qc-chips { justify-content: flex-start; }
+  .quiz-card .qc-btn { width: 100%; padding: 14px; font-size: 15px; }
+
+  .quiz { padding: 20px 14px calc(110px + env(safe-area-inset-bottom, 0px)); }
+  .quiz h1 { font-size: 22px; }
+  .q-mix { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .q-mix .q-btn { width: 100%; padding: 13px; }
+  .q-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .q-tabs button { padding: 12px 8px; }
+  .q-list { grid-template-columns: 1fr; gap: 10px; }
+  .q-item { min-height: 0; padding: 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .q-item span { flex: none; text-align: right; }
+  .q-card { padding: 18px 16px; border-radius: 16px; }
+  .q-text { font-size: 17px; margin-bottom: 14px; }
+  .q-opt { min-height: 50px; padding: 13px 14px; font-size: 15px; }
+  .q-card:not(.q-result) .q-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 120; margin: 0; padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--bg-surface); border-top: 1px solid var(--border); flex-wrap: nowrap; }
+  .q-card:not(.q-result) .q-foot .q-btn { flex: 1; padding: 13px 10px; }
+  .q-card:not(.q-result) .q-foot .q-btn.primary { flex: 2; }
+  .q-result { padding: 28px 14px; }
+  .q-score { font-size: 44px; }
+  .q-result .q-foot .q-btn { flex: 1; }
+}
+
+/* ===== QUIZ CARD FIXES ===== */
+.class-card.is-quiz.quiz-card .qc-btn { color: #fff; background: #8b5cf6; }
+.class-card.is-quiz.quiz-card .qc-text h2 { margin: 0; line-height: 1.15; }
+.class-card.is-quiz.quiz-card .class-sub { max-width: 560px; }
+.class-grid .quiz-card, .class-grid .quiz-card:hover { transform: none !important; }
+.class-grid .quiz-card:hover { transform: translateY(-3px) !important; }
+.class-card.is-quiz.quiz-card::after { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(139,92,246,.14), transparent 60%); }
+@media (max-width: 700px) {
+  .class-card.is-quiz.quiz-card .qc-side { flex-direction: column; }
+  .class-card.is-quiz.quiz-card .qc-main { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .class-card.is-quiz.quiz-card .qc-text { width: 100%; }
+}
+
+/* ===== QUIZ CARD COLOUR ===== */
+.class-card.is-quiz.quiz-card { background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 55%, #0d9488 130%); border-color: transparent; color: #fff; box-shadow: 0 14px 36px rgba(109,40,217,.35); }
+.class-card.is-quiz.quiz-card::before { display: none; }
+.class-card.is-quiz.quiz-card h2 { color: #fff; }
+.class-card.is-quiz.quiz-card .class-sub { color: rgba(255,255,255,.86); }
+.class-card.is-quiz.quiz-card .class-icon { background: rgba(255,255,255,.2); }
+.class-card.is-quiz.quiz-card .class-chip { background: rgba(255,255,255,.2); color: #fff; }
+.class-card.is-quiz.quiz-card .card-progress { background: rgba(255,255,255,.25); }
+.class-card.is-quiz.quiz-card .card-progress span { background: #fff; }
+.class-card.is-quiz.quiz-card .qc-btn { background: #fff; color: #5b21b6; box-shadow: 0 8px 20px rgba(0,0,0,.2); }
+.class-card.is-quiz.quiz-card:hover { box-shadow: 0 18px 44px rgba(109,40,217,.5); }
+
+/* ===== CLASS CARD COLOURS ===== */
+.class-card#card11 { background: linear-gradient(135deg, #047857 0%, #10b981 60%, #14b8a6 130%); border-color: transparent; color: #fff; box-shadow: 0 14px 36px rgba(5,150,105,.38); }
+.class-card#card11::before { display: none; }
+.class-card#card11 h2 { color: #fff; }
+.class-card#card11 .class-sub { color: rgba(255,255,255,.88); }
+.class-card#card11 .class-icon { background: rgba(255,255,255,.22); }
+.class-card#card11 .class-chip { background: rgba(255,255,255,.22); color: #fff; }
+.class-card#card11 .card-progress { background: rgba(255,255,255,.28); }
+.class-card#card11 .card-progress span { background: #fff; }
+.class-card#card11 .class-cta { display: inline-flex; align-items: center; padding: 9px 16px; border-radius: 10px; background: #fff; color: #047857; font-weight: 800; box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+.class-card#card11:hover { box-shadow: 0 18px 44px rgba(5,150,105,.38); }
+
+.class-card#card12 { background: linear-gradient(135deg, #c2410c 0%, #f59e0b 65%, #fbbf24 130%); border-color: transparent; color: #fff; box-shadow: 0 14px 36px rgba(217,119,6,.38); }
+.class-card#card12::before { display: none; }
+.class-card#card12 h2 { color: #fff; }
+.class-card#card12 .class-sub { color: rgba(255,255,255,.88); }
+.class-card#card12 .class-icon { background: rgba(255,255,255,.22); }
+.class-card#card12 .class-chip { background: rgba(255,255,255,.22); color: #fff; }
+.class-card#card12 .card-progress { background: rgba(255,255,255,.28); }
+.class-card#card12 .card-progress span { background: #fff; }
+.class-card#card12 .class-cta { display: inline-flex; align-items: center; padding: 9px 16px; border-radius: 10px; background: #fff; color: #b45309; font-weight: 800; box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+.class-card#card12:hover { box-shadow: 0 18px 44px rgba(217,119,6,.38); }
+
 </style>
 </head>
 
@@ -1308,9 +1445,29 @@ body { overflow-anchor: auto; }
         <span class="class-cta">Start reading →</span>
       </div>
     </button>
+    <button class="class-card is-quiz quiz-card" id="cardQuiz" type="button" aria-label="Open quizzes">
+      <div class="qc-main">
+        <div class="class-icon">📝</div>
+        <div class="qc-text">
+          <h2>Quiz</h2>
+          <div class="class-sub">Chapter-wise MCQs for every chapter of Class 11th and 12th, plus mixed practice quizzes.</div>
+          <div class="card-progress"><span id="cardQuizBar"></span></div>
+        </div>
+      </div>
+      <div class="qc-side">
+        <div class="qc-chips">
+          <span class="class-chip" id="cardQuizCount">32 chapter quizzes</span>
+          <span class="class-chip">640 questions</span>
+        </div>
+        <span class="class-cta qc-btn">Start quiz →</span>
+      </div>
+    </button>
   </div>
   <div class="home-tip">Shortcuts: <span class="kbd">/</span> search · <span class="kbd">←</span> <span class="kbd">→</span> chapters · <span class="kbd">T</span> theme</div>
 </section>
+
+<!-- QUIZ -->
+<section class="quiz" id="quizView" aria-live="polite"></section>
 
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -6105,6 +6262,825 @@ const esc = (t) => t.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">":
 const escRe = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const UNIT_COLORS = ["#10b981", "#14b8a6", "#f59e0b", "#ef4444", "#8b5cf6"];
 
+/* ===== MEDORA QUIZ DATA: [question, [4 options], correctIndex] ===== */
+const QUIZ_DATA = {
+11: {
+1: [
+["Which term describes the standardised naming of living organisms?",["Taxonomy","Nomenclature","Systematics","Identification"],1],
+["Binomial nomenclature was introduced by:",["Aristotle","Darwin","Carolus Linnaeus","Mendel"],2],
+["In the name Mangifera indica, 'indica' is the:",["Genus","Family","Specific epithet","Order"],2],
+["The correct order of taxonomic hierarchy from lowest to highest is:",["Species, Genus, Family, Order","Genus, Species, Order, Family","Family, Genus, Species, Order","Species, Family, Genus, Order"],0],
+["ICZN is the code used for naming:",["Plants","Animals","Bacteria","Viruses"],1]],
+2: [
+["Whittaker's five kingdom classification does NOT include:",["Monera","Protista","Archaea as a kingdom","Fungi"],2],
+["Cell wall of fungi is made of:",["Cellulose","Peptidoglycan","Chitin","Pectin"],2],
+["Diatoms are mostly:",["Heterotrophic protists","Chemosynthetic autotrophs","Photosynthetic protists","Parasitic fungi"],2],
+["Viruses contain:",["Both DNA and RNA","Either DNA or RNA","Only protein","Only lipids"],1],
+["Mycoplasma are unique because they lack:",["Ribosomes","Cell wall","Plasma membrane","Genetic material"],1]],
+3: [
+["Algae reproduce asexually mainly by:",["Seeds","Spores such as zoospores","Pollen","Rhizomes"],1],
+["Bryophytes are called the amphibians of the plant kingdom because they:",["Live in water only","Need water for fertilisation","Have no chlorophyll","Have vascular tissue"],1],
+["Dominant phase in the life cycle of pteridophytes is:",["Gametophyte","Sporophyte","Zygote only","Protonema"],1],
+["Gymnosperms have:",["Enclosed ovules","Naked seeds","No seeds","Fruits"],1],
+["Double fertilisation is characteristic of:",["Gymnosperms","Pteridophytes","Angiosperms","Bryophytes"],2]],
+4: [
+["Which is a characteristic of phylum Porifera?",["Cnidoblasts","Choanocytes","Radula","Tube feet"],1],
+["Comb plates are found in:",["Ctenophora","Cnidaria","Annelida","Mollusca"],0],
+["Metamerism (segmentation) is a feature of:",["Platyhelminthes","Annelida","Aschelminthes","Porifera"],1],
+["Water vascular system is found in:",["Echinodermata","Mollusca","Arthropoda","Hemichordata"],0],
+["Presence of notochord is a feature of:",["Chordata","Arthropoda","Annelida","Mollusca"],0]],
+5: [
+["Roots that arise from parts other than the radicle are called:",["Tap roots","Adventitious roots","Pneumatophores","Prop roots only"],1],
+["Venation in monocot leaves is generally:",["Reticulate","Parallel","Pinnate","Palmate"],1],
+["Placentation in which ovules are attached on the central axis of a multilocular ovary is:",["Marginal","Axile","Parietal","Basal"],1],
+["Fruit developed from the ovary is called:",["False fruit","True fruit","Aggregate fruit","Receptacle"],1],
+["Aestivation in which sepals or petals overlap but not in any particular direction is:",["Valvate","Twisted","Imbricate","Vexillary"],2]],
+6: [
+["Tissue responsible for increase in girth of dicot stem is:",["Apical meristem","Lateral meristem (cambium)","Intercalary meristem","Epidermis"],1],
+["Xylem conducts mainly:",["Food","Water and minerals","Hormones","Gases"],1],
+["Casparian strips are present in:",["Epidermis","Endodermis","Pericycle","Cortex"],1],
+["Vascular bundles in monocot stem are:",["Open and radial","Conjoint, closed, scattered","Open and arranged in ring","Absent"],1],
+["Annual rings are formed due to activity of:",["Vascular cambium","Phellogen only","Pericycle","Endodermis"],0]],
+7: [
+["Which tissue lines the inner surface of blood vessels?",["Squamous epithelium","Cuboidal epithelium","Columnar epithelium","Ciliated epithelium"],0],
+["Tendons connect:",["Bone to bone","Muscle to bone","Muscle to muscle","Bone to cartilage"],1],
+["Gap junctions in tissues help in:",["Sealing cells tightly","Cytoplasmic communication","Cell division","Anchoring only"],1],
+["Which structure of the earthworm grinds food?",["Pharynx","Gizzard","Crop","Intestine"],1],
+["Haemolymph is the circulating fluid in:",["Cockroach","Frog","Human","Earthworm"],0]],
+8: [
+["Who proposed that all living things are made of cells (plants)?",["Schwann","Schleiden","Virchow","Hooke"],1],
+["Powerhouse of the cell is:",["Golgi apparatus","Mitochondrion","Lysosome","Ribosome"],1],
+["Site of protein synthesis is:",["Ribosome","Lysosome","Vacuole","Centriole"],0],
+["Fluid mosaic model of plasma membrane was proposed by:",["Singer and Nicolson","Watson and Crick","Robert Brown","Palade"],0],
+["Which organelle is called the 'suicide bag'?",["Peroxisome","Lysosome","Vacuole","Golgi body"],1]],
+9: [
+["Most abundant protein in the animal world is:",["Collagen","Insulin","Haemoglobin","Trypsin"],0],
+["Enzymes are:",["Mostly carbohydrates","Mostly proteins that speed up reactions","Lipids","Nucleic acids only"],1],
+["Bond linking amino acids in a protein is:",["Glycosidic","Peptide","Phosphodiester","Ester"],1],
+["The enzyme-substrate complex lowers:",["Temperature","Activation energy","Substrate amount","pH"],1],
+["Competitive inhibitors resemble the:",["Enzyme","Product","Substrate","Cofactor"],2]],
+10: [
+["DNA replication occurs in which phase?",["G1","S","G2","M"],1],
+["Crossing over occurs during:",["Leptotene","Zygotene","Pachytene","Diakinesis"],2],
+["Number of chromosomes after meiosis II in humans in each cell is:",["46","23","92","12"],1],
+["Chromosomes align at the equator during:",["Prophase","Metaphase","Anaphase","Telophase"],1],
+["Cytokinesis in plant cells occurs by:",["Cleavage furrow","Cell plate formation","Budding","Fission"],1]],
+11: [
+["The site of light reaction in chloroplast is:",["Stroma","Thylakoid membranes","Outer membrane","Matrix"],1],
+["The primary CO2 acceptor in C3 cycle is:",["PEP","RuBP","OAA","Pyruvate"],1],
+["Oxygen released in photosynthesis comes from:",["CO2","Water","Glucose","RuBisCO"],1],
+["Kranz anatomy is found in:",["C3 plants","C4 plants","CAM plants only","Algae"],1],
+["Which pigment is the primary pigment of photosynthesis?",["Chlorophyll a","Carotene","Xanthophyll","Chlorophyll b"],0]],
+12: [
+["Glycolysis occurs in the:",["Mitochondrial matrix","Cytoplasm","Nucleus","Chloroplast"],1],
+["Net gain of ATP in glycolysis is:",["2","4","8","38"],0],
+["Final electron acceptor in the electron transport chain is:",["NAD","Oxygen","FAD","Cytochrome c"],1],
+["Krebs cycle begins with condensation of acetyl CoA and:",["Pyruvate","Oxaloacetic acid","Citric acid","Succinate"],1],
+["Respiratory quotient of carbohydrates is:",["0.7","1","1.4","0.9"],1]],
+13: [
+["Which hormone promotes cell division and delays senescence?",["Auxin","Cytokinin","Ethylene","ABA"],1],
+["Hormone responsible for fruit ripening is:",["Gibberellin","Ethylene","Auxin","Cytokinin"],1],
+["Bolting in rosette plants is induced by:",["ABA","Gibberellin","Ethylene","Auxin"],1],
+["Phase of growth with maximum rate is:",["Lag","Log (exponential)","Stationary","Senescent"],1],
+["Vernalisation is promotion of flowering by:",["Light","Low temperature","High temperature","Water"],1]],
+14: [
+["Exchange of gases in lungs occurs at:",["Bronchi","Alveoli","Trachea","Larynx"],1],
+["Amount of air left in lungs after forced expiration is:",["Tidal volume","Residual volume","Vital capacity","Inspiratory reserve"],1],
+["Most of CO2 is transported in blood as:",["Dissolved CO2","Carbamino-haemoglobin","Bicarbonate","Carbonic acid only"],2],
+["Respiratory rhythm centre is located in:",["Cerebrum","Medulla oblongata","Cerebellum","Hypothalamus"],1],
+["Haemoglobin affinity for oxygen increases with:",["High pCO2","Low pCO2","High H+","High temperature"],1]],
+15: [
+["Universal blood donor group is:",["A","B","AB","O"],3],
+["Which heart chamber pumps blood to the body?",["Right atrium","Left ventricle","Right ventricle","Left atrium"],1],
+["The pacemaker of the heart is:",["AV node","SA node","Purkinje fibres","Bundle of His"],1],
+["Which blood cells help in clotting?",["RBCs","Platelets","Eosinophils","Monocytes"],1],
+["Systolic pressure of a normal human is about:",["80 mm Hg","120 mm Hg","160 mm Hg","200 mm Hg"],1]],
+16: [
+["Functional unit of the kidney is:",["Neuron","Nephron","Alveolus","Glomerulus"],1],
+["Filtration of blood occurs in:",["Henle's loop","Glomerulus","Collecting duct","DCT"],1],
+["Hormone that increases water reabsorption is:",["ADH","Insulin","Glucagon","Oxytocin"],0],
+["Main nitrogenous waste of humans is:",["Ammonia","Urea","Uric acid","Creatinine"],1],
+["Counter-current mechanism occurs in:",["Bowman's capsule","Loop of Henle and vasa recta","PCT","Ureter"],1]],
+17: [
+["Functional unit of muscle contraction is:",["Sarcomere","Myosin","Sarcoplasm","Tendon"],0],
+["Calcium ions bind to which protein to initiate contraction?",["Troponin","Actin","Myosin","Tropomyosin"],0],
+["Number of bones in adult human skeleton is:",["186","206","226","306"],1],
+["Ball and socket joint is found at:",["Knee","Shoulder","Elbow","Fingers"],1],
+["Gout is caused by accumulation of:",["Uric acid crystals","Calcium","Urea","Lactic acid"],0]],
+18: [
+["Neuron cell body is also called:",["Axon","Soma","Dendrite","Synapse"],1],
+["Resting membrane potential of a neuron is about:",["+70 mV","-70 mV","0 mV","-30 mV"],1],
+["Which part of brain controls balance and posture?",["Cerebrum","Cerebellum","Pons","Thalamus"],1],
+["Chemical that transmits an impulse across synapse is:",["Hormone","Neurotransmitter","Enzyme","Antibody"],1],
+["Insulating fatty sheath around axons is:",["Myelin","Node of Ranvier","Neurilemma only","Dendron"],0]],
+19: [
+["The master gland is the:",["Thyroid","Pituitary","Adrenal","Pancreas"],1],
+["Deficiency of insulin causes:",["Goitre","Diabetes mellitus","Cretinism","Addison's disease"],1],
+["Hormone that regulates calcium levels and is secreted by parathyroid:",["Thyroxine","PTH","Calcitonin","Cortisol"],1],
+["Fight or flight hormone is:",["Adrenaline","Insulin","Thyroxine","Melatonin"],0],
+["Which gland secretes melatonin?",["Pineal","Thymus","Pituitary","Adrenal"],0]]
+},
+12: {
+1: [
+["The male gametophyte of a flowering plant is the:",["Embryo sac","Pollen grain","Ovule","Anther"],1],
+["Double fertilisation results in:",["Zygote and endosperm","Two zygotes","Two embryos","Seed coat"],0],
+["Triploid tissue in seed is:",["Embryo","Endosperm","Testa","Cotyledon"],1],
+["Mature embryo sac is typically:",["7-celled, 8-nucleate","4-celled","2-celled","5-nucleate"],0],
+["Apomixis is the formation of seeds:",["After fertilisation","Without fertilisation","From roots","From pollen"],1]],
+2: [
+["Sperm production occurs in:",["Epididymis","Seminiferous tubules","Vas deferens","Prostate"],1],
+["Implantation occurs at the stage of:",["Zygote","Blastocyst","Morula","Gastrula"],1],
+["Hormone that maintains pregnancy is mainly:",["Progesterone","FSH","Oxytocin","LH only"],0],
+["Fertilisation normally occurs in the:",["Uterus","Ampulla of fallopian tube","Vagina","Ovary"],1],
+["Hormone causing uterine contractions during birth:",["Oxytocin","Prolactin","Estrogen","Relaxin only"],0]],
+3: [
+["Which is a barrier method of contraception?",["Condom","Copper-T","Pills","Saheli"],0],
+["MTP is considered safe up to how many weeks of pregnancy?",["6","12","20","30"],1],
+["Which is a sexually transmitted infection?",["Malaria","Syphilis","Typhoid","Cholera"],1],
+["Amniocentesis is used to detect:",["Foetal genetic disorders","Cancer","Blood sugar","TB"],0],
+["IVF stands for:",["In vivo fertilisation","In vitro fertilisation","Internal viral fertilisation","Intra-vaginal fertilisation"],1]],
+4: [
+["Law of segregation states that alleles:",["Blend","Separate during gamete formation","Always mutate","Stay together"],1],
+["Phenotypic ratio in a monohybrid cross F2 is:",["1:1","3:1","9:3:3:1","1:2:1"],1],
+["Test cross is a cross of F1 with:",["Dominant parent","Recessive parent","Another F1","Unrelated plant"],1],
+["Haemophilia is a:",["Autosomal recessive trait","X-linked recessive trait","Y-linked trait","Dominant trait"],1],
+["Down syndrome is due to trisomy of chromosome:",["13","18","21","23"],2]],
+5: [
+["Hershey and Chase proved that genetic material is:",["Protein","DNA","RNA","Lipid"],1],
+["Central dogma refers to flow of information:",["DNA to RNA to Protein","Protein to DNA","RNA to lipid","Protein to RNA"],0],
+["Start codon is:",["UAA","AUG","UGA","UAG"],1],
+["Okazaki fragments are formed on:",["Leading strand","Lagging strand","mRNA","tRNA"],1],
+["In the lac operon, the inducer is:",["Glucose","Lactose (allolactose)","Repressor","Operator"],1]],
+6: [
+["Darwin's theory of evolution is based on:",["Use and disuse","Natural selection","Mutation only","Saltation"],1],
+["Homologous organs show:",["Same function","Common ancestry","Different ancestry","No similarity"],1],
+["Industrial melanism in peppered moth is an example of:",["Natural selection","Genetic drift","Mutation only","Artificial selection"],0],
+["Hardy-Weinberg principle states allele frequencies remain constant if:",["Selection operates","No evolutionary forces act","Migration occurs","Mutations occur"],1],
+["The first human-like hominid is generally considered:",["Homo habilis","Homo sapiens","Neanderthal","Dryopithecus"],0]],
+7: [
+["Pathogen causing malaria is:",["Plasmodium","Entamoeba","Wuchereria","Salmonella"],0],
+["Vaccination works by inducing:",["Passive immunity","Active immunity","Innate immunity only","No immunity"],1],
+["Antibodies are produced by:",["T cells","B cells (plasma cells)","Macrophages","RBCs"],1],
+["HIV primarily attacks:",["B cells","Helper T cells","RBCs","Platelets"],1],
+["Cancer cells lose:",["Contact inhibition","Nucleus","DNA","Mitochondria"],0]],
+8: [
+["Curd is formed by the action of:",["Lactobacillus","Yeast","Penicillium","Rhizobium"],0],
+["Penicillin was obtained from:",["Penicillium notatum","Aspergillus niger","Streptomyces","Clostridium"],0],
+["Biogas is mainly:",["Methane","Oxygen","Hydrogen","Nitrogen"],0],
+["Bacterium used as biofertiliser fixing nitrogen in legumes:",["Rhizobium","E. coli","Bacillus","Lactobacillus"],0],
+["Baculoviruses are used as:",["Biocontrol agents","Antibiotics","Fertilisers","Vaccines"],0]],
+9: [
+["Enzymes that cut DNA at specific sites are:",["Ligases","Restriction endonucleases","Polymerases","Helicases"],1],
+["EcoRI recognises the sequence:",["GAATTC","AAGCTT","GGATCC","CCGG"],0],
+["Technique used to separate DNA fragments is:",["PCR","Gel electrophoresis","Blotting only","Centrifugation"],1],
+["PCR is used to:",["Amplify DNA","Cut DNA","Sequence proteins","Join DNA"],0],
+["Enzyme used in PCR is:",["Taq polymerase","DNA ligase","EcoRI","RNase"],0]],
+10: [
+["Bt toxin protects crops against:",["Insects","Weeds","Fungi","Drought"],0],
+["Human insulin was first produced by recombinant technology by:",["Eli Lilly","Pfizer","Roche","Merck"],0],
+["RNA interference (RNAi) is used to:",["Silence specific genes","Insert genes","Join DNA","Cut protein"],0],
+["GEAC stands for:",["Genetic Engineering Approval Committee","General Enzyme Action Council","Gene Expression Action Cell","None"],0],
+["Gene therapy aims to:",["Correct a gene defect","Clone animals","Produce antibiotics","Make hybrids"],0]],
+11: [
+["A group of individuals of the same species in an area is a:",["Community","Population","Ecosystem","Biome"],1],
+["Logistic growth curve is:",["J-shaped","S-shaped","Linear","Flat"],1],
+["Interaction where both species benefit is:",["Mutualism","Parasitism","Competition","Predation"],0],
+["Organisms that tolerate wide temperature ranges are:",["Stenothermal","Eurythermal","Hydrophytes","Xerophytes"],1],
+["Allen's rule concerns:",["Size of body appendages","Colour","Diet","Number of eggs"],0]],
+12: [
+["Primary producers in an ecosystem are:",["Herbivores","Green plants","Carnivores","Decomposers"],1],
+["Energy flow in an ecosystem is:",["Unidirectional","Cyclic","Bidirectional","Random"],0],
+["Percentage of energy transferred between trophic levels (10% law) is:",["1%","10%","50%","90%"],1],
+["Ecological succession on bare rock is called:",["Primary succession","Secondary succession","Climax","Eutrophication"],0],
+["Carbon cycle reservoir that is largest is:",["Atmosphere","Oceans and sediments","Biomass","Soil only"],1]],
+13: [
+["Hotspots of biodiversity are regions with:",["High endemism and threat","Low species","Only deserts","Only oceans"],0],
+["IUCN Red List categorises:",["Threatened species","Soil types","Rivers","Weather"],0],
+["Species-area relationship is described by:",["Alexander von Humboldt","Darwin","Linnaeus","Haeckel"],0],
+["In situ conservation includes:",["National parks","Zoos","Seed banks","Botanical gardens"],0],
+["The 'Evil Quartet' includes habitat loss and:",["Over-exploitation","Pollination","Symbiosis","Reproduction"],0]]
+}
+};
+
+const QUIZ_EXTRA = {
+11: {
+1: [
+["The basic unit of classification is:",["Genus","Species","Family","Class"],1],
+["A taxon is:",["A rank only","A taxonomic group of any rank","A type of key","A herbarium"],1],
+["Herbarium is a store house of:",["Dried, pressed plant specimens","Live animals","Preserved animals","Seeds only"],0],
+["Which category includes one or more related genera?",["Order","Family","Species","Kingdom"],1],
+["Taxonomic keys are based on:",["Contrasting characters in pairs (couplets)","Fossils only","DNA only","Habitat only"],0]],
+2: [
+["Bacteria that live in extreme conditions such as salty areas and hot springs are:",["Archaebacteria","Eubacteria","Cyanobacteria","Mycoplasma"],0],
+["Slime moulds are:",["Saprophytic protists","Parasitic bacteria","Algae","Lichens"],0],
+["Symbiotic association between algae and fungi is:",["Mycorrhiza","Lichen","Nodule","Biofilm"],1],
+["Bacterial cell wall is made of:",["Chitin","Peptidoglycan","Cellulose","Lignin"],1],
+["Protozoans such as Amoeba belong to kingdom:",["Monera","Protista","Fungi","Animalia"],1]],
+3: [
+["Agar is obtained from:",["Gelidium and Gracilaria","Chlamydomonas","Spirogyra","Volvox"],0],
+["Brown algae contain the pigment:",["Fucoxanthin","Phycoerythrin","Chlorophyll b","Anthocyanin"],0],
+["Sphagnum, a moss, is used as:",["Peat/fuel and packing material","Timber","Food","Antibiotic"],0],
+["Heterospory is seen in:",["Selaginella","Funaria","Spirogyra","Marchantia"],0],
+["Coralloid roots with cyanobacteria are found in:",["Cycas","Pinus","Fern","Moss"],0]],
+4: [
+["Cnidarians possess stinging cells called:",["Cnidoblasts","Choanocytes","Flame cells","Solenocytes"],0],
+["Hooks and suckers are seen in:",["Taenia (tapeworm)","Earthworm","Frog","Hydra"],0],
+["Open circulatory system is found in:",["Arthropods","Annelids","Fishes","Birds"],0],
+["Which class of vertebrates has a four-chambered heart and is warm-blooded?",["Reptilia","Amphibia","Aves","Pisces"],2],
+["Cyclostomes are:",["Jawless vertebrates","Jawed fishes","Amphibians","Reptiles"],0]],
+5: [
+["Edible part of a potato is a modified:",["Stem","Root","Leaf","Fruit"],0],
+["Mustard has which type of inflorescence?",["Raceme","Spadix","Catkin","Umbel"],0],
+["Pneumatophores are seen in:",["Rhizophora (mangrove)","Banyan","Maize","Carrot"],0],
+["Floral formula uses the symbol G for:",["Gynoecium","Calyx","Corolla","Androecium"],0],
+["Pulses belong to family:",["Fabaceae","Solanaceae","Liliaceae","Poaceae"],0]],
+6: [
+["Stomata are surrounded by:",["Guard cells","Companion cells","Sieve cells","Subsidiary tracheids"],0],
+["Phloem is mainly concerned with transport of:",["Food (sugars)","Water","Gases","Minerals only"],0],
+["Heartwood is:",["Dead, dark, non-conducting central wood","Living sapwood","Bark","Cambium"],0],
+["Bulliform cells are present in:",["Grasses (monocot leaves)","Dicot stems","Roots","Seeds"],0],
+["Secondary growth in dicot roots begins with formation of:",["Cambial ring","Cork","Pith","Root cap"],0]],
+7: [
+["Blood is a type of:",["Connective tissue","Epithelial tissue","Muscular tissue","Neural tissue"],0],
+["Muscles of the heart are:",["Cardiac, striated and involuntary","Smooth and voluntary","Skeletal and voluntary","Smooth and striated"],0],
+["Adipose tissue stores:",["Fat","Protein","Glycogen only","Water"],0],
+["Frog's heart has how many chambers?",["Two","Three","Four","Five"],1],
+["Malpighian tubules in cockroach are for:",["Excretion","Digestion","Respiration","Circulation"],0]],
+8: [
+["Cell theory was finally formulated by:",["Schleiden and Schwann (with Virchow's addition)","Robert Hooke","Leeuwenhoek","Robert Brown"],0],
+["The nucleus was discovered by:",["Robert Brown","Hooke","Schwann","Singer"],0],
+["Ribosomes of prokaryotes are of which type?",["70S","80S","60S","40S"],0],
+["Smooth endoplasmic reticulum is involved in:",["Lipid synthesis","Protein synthesis","ATP production","Photosynthesis"],0],
+["Plastids that store starch are:",["Amyloplasts","Chromoplasts","Chloroplasts","Elaioplasts"],0]],
+9: [
+["Glucose and fructose combine to form:",["Sucrose","Lactose","Maltose","Starch"],0],
+["Fats are esters of fatty acids and:",["Glycerol","Glucose","Amino acids","Ribose"],0],
+["The shape of a protein formed by folding of a polypeptide is its:",["Tertiary structure","Primary structure","Nucleotide","Monomer"],0],
+["Cellulose is a polymer of:",["Glucose","Fructose","Amino acids","Nucleotides"],0],
+["Enzyme activity is optimal at:",["Optimum temperature and pH","Very high temperature","0 degree C","Any pH"],0]],
+10: [
+["The longest phase of the cell cycle is:",["Interphase","Prophase","Metaphase","Telophase"],0],
+["Spindle fibres are made of:",["Tubulin","Actin","Keratin","Collagen"],0],
+["Synaptonemal complex is formed during:",["Zygotene","Leptotene","Diplotene","Anaphase II"],0],
+["Significance of mitosis includes:",["Growth and repair","Variation","Reducing chromosome number","Gamete formation"],0],
+["Meiosis I is called:",["Reductional division","Equational division","Binary fission","Budding"],0]],
+11: [
+["Photosystem I has its reaction centre chlorophyll a with absorption peak at:",["700 nm (P700)","680 nm","450 nm","500 nm"],0],
+["Calvin cycle occurs in the:",["Stroma","Thylakoid lumen","Cytoplasm","Matrix"],0],
+["Number of CO2 molecules fixed to make one glucose in the Calvin cycle:",["6","3","12","1"],0],
+["CAM plants open their stomata:",["At night","During the day only","Never","Only in rain"],0],
+["Photorespiration is a feature of:",["C3 plants","C4 plants","Bacteria only","Fungi"],0]],
+12: [
+["Fermentation in yeast produces:",["Ethanol and CO2","Lactic acid","Acetic acid","Water only"],0],
+["End product of glycolysis is:",["Pyruvic acid","Citric acid","Glucose","Ethanol"],0],
+["ATP synthesis in mitochondria occurs by:",["Oxidative phosphorylation","Substrate level only","Photophosphorylation","Fermentation"],0],
+["Krebs cycle takes place in the:",["Mitochondrial matrix","Cytoplasm","Nucleus","Ribosome"],0],
+["RQ of fats is about:",["0.7","1.0","1.5","2.0"],0]],
+13: [
+["Plant hormone causing apical dominance is:",["Auxin","Cytokinin","Ethylene","Gibberellin"],0],
+["Abscisic acid is called the stress hormone because it:",["Closes stomata under water stress","Promotes cell division","Ripens fruit","Elongates stems"],0],
+["Photoperiodism is response to:",["Day length","Temperature","Gravity","Touch"],0],
+["Growth is generally:",["Irreversible and permanent","Reversible","Always rapid","Only in animals"],0],
+["Dedifferentiation produces:",["Callus from mature cells","Seeds","Leaves","Pollen"],0]],
+14: [
+["Tidal volume in a healthy adult is about:",["500 mL","1200 mL","2500 mL","4800 mL"],0],
+["Muscle that helps in normal inspiration:",["Diaphragm","Biceps","Trapezius","Abdominal rectus"],0],
+["Oxygen is transported mainly as:",["Oxyhaemoglobin","Dissolved plasma","Bicarbonate","Carbamino compound"],0],
+["Enzyme speeding CO2 to carbonic acid conversion in RBC:",["Carbonic anhydrase","Amylase","Lipase","Pepsin"],0],
+["Emphysema involves damage to:",["Alveolar walls","Heart valves","Kidneys","Liver"],0]],
+15: [
+["Blood group AB has which antibodies in plasma?",["None","Anti-A only","Anti-B only","Anti-A and Anti-B"],0],
+["Rh factor problem (erythroblastosis foetalis) arises when mother is:",["Rh negative with Rh positive foetus","Rh positive with Rh negative foetus","Both positive","Both negative"],0],
+["Heart sounds 'lub' is due to closure of:",["Tricuspid and bicuspid valves","Semilunar valves","Aortic arch","Veins"],0],
+["Lymph carries mainly:",["Fats from intestine and fluid","Oxygen","Haemoglobin","Platelets"],0],
+["ECG records:",["Electrical activity of the heart","Blood pressure","Pulse of lungs","Brain waves"],0]],
+16: [
+["Which part of the nephron reabsorbs most of the filtrate?",["PCT","DCT","Collecting duct","Bowman's capsule"],0],
+["Renin is secreted by:",["Juxtaglomerular cells","Liver","Adrenal cortex","Pancreas"],0],
+["Dialysis is used in:",["Kidney failure","Diabetes","Asthma","Anaemia"],0],
+["Uricotelic animals excrete:",["Uric acid","Urea","Ammonia","Creatinine"],0],
+["Micturition is:",["Release of urine","Formation of urine","Filtration","Reabsorption"],0]],
+17: [
+["Which protein forms thin filaments?",["Actin","Myosin","Collagen","Keratin"],0],
+["The type of muscle in the walls of the stomach is:",["Smooth","Striated","Cardiac","Skeletal"],0],
+["Number of cervical vertebrae in humans is:",["7","12","5","9"],0],
+["Rheumatoid arthritis is a(n):",["Autoimmune disorder of joints","Bone infection","Muscle cancer","Vitamin disorder"],0],
+["Lactic acid accumulation in muscles causes:",["Fatigue","Growth","Relaxation","Immunity"],0]],
+18: [
+["The part of brain regulating body temperature and hunger is:",["Hypothalamus","Cerebellum","Pons","Medulla"],0],
+["Reflex action is controlled by the:",["Spinal cord","Cerebrum","Cerebellum","Thalamus"],0],
+["Photoreceptors that work in dim light are:",["Rods","Cones","Iris","Cornea"],0],
+["Ear ossicles are:",["Malleus, incus, stapes","Tibia, fibula, femur","Radius, ulna, humerus","Atlas, axis, sacrum"],0],
+["Cranial nerves in humans number:",["12 pairs","31 pairs","10 pairs","8 pairs"],0]],
+19: [
+["Thyroxine contains the element:",["Iodine","Iron","Calcium","Zinc"],0],
+["Hormone that lowers blood glucose:",["Insulin","Glucagon","Adrenaline","Cortisol"],0],
+["Growth hormone is secreted by:",["Anterior pituitary","Thyroid","Pineal","Adrenal medulla"],0],
+["Hormone for milk ejection is:",["Oxytocin","Prolactin","Estrogen","Thyroxine"],0],
+["Testosterone is secreted by:",["Leydig cells of testis","Sertoli cells","Prostate","Pituitary"],0]]
+},
+12: {
+1: [
+["Self-pollination within same flower is called:",["Autogamy","Geitonogamy","Xenogamy","Apogamy"],0],
+["Tapetum in anther provides:",["Nutrition to developing pollen","Protection from rain","Colour","Fragrance"],0],
+["Fruit formed without fertilisation is:",["Parthenocarpic","True","Aggregate","Composite"],0],
+["Part of the pistil that receives pollen is the:",["Stigma","Style","Ovary","Filament"],0],
+["Embryo sac develops from the:",["Megaspore","Microspore","Zygote","Nucellus wall"],0]],
+2: [
+["Hormone that triggers ovulation is:",["LH surge","Progesterone","Oxytocin","Prolactin"],0],
+["Corpus luteum secretes:",["Progesterone","FSH","Testosterone","Insulin"],0],
+["Average length of human gestation is:",["About 9 months (280 days)","6 months","12 months","3 months"],0],
+["Acrosome of sperm contains:",["Enzymes for penetrating the egg","Mitochondria","DNA","Centriole"],0],
+["Cleavage divisions form:",["Blastomeres","Gametes","Placenta","Amnion"],0]],
+3: [
+["Copper-T is a(n):",["IUD","Pill","Condom","Diaphragm"],0],
+["Saheli is a:",["Non-steroidal oral contraceptive","Condom","IUD","Surgery"],0],
+["Surgical sterilisation in males is called:",["Vasectomy","Tubectomy","MTP","IVF"],0],
+["Test-tube baby technique ET refers to:",["Embryo transfer","Egg testing","Electro therapy","Enzyme treatment"],0],
+["Hepatitis B and HIV are examples of:",["STIs","Genetic disorders","Deficiency diseases","Allergies"],0]],
+4: [
+["Genotype of a pure tall plant is:",["TT","Tt","tt","Tx"],0],
+["Incomplete dominance gives F2 phenotypic ratio:",["1:2:1","3:1","9:3:3:1","1:1"],0],
+["Human sex determination is of which type?",["XX-XY","ZW-ZZ","XO","Haplodiploid"],0],
+["Colour blindness is:",["X-linked recessive","Y-linked","Autosomal dominant","Mitochondrial"],0],
+["Klinefelter syndrome is:",["XXY","XO","XYY","Trisomy 21"],0]],
+5: [
+["Nucleotide consists of:",["Base, sugar and phosphate","Base and sugar only","Sugar and phosphate only","Amino acid and base"],0],
+["Base pairing in DNA: Adenine pairs with:",["Thymine","Guanine","Cytosine","Uracil"],0],
+["Transcription produces:",["RNA","DNA","Protein","Lipid"],0],
+["Enzyme responsible for transcription:",["RNA polymerase","DNA ligase","Helicase","Primase"],0],
+["Human Genome Project involved sequencing about how many base pairs?",["3 billion","3 million","30 thousand","300 billion"],0]],
+6: [
+["Fossils are studied under:",["Palaeontology","Embryology","Genetics","Ecology"],0],
+["Analogous organs are example of:",["Convergent evolution","Divergent evolution","Mutation","Extinction"],0],
+["Darwin's finches illustrate:",["Adaptive radiation","Pollination","Symbiosis","Metamorphosis"],0],
+["Miller's experiment demonstrated:",["Chemical origin of life (amino acids)","Fossil dating","Natural selection","Mutation rates"],0],
+["Genetic drift is change in allele frequency due to:",["Chance events","Selection","Migration only","Mutation only"],0]],
+7: [
+["Typhoid is caused by:",["Salmonella typhi","Plasmodium","Vibrio","Rhinovirus"],0],
+["Dengue is spread by:",["Aedes mosquito","Anopheles","Housefly","Tsetse fly"],0],
+["ELISA is used to diagnose:",["HIV and other infections","Fractures","Diabetes","Vitamin deficiency"],0],
+["Interferons are produced by:",["Virus-infected cells","RBCs","Platelets","Bone"],0],
+["Drug addiction involving morphine is derived from:",["Poppy plant","Cannabis","Coca","Datura"],0]],
+8: [
+["Bread dough rises due to:",["CO2 from yeast","Oxygen","Methane","Hydrogen"],0],
+["Cyclosporin A is used as:",["Immunosuppressant","Antibiotic","Painkiller","Blood thinner"],0],
+["Sewage treatment primary step removes:",["Floating and suspended solids","Dissolved salts","Bacteria completely","Heavy metals"],0],
+["Methanogens are found in:",["Rumen and anaerobic sludge","Skin","Soil surface","Air"],0],
+["Statins lower blood:",["Cholesterol","Sugar","Pressure only","Calcium"],0]],
+9: [
+["Enzyme used to join DNA fragments:",["DNA ligase","EcoRI","Taq polymerase","Helicase"],0],
+["A commonly used cloning vector plasmid is:",["pBR322","pH7","pCO2","pRNA"],0],
+["Selectable marker is used to:",["Identify transformants","Cut DNA","Replicate vector","Make proteins"],0],
+["Agrobacterium tumefaciens is used to transfer genes into:",["Plants","Animals","Bacteria only","Viruses"],0],
+["Bioreactors are used for:",["Large scale production of biomolecules","Cutting DNA","Staining cells","Sequencing"],0]],
+10: [
+["Golden rice is rich in:",["Vitamin A (beta-carotene)","Vitamin C","Iron only","Protein only"],0],
+["Transgenic animals are used for:",["Studying disease and producing biological products","Only food","Only pets","Nothing"],0],
+["ADA deficiency was first treated by:",["Gene therapy","Surgery","Vaccination","Dialysis"],0],
+["Biopiracy refers to:",["Unauthorised use of bio-resources","Gene editing","Cloning","Pollination"],0],
+["Molecular diagnosis of diseases can use:",["PCR","Pesticides","Fertilisers","Antacids"],0]],
+11: [
+["Bears avoid winter stress by:",["Hibernation","Aestivation","Photosynthesis","Metamorphosis"],0],
+["Brood parasitism is shown by:",["Cuckoo","Eagle","Sparrow","Parrot"],0],
+["Population density can be expressed as:",["Number per unit area","Volume only","Colour","Height"],0],
+["Natality refers to:",["Birth rate","Death rate","Migration","Mutation"],0],
+["Interaction in which one species benefits and the other is killed and eaten:",["Predation","Mutualism","Commensalism","Amensalism"],0]],
+12: [
+["Detritivores include:",["Earthworm","Lion","Grass","Deer"],0],
+["Standing crop refers to:",["Biomass present at a given time","Rate of production","Energy lost","Decomposition"],0],
+["Pyramid of energy is always:",["Upright","Inverted","Spindle","Horizontal"],0],
+["Decomposition produces:",["Humus","Pesticide","Plastic","Fossils"],0],
+["Phosphorus cycle is:",["Sedimentary","Gaseous","Atmospheric","Photo"],0]],
+13: [
+["Variety of species in a region is called:",["Species diversity","Genetic drift","Succession","Natality"],0],
+["Extinction of Dodo is due to:",["Human activity","Volcano","Flood","Disease only"],0],
+["Sacred groves are examples of:",["In situ conservation","Ex situ","Zoo","Seed bank"],0],
+["Biosphere reserves, national parks are:",["In situ","Ex situ","Both","None"],0],
+["Nile perch introduction in Lake Victoria caused:",["Extinction of cichlid fish","More cichlids","No change","Plant growth"],0]]
+}
+};
+for (const c in QUIZ_EXTRA) for (const id in QUIZ_EXTRA[c]) QUIZ_DATA[c][id] = QUIZ_DATA[c][id].concat(QUIZ_EXTRA[c][id]);
+
+const QUIZ_EXTRA2 = {
+11: {
+1: ["Which is regarded as the defining property of living organisms?|Consciousness|Movement|Size|Colour",
+"Place with a collection of living plants for reference is a:|Botanical garden|Herbarium|Museum|Zoological park",
+"Zoological parks keep wild animals:|In protected, near-natural conditions|In dried form|In jars|As fossils",
+"Museums have collections of:|Preserved plant and animal specimens|Only living plants|Only seeds|Only fungi",
+"Systematics comes from the Latin word systema meaning:|Systematic arrangement of organisms|Naming|Fossils|Cells",
+"Cat and tiger belong to the same:|Family Felidae|Genus|Species|Subspecies",
+"Taxonomic category with the most shared characters is:|Species|Order|Class|Phylum",
+"Growth in non-living objects such as mountains occurs by:|Accumulation of material on the surface|Cell division|Metabolism|Reproduction",
+"The term taxonomy was coined by:|A.P. de Candolle|Linnaeus|Darwin|Aristotle",
+"A group of related families forms an:|Order|Class|Genus|Species"],
+2: ["Dinoflagellates are mostly:|Marine photosynthetic protists|Freshwater fungi|Soil bacteria|Parasitic worms",
+"Euglenoids have a protein-rich layer called:|Pellicle|Cell wall|Capsule|Frustule",
+"Red tides are caused by rapid multiplication of:|Gonyaulax|Euglena|Paramecium|Amoeba",
+"Which is a zygomycete?|Rhizopus|Agaricus|Puccinia|Penicillium",
+"Mushroom belongs to:|Basidiomycetes|Ascomycetes|Deuteromycetes|Phycomycetes",
+"Bacteria that make food by oxidising inorganic substances are:|Chemosynthetic autotrophs|Parasites|Saprophytes|Photoheterotrophs",
+"Nostoc and Anabaena are:|Nitrogen-fixing cyanobacteria|Archaea|Protozoans|Fungi",
+"Viroids differ from viruses as they lack:|Protein coat|RNA|Infectivity|Nucleic acid",
+"Prions cause diseases like:|Mad cow disease|Malaria|Cholera|Typhoid",
+"Reserve food of fungi is stored as:|Glycogen and oil|Starch|Cellulose|Chitin"],
+3: ["Spirogyra is a member of:|Green algae|Red algae|Brown algae|Diatoms",
+"Reserve food of brown algae is:|Laminarin and mannitol|Starch|Glycogen|Floridean starch",
+"Marchantia reproduces asexually by:|Gemmae|Seeds|Pollen|Cones",
+"Prothallus is the gametophyte of:|Pteridophytes|Gymnosperms|Angiosperms|Conifers",
+"Pinus belongs to:|Gymnosperms|Pteridophytes|Bryophytes|Angiosperms",
+"Alternation of generations means alternation of:|Haploid and diploid phases|Male and female|Roots and shoots|Day and night",
+"Red algae contain the pigment:|r-phycoerythrin|Fucoxanthin|Chlorophyll b|Anthocyanin",
+"The largest and most dominant plant group today is:|Angiosperms|Gymnosperms|Ferns|Mosses",
+"Seeds are absent in:|Pteridophytes|Gymnosperms|Angiosperms|Cycas",
+"Sporophyte in bryophytes is:|Dependent on the gametophyte|Independent|Dominant|Free-living"],
+4: ["The coelom is lined by:|Mesoderm|Ectoderm|Endoderm|Cuticle",
+"Pseudocoelomates include:|Aschelminthes|Annelids|Arthropods|Molluscs",
+"Radial symmetry is seen in:|Cnidarians|Annelids|Insects|Birds",
+"Which phylum has a rasping organ called radula?|Mollusca|Arthropoda|Annelida|Porifera",
+"The largest phylum of the animal kingdom is:|Arthropoda|Mollusca|Chordata|Annelida",
+"Air bladder in bony fishes regulates:|Buoyancy|Digestion|Excretion|Hearing",
+"Mammals are characterised by:|Mammary glands|Feathers|Scales|Gills",
+"Which is an egg-laying mammal?|Platypus|Kangaroo|Bat|Whale",
+"Tube feet for locomotion are found in:|Starfish|Octopus|Prawn|Leech",
+"A dorsal, hollow, single nerve cord is a feature of:|Chordates|Arthropods|Annelids|Molluscs"],
+5: ["Root cap protects the:|Root apex|Stem|Leaf|Flower",
+"Tendrils for climbing are modified:|Stem or leaf|Roots only|Flowers|Fruits",
+"Phyllode in Australian acacia is a modified:|Petiole|Root|Fruit|Seed",
+"Maize grain is a:|Caryopsis|Drupe|Berry|Legume",
+"Mango is a:|Drupe|Berry|Pome|Capsule",
+"A leaf with leaflets on a common axis (rachis) is:|Pinnately compound|Simple|Palmately compound|Reticulate",
+"A flower having both androecium and gynoecium is:|Bisexual|Unisexual|Sterile|Neuter",
+"Epigynous flower has:|Inferior ovary|Superior ovary|Free carpels|No ovary",
+"Bulb is seen in:|Onion|Potato|Ginger|Turmeric",
+"Pea and gram seeds are:|Non-albuminous (no endosperm)|Albuminous|Fruits|Spores"],
+6: ["Parenchyma cells mainly function in:|Storage and photosynthesis|Support only|Conduction only|Protection",
+"Collenchyma has thickening of:|Cellulose and pectin|Lignin|Suberin|Chitin",
+"Sclerenchyma cells are:|Dead with lignified walls|Living|Thin walled|Meristematic",
+"Companion cells are associated with:|Sieve tube elements|Vessels|Tracheids|Fibres",
+"Root hairs are extensions of:|Epidermal cells|Cortex|Pericycle|Endodermis",
+"Dicot root usually has xylem bundles numbering:|2 to 4|More than 8|Zero|Scattered",
+"Lenticels help in:|Gaseous exchange in woody stems|Water absorption|Photosynthesis|Food storage",
+"Cork cambium is also called:|Phellogen|Vascular cambium|Pericycle|Endodermis",
+"Isobilateral leaf is found in:|Monocots|Dicots|Gymnosperms|Algae",
+"Hypodermis of dicot stem is made of:|Collenchyma|Sclerenchyma|Parenchyma|Chlorenchyma"],
+7: ["Compound epithelium is mainly for:|Protection against wear and tear|Absorption|Secretion only|Conduction",
+"Ductless glands are called:|Endocrine glands|Exocrine glands|Salivary glands|Sweat glands",
+"Cartilage cells are:|Chondrocytes|Osteocytes|Fibroblasts|Adipocytes",
+"Cells that form the matrix of bone are:|Osteoblasts|Neurons|Mast cells|RBCs",
+"Mast cells secrete:|Histamine|Insulin|Thyroxine|Pepsin",
+"The clitellum of earthworm is related to:|Reproduction|Digestion|Respiration|Locomotion",
+"Cockroach has how many pairs of wings?|Two|One|Three|None",
+"Smooth muscle fibres are:|Spindle shaped and unstriated|Cylindrical and striated|Branched and striated|Multinucleate and striated",
+"Neuroglial cells:|Support and protect neurons|Conduct impulses|Secrete hormones|Carry oxygen",
+"Frog respires through skin, buccal cavity and:|Lungs|Gills|Tracheae|Book lungs"],
+8: ["A prokaryotic cell lacks:|Membrane-bound nucleus|Ribosomes|DNA|Cell membrane",
+"The plant cell wall is mostly:|Cellulose|Chitin|Peptidoglycan|Protein",
+"The 9+2 arrangement of microtubules is found in:|Cilia and flagella|Centriole|Ribosome|Nucleolus",
+"Centrioles have 9 sets of:|Triplet microtubules|Single microtubules|Doublets|Filaments",
+"Ribosomal RNA is synthesised in the:|Nucleolus|Golgi body|Lysosome|Vacuole",
+"Cristae are folds of the:|Inner mitochondrial membrane|Chloroplast|Nucleus|ER",
+"Grana are stacks of:|Thylakoids|Cristae|Vesicles|Cisternae",
+"The Golgi apparatus functions in:|Packaging and secretion|Photosynthesis|Respiration|DNA replication",
+"The cell membrane is:|Selectively permeable|Impermeable|Rigid|Absent in animals",
+"Chromatin consists of DNA and:|Histone proteins|Lipids|Starch|Chitin"],
+9: ["The most abundant compound in living cells is:|Water|Protein|Lipid|DNA",
+"Glycogen is stored mainly in:|Liver and muscles|Roots|Seeds|Leaves",
+"Amino acids have an amino group and a:|Carboxyl group|Hydroxyl group|Aldehyde group|Phosphate group",
+"Lecithin is a:|Phospholipid|Protein|Sugar|Nucleic acid",
+"A nucleoside is a nitrogenous base plus:|Sugar|Phosphate|Amino acid|Fatty acid",
+"Enzymes that join two molecules are:|Ligases|Hydrolases|Lyases|Oxidoreductases",
+"A loosely bound organic cofactor is called:|Coenzyme|Prosthetic group|Apoenzyme|Substrate",
+"Maltose is made of two:|Glucose units|Fructose units|Galactose units|Ribose units",
+"A sulphur-containing amino acid is:|Methionine|Glycine|Alanine|Valine",
+"Chitin is a polymer of:|N-acetyl glucosamine|Glucose|Amino acids|Nucleotides"],
+10: ["The cell cycle is divided into:|Interphase and M phase|S and G1 only|M phase only|Prophase only",
+"The G0 (quiescent) stage means cells:|Exit the cycle but stay metabolically active|Die|Undergo mitosis|Replicate DNA",
+"Nuclear envelope reforms in:|Telophase|Prophase|Metaphase|Anaphase",
+"Centromere splits in:|Anaphase|Prophase|Telophase|G2",
+"Kinetochores are located on the:|Centromere|Spindle pole|Nuclear envelope|Nucleolus",
+"Bivalents form in:|Prophase I of meiosis|Mitosis|Meiosis II|G1",
+"Chiasmata are clearly visible in:|Diplotene|Leptotene|Zygotene|Anaphase",
+"DNA content doubles in:|S phase|G1 phase|M phase|Cytokinesis",
+"Meiosis results in cells that are:|Haploid and genetically different|Diploid|Identical|Tetraploid",
+"In animal cells cytokinesis occurs by:|Cleavage furrow|Cell plate|Budding|Spore formation"],
+11: ["Chlorophyll absorbs mainly:|Blue and red light|Green light|Yellow light|Infrared",
+"Photolysis of water occurs in:|Photosystem II|Photosystem I|Stroma|Cytoplasm",
+"ATP synthesis in chloroplasts occurs by:|Photophosphorylation|Substrate level phosphorylation|Fermentation|Glycolysis",
+"First stable product of the C3 cycle is:|3-PGA|OAA|Glucose|Pyruvate",
+"First stable product of the C4 pathway is:|Oxaloacetic acid|3-PGA|RuBP|Pyruvate",
+"The enzyme that fixes CO2 in C3 plants is:|RuBisCO|PEP carboxylase|Amylase|Catalase",
+"The Hatch and Slack pathway is the:|C4 pathway|C3 pathway|CAM pathway|Calvin cycle",
+"The law of limiting factors was given by:|Blackman|Hill|Calvin|Engelmann",
+"Engelmann's experiment with Cladophora showed:|Action spectrum of photosynthesis|Respiration|Transpiration|Osmosis",
+"Cyclic photophosphorylation produces:|ATP only|NADPH only|Oxygen|Glucose"],
+12: ["Pyruvate entering the mitochondria forms:|Acetyl CoA|Ethanol|Lactate|Glucose",
+"Total ATP from aerobic respiration of one glucose is about:|30 to 38|2|4|100",
+"Anaerobic respiration in muscles forms:|Lactic acid|Ethanol|Acetic acid|Methane",
+"Complex IV of the ETC is:|Cytochrome c oxidase|NADH dehydrogenase|Succinate dehydrogenase|ATP synthase",
+"ATP synthase is also called:|Complex V|Complex I|Complex II|Complex III",
+"The link reaction is also called:|Oxidative decarboxylation|Glycolysis|Fermentation|Photolysis",
+"FAD is reduced to FADH2 in:|Krebs cycle|Glycolysis only|Fermentation|Photosynthesis",
+"The respiratory pathway is called amphibolic because it is:|Both catabolic and anabolic|Only catabolic|Only anabolic|Anaerobic",
+"The most commonly used respiratory substrate is:|Carbohydrates|Proteins|Fats|Vitamins",
+"Oxygen is not needed in:|Glycolysis|Krebs cycle|ETC|Oxidative phosphorylation"],
+13: ["Gibberellins were first isolated from the fungus:|Gibberella fujikuroi|Rhizopus|Penicillium|Yeast",
+"Phototropism experiments on coleoptiles led to discovery of:|Auxin|ABA|Ethylene|Cytokinin",
+"Zeatin is a:|Cytokinin|Auxin|Gibberellin|Ethylene",
+"2,4-D is a synthetic:|Auxin|Cytokinin|Gibberellin|ABA",
+"Seed dormancy is promoted by:|ABA|Gibberellin|Cytokinin|Auxin",
+"Short-day plants flower when:|The dark period exceeds a critical length|The day is long|Temperature is high|Water is low",
+"Growth in length of root is due to:|Apical meristem|Lateral meristem|Intercalary meristem|Cambium",
+"Differentiation, dedifferentiation and redifferentiation are part of:|Plant development|Respiration|Transpiration|Photosynthesis",
+"Growth at a constant rate is called:|Arithmetic growth|Geometric growth|Sigmoid growth|Exponential growth",
+"The hypothetical flowering hormone is called:|Florigen|Auxin|Ethylene|Zeatin"],
+14: ["Vital capacity is the sum of:|ERV + TV + IRV|TV + RV|IRV + RV|TV + ERV only",
+"Lungs are covered by a:|Double layered pleura|Peritoneum|Pericardium|Mucosa",
+"The respiratory pigment of humans is:|Haemoglobin|Haemocyanin|Chlorophyll|Myoglobin",
+"Gas exchange across the alveolar membrane occurs by:|Simple diffusion|Active transport|Osmosis|Endocytosis",
+"Asthma is:|Inflammation of bronchi and bronchioles|Alveolar damage|Cancer|An infection",
+"An occupational respiratory disorder caused by dust is:|Silicosis|Typhoid|Cholera|Malaria",
+"Carbon monoxide binds haemoglobin:|Strongly forming carboxyhaemoglobin|Weakly|Not at all|Forming oxyhaemoglobin",
+"The pneumotaxic centre is located in the:|Pons|Medulla|Cerebellum|Cerebrum",
+"Normal expiration is a:|Passive process|Always active|Voluntary only|Absent process",
+"During inspiration the diaphragm:|Contracts and flattens|Relaxes and domes|Stays unchanged|Splits"],
+15: ["Plasma constitutes about what percent of blood?|55%|10%|90%|30%",
+"The most abundant plasma protein is:|Albumin|Fibrinogen|Globulin|Prothrombin",
+"In adults RBCs are produced in:|Red bone marrow|Spleen|Liver|Kidney",
+"The granulocyte associated with allergic reactions is:|Eosinophil|Neutrophil|Lymphocyte|Monocyte",
+"The blood vessel with the thickest wall is the:|Artery|Vein|Capillary|Venule",
+"Double circulation means blood passes through the heart:|Twice in one cycle|Once|Thrice|Never",
+"Normal heart rate is about:|72 per minute|30 per minute|150 per minute|200 per minute",
+"Angina is due to:|Inadequate oxygen supply to heart muscle|Brain bleeding|Kidney failure|Lung infection",
+"Clotting requires vitamin:|K|C|A|D",
+"The hepatic portal system connects:|Intestine and liver|Heart and lungs|Brain and spinal cord|Kidney and bladder"],
+16: ["Glomerulus and Bowman's capsule together form the:|Renal corpuscle|Loop of Henle|Collecting duct|PCT",
+"Normal glomerular filtration rate is about:|125 mL per minute|12 mL per minute|500 mL per minute|1250 mL per minute",
+"Diabetes insipidus is due to deficiency of:|ADH|Insulin|Thyroxine|Cortisol",
+"ANF causes:|Vasodilation and lowering of blood pressure|Vasoconstriction|Water retention|Renin release",
+"Presence of glucose in urine is called:|Glycosuria|Ketonuria|Uraemia|Proteinuria",
+"Presence of ketone bodies in urine is called:|Ketonuria|Glycosuria|Haematuria|Anuria",
+"Sweat removes:|Water, NaCl and some urea|Only protein|Bile|Oxygen",
+"Renal calculi are:|Kidney stones|Tumours|Blood clots|Cysts",
+"Ureotelic animals include:|Mammals|Birds|Insects|Bony fishes",
+"The collecting duct opens into the:|Renal pelvis|Ureter directly|Bladder|Urethra"],
+17: ["Myoglobin is a:|Red oxygen-storing pigment in muscles|Blue pigment|Enzyme|Hormone",
+"The sarcoplasmic reticulum stores:|Calcium|Sodium|Glucose|Iron",
+"The A band of a sarcomere contains:|Myosin|Only actin|Troponin only|Collagen",
+"Joints between skull bones are:|Fibrous (immovable)|Hinge|Pivot|Gliding",
+"A hinge joint example is the:|Knee|Shoulder|Neck|Hip",
+"A pivot joint is found between:|Atlas and axis|Femur and pelvis|Humerus and scapula|Tibia and fibula",
+"Osteoporosis is due to:|Decreased bone mass and decline in estrogen|Excess calcium|Excess growth|Low sugar",
+"Number of pairs of ribs in humans is:|12|10|7|14",
+"True ribs are the:|First seven pairs|Last pair|Floating ribs|Eighth to tenth pairs",
+"Skeletal muscle appears:|Striped (striated)|Smooth|Branched|Spindle shaped"],
+18: ["The gap between two neurons is the:|Synaptic cleft|Node of Ranvier|Soma|Axon hillock",
+"The brain is covered by:|Meninges|Pleura|Pericardium|Peritoneum",
+"The largest part of the human brain is the:|Cerebrum|Cerebellum|Medulla|Pons",
+"The corpus callosum connects:|The two cerebral hemispheres|Brain and spinal cord|Pons and medulla|The eyes",
+"Acetylcholine is a:|Neurotransmitter|Hormone|Enzyme|Vitamin",
+"The sympathetic nervous system:|Prepares the body for emergencies|Slows the heart|Aids digestion|Induces sleep",
+"The blind spot has:|No photoreceptors|Only cones|Only rods|A thick retina",
+"The organ of Corti is in the:|Cochlea|Retina|Nose|Tongue",
+"Cell bodies of sensory neurons lie in the:|Dorsal root ganglion|Brain|Retina|Cortex",
+"Depolarisation is caused by influx of:|Na+|K+|Cl-|Mg2+"],
+19: ["Hypothalamic hormones act on the:|Pituitary|Thyroid|Pancreas|Ovary",
+"The posterior pituitary releases:|Oxytocin and vasopressin|GH|FSH|TSH",
+"Goitre results from deficiency of:|Iodine|Iron|Calcium|Vitamin A",
+"Cortisol is secreted by the:|Adrenal cortex|Adrenal medulla|Thyroid|Pituitary",
+"Islets of Langerhans are found in the:|Pancreas|Liver|Kidney|Stomach",
+"Alpha cells of the pancreas secrete:|Glucagon|Insulin|Somatostatin|Gastrin",
+"Gigantism is caused by excess:|Growth hormone in childhood|Thyroxine|Insulin|ADH",
+"The thymus secretes:|Thymosin|Thyroxine|Melatonin|Insulin",
+"The ovary secretes:|Estrogen and progesterone|Testosterone|FSH|LH",
+"Hormones acting through cAMP are usually:|Peptide hormones|Steroid hormones|Both|None"]
+},
+12: {
+1: ["Pollination by wind is called:|Anemophily|Hydrophily|Zoophily|Entomophily",
+"The outer layer of the pollen wall is the:|Exine|Intine|Tapetum|Endothecium",
+"The female gametophyte develops from the:|Functional megaspore|Microspore|Zygote|Tapetum",
+"Synergids guide the pollen tube through the:|Filiform apparatus|Antipodals|Chalaza|Funicle",
+"Antipodal cells are located at the:|Chalazal end|Micropylar end|Centre|Egg",
+"Perisperm is the:|Residual nucellus in seed|Endosperm|Cotyledon|Testa",
+"The pollen tube enters the ovule through the:|Micropyle|Chalaza|Funicle|Integument",
+"Cleistogamous flowers:|Never open and ensure self-pollination|Are cross pollinated|Are wind pollinated|Are bird pollinated",
+"Coconut water is:|Free nuclear endosperm|Embryo|Seed coat|Pericarp",
+"If a plant has 2n = 16, its endosperm cells have how many chromosomes?|24|8|16|32"],
+2: ["Sertoli cells:|Nourish developing sperm|Secrete testosterone|Store sperm|Produce semen",
+"Testes are cooler than the body by about:|2 to 2.5 degrees C|10 degrees C|0 degrees C|5 degrees C",
+"A primary follicle becomes a:|Graafian follicle|Corpus albicans|Morula|Blastula",
+"Average length of the menstrual cycle is:|28 days|14 days|45 days|60 days",
+"Menopause occurs at about:|50 years of age|30 years|20 years|70 years",
+"Fertilisation is the union of:|Haploid gametes|Diploid cells|Somatic cells|Zygotes",
+"The placenta is connected to the embryo by the:|Umbilical cord|Ovary|Vagina|Bladder",
+"hCG is secreted by the:|Placenta|Pituitary|Ovary|Testis",
+"Colostrum is rich in:|Antibodies (IgA)|Fat|Sugar only|Water only",
+"Spermiogenesis converts:|Spermatids into sperms|Spermatocytes into spermatids|Spermatogonia into spermatocytes|Ova into zygotes"],
+3: ["The Reproductive and Child Health (RCH) programme was launched in:|1997|1951|2010|1980",
+"IUDs mainly prevent:|Implantation and sperm motility|Ovulation only|Menstruation|Ovary formation",
+"Periodic abstinence is a:|Natural method|Barrier method|Surgical method|Hormonal method",
+"Lactational amenorrhea is effective up to about:|Six months after delivery|Two years|One month|Ten years",
+"Oral contraceptive pills contain:|Progestogen-estrogen combinations|Antibiotics|Insulin|Vitamins",
+"GIFT stands for:|Gamete intra fallopian transfer|Gene insertion for transfer|Genetic infertility therapy|Gastric intake of food",
+"ICSI involves:|Injecting a sperm directly into an ovum|Sperm bank storage|Surgery|Pills",
+"IUI stands for:|Intra-uterine insemination|Intra-urethral injection|Incubation under illumination|Internal ultrasound imaging",
+"Population explosion is mainly due to:|Decreased death rate and high birth rate|War|Famine|Migration",
+"Female sterilisation is called:|Tubectomy|Vasectomy|MTP|IUD insertion"],
+4: ["Mendel worked on:|Pisum sativum|Zea mays|Drosophila|Neurospora",
+"The law of independent assortment concerns:|Two or more genes|One gene|Sex|Cytoplasm",
+"Dihybrid F2 phenotypic ratio is:|9:3:3:1|3:1|1:2:1|1:1",
+"Inheritance of ABO blood groups shows:|Multiple alleles and codominance|Complete dominance only|Linkage|Epistasis",
+"Genotype IAIB gives blood group:|AB|A|B|O",
+"T.H. Morgan worked on:|Drosophila melanogaster|Pisum sativum|Mus musculus|Zea mays",
+"Linkage is the tendency of genes to be inherited:|Together|Separately|Randomly|Never",
+"Sickle cell anaemia is due to substitution of glutamic acid by:|Valine|Glycine|Alanine|Lysine",
+"Phenylketonuria is:|Autosomal recessive|X-linked|Dominant|Y-linked",
+"Turner syndrome has the karyotype:|45, XO|47, XXY|47, XXX|46, XY"],
+5: ["Griffith's experiment demonstrated:|Transformation|Replication|Translation|Mutation",
+"Semi-conservative replication was shown by:|Meselson and Stahl|Hershey and Chase|Griffith|Avery",
+"The sugar in RNA is:|Ribose|Deoxyribose|Glucose|Fructose",
+"Total number of codons is:|64|20|61|4",
+"The stop codons are:|UAA, UAG, UGA|AUG|GUG|UUU",
+"tRNA has an anticodon and:|An amino acid attachment site|A promoter|An operator|A terminator",
+"Splicing removes:|Introns|Exons|Promoters|Poly A tails",
+"DNA fingerprinting is based on:|VNTRs|Introns only|rRNA|Proteins",
+"The genetic code is:|Degenerate and universal|Overlapping|Ambiguous|Absent in viruses",
+"Peptide bond formation in ribosome is catalysed by:|rRNA (peptidyl transferase)|DNA|Lipid|mRNA"],
+6: ["The Big Bang is thought to have occurred about:|13.7 billion years ago|4.5 million years ago|2 million years ago|10 thousand years ago",
+"The age of the Earth is about:|4.5 billion years|500 million years|50 billion years|1 billion years",
+"Oparin and Haldane proposed:|Chemical evolution of life|Natural selection|Mutation theory|Speciation",
+"Lamarck proposed the theory of:|Use and disuse|Natural selection|Mutations|Genetic drift",
+"A vestigial organ in humans is the:|Vermiform appendix|Heart|Kidney|Liver",
+"Homo erectus fossils were found in:|Java|Antarctica|Greenland|Peru",
+"Founder effect is a type of:|Genetic drift|Natural selection|Mutation|Migration",
+"The mutation theory was given by:|Hugo de Vries|Darwin|Lamarck|Mendel",
+"Antibiotic resistance in bacteria shows:|Natural selection|Lamarckism|Absence of mutations|Extinction",
+"Neanderthals lived in:|Near East and Central Asia|The Americas|Australia|Antarctica"],
+7: ["Ascaris causes:|Ascariasis|Malaria|Filariasis|Amoebiasis",
+"Filariasis is caused by:|Wuchereria|Plasmodium|Taenia|Ascaris",
+"Ringworm is caused by:|Fungi|Bacteria|Viruses|Protozoa",
+"The common cold is caused by:|Rhino viruses|HIV|Hepatitis virus|Polio virus",
+"Pneumonia is caused by:|Streptococcus pneumoniae|Salmonella|Vibrio|Plasmodium",
+"Innate immunity includes:|Physical barriers|Antibodies|Vaccines|Memory cells",
+"Memory responses are shown by:|Acquired immunity|Innate immunity|Skin barriers|Phagocytosis",
+"Active immunity is obtained from:|Vaccines|Colostrum|Antiserum|Antivenom",
+"AIDS is caused by:|HIV, a retrovirus|A bacterium|A fungus|A protozoan",
+"An antibody molecule has:|Four polypeptides (2 heavy and 2 light)|A single chain|Three chains|A ring structure"],
+8: ["Lactic acid bacteria improve curd by increasing vitamin:|B12|C|A|D",
+"Holes in Swiss cheese are due to:|CO2 produced by Propionibacterium|Yeast|Mould|Air bubbles",
+"Roquefort cheese is ripened by:|Fungi|Bacteria|Viruses|Algae",
+"Streptokinase is used as a:|Clot buster|Antibiotic|Immunosuppressant|Cholesterol-lowering agent",
+"Citric acid is produced by:|Aspergillus niger|Acetobacter aceti|Lactobacillus|Clostridium",
+"Acetic acid is produced by:|Acetobacter aceti|Aspergillus|Yeast|Penicillium",
+"Butyric acid is produced by:|Clostridium butylicum|Lactobacillus|Aspergillus|Acetobacter",
+"Activated sludge consists of:|Flocs of bacteria and fungal filaments|Viruses|Only algae|Only protozoa",
+"Mycorrhiza helps plants absorb:|Phosphorus|Nitrogen gas|Oxygen|Carbon dioxide",
+"Trichoderma is a:|Fungal biocontrol agent|Bacterium|Virus|Alga"],
+9: ["The first recombinant DNA was constructed by:|Cohen and Boyer|Watson and Crick|Mendel|Miller",
+"The origin of replication is abbreviated as:|ori|Taq|EcoRI|lacZ",
+"A palindromic sequence:|Reads the same in both strands in 5' to 3' direction|Is random|Is non-coding|Is always long",
+"Exonucleases remove nucleotides from:|The ends of DNA|The middle of DNA|RNA only|Proteins",
+"A cloning vector must have:|An origin of replication|Taq polymerase|No markers|Enzymes",
+"DNA bands in gels are stained with:|Ethidium bromide|Methylene blue|Gram stain|Iodine",
+"Competent bacterial cells are treated with:|Divalent cations like calcium|Antibiotics|Detergent|Sugar",
+"A gene gun is used in:|Biolistics|Microinjection|Electroporation|Plasmid isolation",
+"Downstream processing includes:|Separation and purification of products|Cloning|Cutting DNA|Ligation",
+"The lacZ marker detects:|Insertional inactivation|Replication|Transcription|Translation"],
+10: ["Cry genes code for:|Bt toxin|Insulin|Interferon|Growth hormone",
+"Rosie was a:|Transgenic cow producing human protein-enriched milk|Sheep|Mouse|Pig",
+"Humulin is:|Human insulin|Interferon|A vaccine|An enzyme",
+"Meloidogyne incognita infects:|Tobacco roots|Wheat|Rice|Maize",
+"The C peptide of proinsulin is removed during:|Maturation|Replication|Transcription|Cloning",
+"The patent issue related to Basmati rice is an example of:|Biopiracy|Evolution|Disease|Fertiliser use",
+"Transgenic mice are used for:|Testing vaccine safety|Food production|Cloning humans|Nothing",
+"ELISA works on the principle of:|Antigen-antibody interaction|PCR|Replication|Transcription",
+"Flavr Savr tomato has:|Delayed ripening|Insect resistance|Drought tolerance|Herbicide resistance",
+"Bt cotton protects against:|Bollworms|Aphids|Weeds|Drought"],
+11: ["Tundra is a biome that is:|Cold and treeless|A hot desert|A rainforest|A grassland",
+"Stenohaline organisms tolerate:|A narrow range of salinity|A wide range of salinity|No salt|Only fresh water",
+"An example of mutualism is:|Lichen|Parasite and host|Predator and prey|Cuckoo and crow",
+"The competitive exclusion principle was proposed by:|Gause|Darwin|Mendel|Lamarck",
+"An example of commensalism is:|Orchid growing on a mango tree|Cuckoo and crow|Lion and deer|Tick and dog",
+"An example of an ectoparasite is:|Lice|Tapeworm|Liver fluke|Ascaris",
+"A triangular age pyramid shows a(n):|Expanding population|Stable population|Declining population|Zero population",
+"Carrying capacity (K) is:|The maximum population the environment can sustain|Birth rate|Death rate|Growth rate",
+"Desert plant adaptations include:|Thick cuticle and sunken stomata|Large leaves|Thin cuticle|No roots",
+"Thermoregulators maintain:|A constant body temperature|A variable body temperature|Cold temperature only|Hot temperature only"],
+12: ["Abiotic components of an ecosystem include:|Soil, water and light|Producers|Consumers|Decomposers",
+"Gross primary productivity minus respiratory loss is:|Net primary productivity|Gross productivity|Secondary productivity|Biomass",
+"The grazing food chain begins with:|Green plants|Detritus|Fungi|Bacteria",
+"Steps of decomposition include:|Fragmentation, leaching and catabolism|Photosynthesis|Respiration only|Transcription",
+"The pyramid of biomass in the sea is generally:|Inverted|Upright|Spindle shaped|Linear",
+"Primary consumers are:|Herbivores|Carnivores|Decomposers|Producers",
+"Hydrarch succession starts in:|Water|Rock|Desert|Soil",
+"A climax community is:|Stable and final|Initial|Pioneer|Unstable",
+"Ecosystem services include:|Pollination and climate regulation|Pollution|Erosion|Extinction",
+"Robert Costanza estimated the value of ecosystem services at about:|US$ 33 trillion per year|US$ 1 million|US$ 33 billion|US$ 300"],
+13: ["Species richness generally increases from:|Poles towards the equator|Equator towards the poles|Both equally|Neither",
+"The Western Ghats are a:|Biodiversity hotspot|Desert|Tundra|Polar region",
+"Genetic diversity is shown by:|Different varieties of rice|Number of species|Types of ecosystems|Forest cover",
+"The current sixth mass extinction is mainly due to:|Human activities|Natural causes|Volcanoes|Asteroids",
+"Ex situ conservation includes:|Cryopreservation|National parks|Sanctuaries|Biosphere reserves",
+"Wildlife sanctuaries are examples of:|In situ conservation|Ex situ conservation|Cloning|Zoos",
+"The Earth Summit at Rio de Janeiro was held in:|1992|2002|1972|2012",
+"Alien invasive species like Lantana:|Threaten native biodiversity|Help biodiversity|Have no effect|Are fertilisers",
+"When a parasite goes extinct along with its host it is called:|Co-extinction|Mutualism|Selection|Drift",
+"Tropical areas harbour:|More species|Fewer species|Equal species|No species"]
+}
+};
+(function () {
+  for (const c in QUIZ_EXTRA2) for (const id in QUIZ_EXTRA2[c]) {
+    QUIZ_DATA[c][id] = QUIZ_DATA[c][id].concat(QUIZ_EXTRA2[c][id].map(s => { const p = s.split("|"); return [p[0], p.slice(1, 5), 0]; }));
+  }
+})();
+
+/* ===== QUIZ MODULE ===== */
+const quiz = {
+  cls: 11, run: null,
+  root() { return document.getElementById("quizView"); },
+  best() { store.data.quizBest20 = store.data.quizBest20 || {}; return store.data.quizBest20; },
+  key(cls, id) { return cls + "-" + id; },
+  chapters(cls) { return app.books[cls]; },
+  list() {
+    const b = this.best(), arr = this.chapters(this.cls);
+    this.run = null;
+    const total = Object.keys(b).length;
+    this.root().innerHTML =
+      '<h1>📝 Quiz</h1><p class="q-sub">' + total + ' of 32 chapter quizzes attempted · 20 questions each</p>' +
+      '<div class="q-mix"><button class="q-btn primary" data-q="mix11">Mixed · Class 11th (40 Q)</button><button class="q-btn primary" data-q="mix12">Mixed · Class 12th (40 Q)</button><button class="q-btn" data-q="mixall">Mixed · All (60 Q)</button></div>' +
+      '<div class="q-tabs"><button data-q="tab11" class="' + (this.cls === 11 ? "on" : "") + '">Class 11th</button><button data-q="tab12" class="' + (this.cls === 12 ? "on" : "") + '">Class 12th</button></div>' +
+      '<div class="q-list">' + arr.map(ch => {
+        const k = this.key(this.cls, ch.id), has = b[k] !== undefined;
+        return '<button class="q-item" data-q="ch" data-id="' + ch.id + '"><b>' + esc(ch.title) + '</b><span class="' + (has ? "best" : "") + '">' + (has ? "Best score: " + b[k] + " / " + (QUIZ_DATA[this.cls][ch.id] || []).length : "Not attempted · " + (QUIZ_DATA[this.cls][ch.id] || []).length + " questions") + '</span></button>';
+      }).join("") + '</div>';
+  },
+  pool(cls) {
+    const out = [];
+    this.chapters(cls).forEach(ch => (QUIZ_DATA[cls][ch.id] || []).forEach(q => out.push({ q })));
+    return out;
+  },
+  shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; },
+  start(items, title, bestKey) {
+    const qs = items.map(it => {
+      const [text, opts, ans] = it.q;
+      const order = this.shuffle(opts.map((o, i) => i));
+      return { text, opts: order.map(i => opts[i]), ans: order.indexOf(ans) };
+    });
+    this.run = { qs, i: 0, score: 0, picked: [], title, bestKey, done: false };
+    this.render();
+  },
+  startChapter(id) {
+    const ch = this.chapters(this.cls).find(c => c.id === id);
+    const items = this.shuffle((QUIZ_DATA[this.cls][id] || []).map(q => ({ q })));
+    this.start(items, ch.title, this.key(this.cls, id));
+  },
+  startMix(kind) {
+    const p = kind === "mix11" ? this.pool(11) : kind === "mix12" ? this.pool(12) : this.pool(11).concat(this.pool(12));
+    const n = kind === "mixall" ? 60 : 40;
+    this.start(this.shuffle(p).slice(0, n), kind === "mixall" ? "Mixed · All chapters" : "Mixed · Class " + kind.slice(3) + "th", null);
+  },
+  render() {
+    const r = this.run, root = this.root();
+    if (r.done) {
+      const pct = Math.round(r.score / r.qs.length * 100);
+      const msg = pct >= 80 ? "Excellent work! 🎉" : pct >= 50 ? "Good effort, keep revising 👍" : "Revise the chapter and try again 📖";
+      root.innerHTML = '<div class="q-card q-result"><div>' + esc(r.title) + '</div><div class="q-score">' + r.score + ' / ' + r.qs.length + '</div><p>' + pct + '% · ' + msg + '</p>' +
+        '<div class="q-foot" style="justify-content:center;margin-top:18px"><button class="q-btn primary" data-q="retry">Try again</button><button class="q-btn" data-q="back">All quizzes</button></div>' +
+        '<div class="q-review">' + r.qs.map((q, i) => '<div><i>' + (i + 1) + '. ' + (r.picked[i] === q.ans ? "✅" : "❌") + '</i> ' + esc(q.text) + '<br><small style="color:var(--text-muted)">Answer: ' + esc(q.opts[q.ans]) + '</small></div>').join("") + '</div></div>';
+      return;
+    }
+    const q = r.qs[r.i], answered = r.picked[r.i] !== undefined;
+    root.innerHTML = '<div class="q-card"><div class="q-top"><span>' + esc(r.title) + '</span><span>Question ' + (r.i + 1) + ' / ' + r.qs.length + '</span></div>' +
+      '<div class="q-bar"><span style="width:' + (r.i / r.qs.length * 100) + '%"></span></div>' +
+      '<div class="q-text">' + esc(q.text) + '</div>' +
+      q.opts.map((o, i) => '<button class="q-opt' + (answered ? (i === q.ans ? " right" : i === r.picked[r.i] ? " wrong" : "") : "") + '" data-q="opt" data-i="' + i + '"' + (answered ? " disabled" : "") + '>' + esc(o) + '</button>').join("") +
+      '<div class="q-foot"><button class="q-btn" data-q="back">✕ Exit</button><button class="q-btn primary" data-q="next"' + (answered ? "" : " disabled") + '>' + (r.i === r.qs.length - 1 ? "Finish" : "Next →") + '</button></div></div>';
+  },
+  handle(e) {
+    const b = e.target.closest("[data-q]"); if (!b) return;
+    const a = b.dataset.q, r = this.run;
+    if (a === "tab11" || a === "tab12") { this.cls = a === "tab11" ? 11 : 12; this.list(); }
+    else if (a === "ch") this.startChapter(parseInt(b.dataset.id, 10));
+    else if (a.startsWith("mix")) this.startMix(a);
+    else if (a === "back") this.list();
+    else if (a === "opt" && r && r.picked[r.i] === undefined) {
+      const i = parseInt(b.dataset.i, 10); r.picked[r.i] = i;
+      if (i === r.qs[r.i].ans) r.score++;
+      this.render();
+    } else if (a === "next" && r) {
+      if (r.i < r.qs.length - 1) r.i++;
+      else {
+        r.done = true;
+        if (r.bestKey) { const bs = this.best(); if (bs[r.bestKey] === undefined || r.score > bs[r.bestKey]) { bs[r.bestKey] = r.score; store.save(); } }
+      }
+      this.render();
+      window.scrollTo({ top: 0 });
+    } else if (a === "retry" && r) {
+      this.start(r.qs.map(q => ({ q: [q.text, q.opts, q.ans] })), r.title, r.bestKey);
+    }
+  }
+};
+
 const app = {
   cls: 11,
   books: { 11: textbookData11, 12: textbookData12 },
@@ -6215,6 +7191,7 @@ const app = {
 
   /* ---------- routing ---------- */
   route() {
+    if (location.hash === "#quiz") { this.enterQuiz(); return; }
     let cls = 11, m = location.hash.match(/^#c(\d+)$/);
     if (!m) { m = location.hash.match(/^#b12-(\d+)$/); cls = 12; }
     const idx = m ? this.books[cls].findIndex(c => c.id === parseInt(m[1], 10)) : -1;
@@ -6228,7 +7205,17 @@ const app = {
     if (location.hash === h) this.loadChapter(idx);
     else location.hash = h;
   },
+  enterQuiz() {
+    this.reader.stop();
+    this.updateTTSButtonState(false);
+    this.closeDrawer();
+    document.body.classList.add("is-home", "is-quiz");
+    document.title = "Quiz | MEDORA";
+    quiz.list();
+    window.scrollTo({ top: 0 });
+  },
   enterHome() {
+    document.body.classList.remove("is-quiz");
     this.reader.stop();
     this.updateTTSButtonState(false);
     this.closeDrawer();
@@ -6240,7 +7227,7 @@ const app = {
     window.scrollTo({ top: 0 });
   },
   enterReader() {
-    document.body.classList.remove("is-home");
+    document.body.classList.remove("is-home", "is-quiz");
     store.data.started = true;
     store.save();
   },
@@ -6271,6 +7258,9 @@ const app = {
       document.getElementById(`card${cls}Count`).textContent = done ? `${done} of ${len} completed` : `${len} chapter${len === 1 ? "" : "s"}`;
       document.getElementById(`card${cls}Bar`).style.width = `${(done / len) * 100}%`;
     });
+    const qb = Object.keys(quiz.best()).length, qc = document.getElementById("cardQuizCount");
+    if (qc) qc.textContent = qb ? `${qb} of 32 attempted` : "32 chapter quizzes";
+    const qbar = document.getElementById("cardQuizBar"); if (qbar) qbar.style.width = `${(qb / 32) * 100}%`;
     const box = document.getElementById("continueBox");
     if (d.started) {
       const cls = d.lastCls === 12 ? 12 : 11, arr = this.books[cls];
@@ -6542,6 +7532,8 @@ const app = {
     $("card12").addEventListener("click", () => this.openClass(12));
     $("continueBtn").addEventListener("click", () => this.openClass(store.data.lastCls === 12 ? 12 : 11));
     $("homeBtn").addEventListener("click", () => this.showHome());
+    $("cardQuiz").addEventListener("click", () => { location.hash = "#quiz"; });
+    $("quizView").addEventListener("click", (e) => quiz.handle(e));
     const hs = $("homeSearch");
     hs.addEventListener("input", (e) => this.renderHomeResults(e.target.value));
     hs.addEventListener("keydown", (e) => { if (e.key === "Escape") { hs.value = ""; this.renderHomeResults(""); hs.blur(); } });
