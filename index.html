@@ -1198,6 +1198,36 @@ html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { .bg-glow::before, .bg-glow::after, .home-hero .hero-wordmark span, .hero-greet i, .workspace, .home { animation: none !important; } .rv { opacity: 1; transform: none; transition: none; } .fact-timer i.run { animation-duration: 15s; } }
 @media (hover: none) { body::after { display: none; } }
 @media print { #scrollBar, body::after, .fact-timer { display: none !important; } }
+
+/* ===== SCROLL PERFORMANCE FIX (dark + parchment) ===== */
+/* 1. Content is never hidden waiting for a scroll observer: always visible, no delayed fade-in */
+.reveal, .rv, .reveal:not(.in), .rv:not(.in) {
+  opacity: 1 !important; transform: none !important; transition: none !important; transition-delay: 0s !important;
+}
+/* 2. Remove expensive per-card blur (dozens of backdrop-filters re-render every scroll frame); use solid theme-aware surfaces */
+.dash-card, .feat, .class-card, .stat, .continue-box, .topic-chips button, .hero-greet, .home-search input {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  background: var(--bg-card);
+}
+.class-card { will-change: auto !important; transform-style: flat !important; }
+/* 3. Sticky bars: light blur only, solid-ish background in both themes */
+.topbar { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background: rgba(12, 18, 20, 0.97) !important; }
+[data-theme="parchment"] .topbar { background: rgba(243, 237, 226, 0.97) !important; }
+.bottom-bar { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; background: rgba(12,18,20,0.98) !important; }
+[data-theme="parchment"] .bottom-bar { background: rgba(251,247,238,0.98) !important; }
+/* 4. Stop the giant animated blurred background layers from repainting while scrolling */
+.bg-glow::before, .bg-glow::after { animation: none !important; filter: none !important; }
+.home-orbs i { animation: none !important; filter: none !important; }
+.home-hero .hero-wordmark span { animation: none !important; }
+body::after { display: none !important; }
+.bg-glow { transform: translateZ(0); }
+/* 5. Smooth, native scrolling */
+html { scroll-behavior: auto !important; }
+body { overflow-anchor: auto; }
+.table-wrap, .nav-scroll, .sidebar { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+/* 6. Keep the reading sheet on its own paint layer without re-animating */
+.editorial-sheet { transform: none; contain: layout style; }
+.workspace, .home { animation: none !important; }
 </style>
 </head>
 
@@ -7131,6 +7161,24 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     targets.forEach((el) => { if (el.matches(".hero-tag,.hero-sub,.home-search")) return; el.classList.add("rv"); el.style.setProperty("--i", n++ % 6); io.observe(el); });
   }
   addEventListener("load", () => setTimeout(setup, 220));
+})();
+</script>
+
+<script>
+/* Scroll fix: reveal everything immediately, even if IntersectionObserver is late or never fires */
+(function () {
+  function showAll() {
+    document.querySelectorAll(".reveal, .rv").forEach(function (el) { el.classList.add("in"); });
+  }
+  showAll();
+  window.addEventListener("load", function () { showAll(); setTimeout(showAll, 400); setTimeout(showAll, 1500); });
+  new MutationObserver(function () { showAll(); }).observe(document.body, { childList: true, subtree: true });
+  /* smooth-scroll in code uses behavior:"smooth" which stalls on long pages; make jumps instant for reliability */
+  var orig = window.scrollTo;
+  window.scrollTo = function (a, b) {
+    if (a && typeof a === "object" && a.behavior === "smooth") { a = Object.assign({}, a, { behavior: "auto" }); }
+    return orig.call(window, a, b);
+  };
 })();
 </script>
 </body>
