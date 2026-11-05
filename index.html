@@ -1358,8 +1358,7 @@ body { overflow-anchor: auto; }
         </div>
         <div class="tts-row">
           <div class="voice-seg" id="voiceSeg" role="group" aria-label="Voice mode">
-            <button type="button" data-g="female" class="active">👩 Female</button>
-            <button type="button" data-g="male">👨 Male</button>
+            <button type="button" data-g="female" class="active">👩 Female voice</button>
           </div>
           <label class="speed-wrap">Speed
             <select id="ttsSpeed" aria-label="Reading speed">
@@ -5694,7 +5693,7 @@ class BioSpeechEngine {
     const chosen = this.custom && this.custom[this.gender];
     if (chosen) {
       const cv = this.voices.find((v) => this.voiceKey(v) === chosen);
-      if (cv) return { voice: cv, pitch: 1, simulated: false };
+      if (cv && (this.genderOf(cv) || this.androidGender(cv)) !== "male") return { voice: cv, pitch: 1, simulated: false };
     }
     if (this.isMobileDevice()) {
       /* Phones: aim for the same clear US-English female sound as desktop (e.g. Google US English) and never pitch-shift it */
@@ -6040,7 +6039,7 @@ class BioSpeechEngine {
     this.setState("idle");
   }
   setGender(g) {
-    this.gender = g === "male" ? "male" : "female";
+    this.gender = "female"; /* only the female voice reader is offered */
     if (this.state === "playing") this.restartSoon();
   }
   setRate(r) {
@@ -6132,7 +6131,8 @@ const app = {
 
   initReader() {
     const r = this.reader;
-    r.gender = store.data.voice === "male" ? "male" : "female";
+    r.gender = "female";
+    store.data.voice = "female";
     r.custom = Object.assign({ male: "", female: "" }, store.data.voiceCustom || {});
     r.rate = parseFloat(store.data.speed) || 0.8;
     document.getElementById("ttsSpeed").value = String(r.rate);
@@ -6171,10 +6171,10 @@ const app = {
     const cur = r.custom[r.gender] || "";
     const tag = (v) => { const g = r.genderOf(v) || r.androidGender(v); return g ? " (" + g + ")" : ""; };
     sel.innerHTML = '<option value="">Auto (' + (r.gender === "male" ? "male" : "female") + ")</option>" +
-      r.voices.map((v) => '<option value="' + String(r.voiceKey(v)).replace(/"/g, "&quot;") + '">' + v.name + " - " + v.lang + tag(v) + "</option>").join("");
+      r.voices.filter((v) => (r.genderOf(v) || r.androidGender(v)) === "female").map((v) => '<option value="' + String(r.voiceKey(v)).replace(/"/g, "&quot;") + '">' + v.name + " - " + v.lang + tag(v) + "</option>").join("");
     sel.value = cur;
     if (sel.value !== cur) sel.value = "";
-    sel.disabled = !r.supported || r.voices.length < 2;
+    sel.disabled = !r.supported || sel.options.length < 2;
   },
   updateMini() {
     const mini = document.getElementById("miniPlayer");
@@ -6610,7 +6610,7 @@ const app = {
       store.data.voice = b.dataset.g;
       store.save();
       this.syncVoiceUI();
-      this.showToast(b.dataset.g === "male" ? "Male voice" : "Female voice");
+      this.showToast("Female voice");
     });
     $("ttsSpeed").addEventListener("change", (e) => {
       this.reader.setRate(e.target.value);
