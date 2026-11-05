@@ -1402,6 +1402,9 @@ body.is-quiz #homeBtn { display: inline-flex !important; }
 .class-card.is-quiz.quiz-card .qc-btn { background: var(--ac); color: #fff; box-shadow: none; }
 .class-card.is-quiz.quiz-card .qc-btn:hover { filter: brightness(1.05); }
 
+/* stats row placed after the "Did you know?" card */
+.stats.stats-moved { max-width: 1060px; margin: 0 auto 24px; }
+
 </style>
 </head>
 
@@ -7900,6 +7903,8 @@ window.addEventListener("DOMContentLoaded", () => app.init());
       .map((f) => '<div class="feat"><span>' + f[0] + "</span><b>" + f[1] + "</b><small>" + f[2] + "</small></div>").join("");
     grid.insertAdjacentElement("afterend", feats);
     grid.insertAdjacentElement("afterend", dash);
+    const statsRow = document.getElementById("homeStats");
+    if (statsRow) { statsRow.classList.add("stats-moved"); dash.insertAdjacentElement("afterend", statsRow); }
 
     const facts = [
       "Your body contains roughly 37 trillion cells, and a typical red blood cell lives about 120 days.",
