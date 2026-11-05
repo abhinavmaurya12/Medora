@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<<<<<<< HEAD
 <title>MEDORA | Interactive Biology Textbook & Reader</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -12,9 +11,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Medora">
-=======
-<title>Medora | Interactive Biology Textbook & Reader</title>
->>>>>>> 28e7fea0ddd6ef8a2c8b4c254eb3a98352e73417
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -998,6 +994,48 @@ body.is-home .mini-player { display: none; }
   .continue-box { padding: 16px 18px; }
   .continue-box .btn-primary { width: 100%; }
 }
+/* ===== MOBILE HEADER (clean, touch-friendly, notch-safe) ===== */
+@media (max-width: 960px) {
+  :root { --topbar-h: 58px; --safe-top: env(safe-area-inset-top, 0px); }
+  .topbar {
+    height: calc(var(--topbar-h) + var(--safe-top));
+    padding: var(--safe-top) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+    gap: 8px;
+  }
+  .progress-strip { top: calc(var(--topbar-h) + var(--safe-top)); }
+  .brand { flex: 1 1 auto; min-width: 0; gap: 8px; }
+  .brand-logo { flex: none; width: 34px; height: 34px; border-radius: 9px; }
+  .brand-logo svg { width: 20px; height: 20px; }
+  .brand-title { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; line-height: 1; }
+  .top-actions { flex: none; gap: 6px; }
+  .topbar .btn-ui {
+    min-width: 40px; height: 40px; padding: 0 11px; justify-content: center;
+    border-radius: 10px; font-size: 15px; line-height: 1; -webkit-tap-highlight-color: transparent;
+  }
+  .topbar .btn-ui:active { transform: scale(0.94); }
+  .topbar .btn-ui svg { width: 18px; height: 18px; }
+  .topbar .btn-chapters { padding: 0 12px; font-weight: 700; font-size: 13px; }
+  .topbar .btn-chapters .ico { font-size: 16px; }
+}
+@media (max-width: 600px) {
+  .topbar .badge-tag { display: none; }
+  .topbar .btn-ui .lbl { display: none; }
+  .topbar .btn-chapters { padding: 0 11px; }
+}
+/* a bit more room: show the word "Chapters" on larger phones */
+@media (min-width: 440px) and (max-width: 960px) {
+  .topbar .btn-chapters .lbl-ch { display: inline; }
+}
+/* very small phones: drop the print button so nothing gets squeezed */
+@media (max-width: 380px) {
+  .topbar .btn-pdf { display: none; }
+  .topbar .top-actions { gap: 5px; }
+  .topbar .brand-title { font-size: 15px; }
+}
+/* tiny phones (320px): keep the full name, the footer still has the download buttons */
+@media (max-width: 340px) {
+  .topbar .btn-dl-mobile { display: none; }
+}
 </style>
 </head>
 
@@ -1011,10 +1049,10 @@ body.is-home .mini-player { display: none; }
     <span class="badge-tag">vr.1.1.2</span>
   </div>
   <div class="top-actions">
-    <button type="button" class="btn-install btn-install-top" data-install-app><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
+    <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
     <button type="button" class="btn-ui btn-dl-mobile" data-goto-footer aria-label="Download the app" title="Download the app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg></button>
     <button class="btn-ui" id="homeBtn" aria-label="Home">🏠<span class="lbl"> Home</span></button>
-    <button class="btn-ui btn-chapters" id="chaptersBtn" aria-controls="sidebarNav" aria-expanded="false">📚 Chapters</button>
+    <button class="btn-ui btn-chapters" id="chaptersBtn" type="button" aria-label="Chapters" aria-controls="sidebarNav" aria-expanded="false"><span class="ico" aria-hidden="true">📚</span><span class="lbl lbl-ch"> Chapters</span></button>
     <button class="btn-ui" id="themeToggle" type="button" aria-label="Switch day or night theme" title="Switch day / night"><span class="theme-ico" id="themeIco" aria-hidden="true"></span><span class="lbl" id="themeLbl"> Day</span></button>
     <button class="btn-ui btn-pdf" id="pdfBtn" type="button" aria-label="Save as PDF" title="Save as PDF / Print" onclick="window.print()">🖨️<span class="lbl"> PDF</span></button>
   </div>
@@ -6366,12 +6404,17 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   }
   function help(kind) {
     const body = document.getElementById("installBody");
-    if (!secure) {
-      body.innerHTML = "<p>Installing works when Medora is opened from its website address (https). Open the hosted link in your browser, then tap <b>Download the app</b> again.</p>";
+    const inApp = /FBAN|FBAV|Instagram|Line\/|; wv\)|WhatsApp|Snapchat|Telegram/i.test(navigator.userAgent);
+    if (location.protocol === "file:") {
+      body.innerHTML = "<p>Installing only works when Medora is opened from its website address (https), not from a file on your device. Open the hosted link in your browser, then tap the button again.</p>";
+    } else if (!window.isSecureContext) {
+      body.innerHTML = "<p>This page is not on a secure (https) address, so the browser cannot install it. Open the https link of Medora and try again.</p>";
+    } else if (inApp) {
+      body.innerHTML = "<p>You are inside another app's built-in browser, which cannot install apps. Open this page in <b>Chrome</b> (Android) or <b>Safari</b> (iPhone/iPad) and tap the button again.</p>";
     } else if (kind === "apple" || (!kind && isIOS)) {
-      body.innerHTML = "<ol><li>Open Medora in <b>Safari</b> on your iPhone or iPad.</li><li>Tap the <b>Share</b> button in Safari.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol>";
+      body.innerHTML = "<ol><li>Open Medora in <b>Safari</b> on your iPhone or iPad.</li><li>Tap the <b>Share</b> button (square with an arrow).</li><li>Scroll down and choose <b>Add to Home Screen</b>.</li><li>Tap <b>Add</b>.</li></ol><p>Apple does not allow websites to install apps with one tap, so these steps are needed.</p>";
     } else {
-      body.innerHTML = "<ol><li>Open your browser menu (⋮ or ⋯).</li><li>Choose <b>Install app</b> or <b>Add to Home screen</b>.</li></ol><p>If you don’t see it, reload the page once and try again.</p>";
+      body.innerHTML = "<ol><li>Open the <b>Chrome</b> menu (the three dots at the top right).</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>.</li><li>Confirm with <b>Install</b>.</li></ol><p>If you do not see it, reload the page once, wait a few seconds, and try again. If the app is already installed, open it from your home screen.</p>";
     }
     document.getElementById("installOverlay").classList.add("show");
   }
@@ -6404,7 +6447,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeHelp(); });
 
   if ("serviceWorker" in navigator && secure) {
-    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js", { scope: "./" }).then((r) => { try { r.update(); } catch (e) {} }).catch((err) => { console.warn("Medora service worker failed:", err); }); });
   }
   window.addEventListener("DOMContentLoaded", sync);
   if (window.matchMedia) {
