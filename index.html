@@ -1113,7 +1113,7 @@ body.focus-mode .topbar:hover, body.focus-mode .topbar:focus-within { opacity: 1
 .ring-txt p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-muted); }
 .fact-card { position: relative; overflow: hidden; }
 .fact-card .fk { font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #b45309; margin-bottom: 8px; }
-.fact-card .ft { font-size: 16px; line-height: 1.6; font-weight: 600; min-height: 76px; transition: opacity .3s, transform .3s; }
+.fact-card .ft { font-size: 16px; line-height: 1.6; font-weight: 600; min-height: 104px; transition: opacity .3s, transform .3s; }
 .fact-card .ft.swap { opacity: 0; transform: translateY(6px); }
 .fact-card button { margin-top: 10px; border: 0; background: var(--brand-emerald-dim); color: var(--brand-emerald); font: 800 12.5px inherit; font-family: inherit; padding: 8px 14px; border-radius: 10px; cursor: pointer; }
 .fact-card button:hover { filter: brightness(.95); }
@@ -1128,6 +1128,76 @@ body.focus-mode .topbar:hover, body.focus-mode .topbar:focus-within { opacity: 1
 @media (max-width: 420px) { .ring { width: 80px; height: 80px; } .ring b { font-size: 18px; } .home-orbs i { opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .home-orbs i { animation: none; } }
 @media print { .home-dash, .feat-strip, .topic-chips, .home-orbs { display: none !important; } }
+/* ===== ULTRA UI v4 ===== */
+:root { --mx: 50%; --my: 50%; --ease: cubic-bezier(.22,1,.36,1); }
+body { --glass: color-mix(in srgb, var(--bg-card) 68%, transparent); --glass-hi: color-mix(in srgb, var(--bg-paper) 55%, transparent); }
+/* aurora background */
+.bg-glow { background: radial-gradient(60vmax 40vmax at 15% 10%, color-mix(in srgb, var(--brand-emerald) 16%, transparent), transparent 70%), radial-gradient(50vmax 40vmax at 90% 85%, color-mix(in srgb, var(--brand-gold) 14%, transparent), transparent 70%); }
+.bg-glow::before { animation: auroraA 22s ease-in-out infinite alternate; }
+.bg-glow::after { animation: auroraB 26s ease-in-out infinite alternate; }
+@keyframes auroraA { to { transform: translate(18vmax, 12vmax) scale(1.2) rotate(30deg); } }
+@keyframes auroraB { to { transform: translate(-16vmax, -10vmax) scale(1.15) rotate(-25deg); } }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+  background: radial-gradient(480px circle at var(--mx) var(--my), color-mix(in srgb, var(--brand-emerald) 11%, transparent), transparent 65%); transition: opacity .4s; }
+/* scroll progress */
+#scrollBar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); z-index: 1000; pointer-events: none;
+  background: linear-gradient(90deg, var(--brand-emerald), var(--brand-teal), var(--brand-gold)); box-shadow: 0 0 12px color-mix(in srgb, var(--brand-emerald) 70%, transparent); }
+/* glass topbar */
+.topbar { backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); }
+/* glass cards with spotlight border */
+.dash-card, .feat, .class-card, .stat, .continue-box { position: relative; background: var(--glass); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border-color: color-mix(in srgb, var(--text-main) 9%, transparent); box-shadow: 0 1px 0 var(--glass-hi) inset, 0 10px 34px rgba(0,0,0,.07); }
+.dash-card::after, .feat::after, .class-card::after, .stat::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(260px circle at var(--cx, 50%) var(--cy, 50%), color-mix(in srgb, var(--brand-emerald) 22%, transparent), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); padding: 1.5px; }
+.dash-card:hover::after, .feat:hover::after, .class-card:hover::after, .stat:hover::after { opacity: 1; }
+.feat:hover, .stat:hover { box-shadow: 0 1px 0 var(--glass-hi) inset, 0 18px 44px color-mix(in srgb, var(--brand-emerald) 16%, transparent); }
+/* animated wordmark + tag */
+.home-hero .hero-wordmark span { background-size: 220% 100%; animation: wordSheen 7s linear infinite; }
+@keyframes wordSheen { to { background-position: 220% 0; } }
+.hero-tag b { position: relative; }
+.hero-greet { display: inline-flex; align-items: center; gap: 8px; margin: 0 auto 6px; padding: 6px 14px; border-radius: 999px; font: 700 12.5px 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--glass); border: 1px solid var(--border); color: var(--text-muted); backdrop-filter: blur(10px); animation: fadeUp .6s ease both; }
+.hero-greet i { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-emerald); box-shadow: 0 0 0 0 var(--brand-emerald); animation: pingDot 2s infinite; }
+@keyframes pingDot { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+.hero-greet-wrap { text-align: center; }
+/* ring upgrade */
+.ring { box-shadow: 0 0 0 1px var(--border), 0 0 28px color-mix(in srgb, var(--brand-emerald) 28%, transparent); background: conic-gradient(from 0deg, var(--brand-emerald), var(--brand-teal) calc(var(--v) * .6%), var(--brand-gold) calc(var(--v) * 1%), var(--border) 0); }
+.ring::before { background: color-mix(in srgb, var(--bg-card) 92%, var(--bg-paper)); }
+/* fact card v4 */
+.fact-card { padding-bottom: 24px; }
+.fact-card .fk { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fact-card .fk em { font-style: normal; letter-spacing: .06em; color: var(--text-muted); font-weight: 700; }
+.fact-card .ft { transition: opacity .35s var(--ease), transform .35s var(--ease), filter .35s var(--ease); }
+.fact-card .ft.swap { opacity: 0; transform: translateY(10px); filter: blur(6px); }
+.fact-card .fbtns { display: flex; gap: 8px; align-items: center; }
+.fact-card .fbtns button { margin-top: 10px; transition: transform .2s var(--ease), background .2s; }
+.fact-card .fbtns button:active { transform: scale(.94); }
+.fact-card .fbtns .fpause { margin-left: auto; background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.fact-timer { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: color-mix(in srgb, var(--text-main) 6%, transparent); }
+.fact-timer i { display: block; height: 100%; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--brand-emerald), var(--brand-gold)); }
+.fact-timer i.run { animation: factRun 15s linear forwards; }
+.fact-card.paused .fact-timer i { animation-play-state: paused; }
+@keyframes factRun { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* reveal on scroll */
+.rv { opacity: 0; transform: translateY(22px) scale(.985); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 70ms); }
+.rv.in { opacity: 1; transform: none; }
+/* ripple + buttons */
+button, .btn-primary { position: relative; overflow: hidden; }
+.rip { position: absolute; border-radius: 50%; pointer-events: none; background: currentColor; opacity: .22; transform: scale(0); animation: ripple .6s ease-out forwards; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+.topic-chips button { backdrop-filter: blur(8px); background: var(--glass); }
+.home-search input { backdrop-filter: blur(14px); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+.home-search input:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-emerald) 18%, transparent), 0 18px 50px color-mix(in srgb, var(--brand-emerald) 20%, transparent); transform: translateY(-2px); }
+/* page transitions */
+.workspace, .home { animation: viewIn .55s var(--ease) both; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+::selection { background: color-mix(in srgb, var(--brand-emerald) 30%, transparent); }
+html { scroll-behavior: smooth; }
+::-webkit-scrollbar { width: 10px; height: 10px; } ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--brand-emerald) 35%, transparent); border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
+@media (prefers-reduced-motion: reduce) { .bg-glow::before, .bg-glow::after, .home-hero .hero-wordmark span, .hero-greet i, .workspace, .home { animation: none !important; } .rv { opacity: 1; transform: none; transition: none; } .fact-timer i.run { animation-duration: 15s; } }
+@media (hover: none) { body::after { display: none; } }
+@media print { #scrollBar, body::after, .fact-timer { display: none !important; } }
 </style>
 </head>
 
@@ -1269,6 +1339,9 @@ body.focus-mode .topbar:hover, body.focus-mode .topbar:focus-within { opacity: 1
               <option value="1.5">1.5×</option>
               <option value="1.8">1.8×</option>
             </select>
+          </label>
+          <label class="speed-wrap">Voice
+            <select id="ttsVoicePick" aria-label="Choose reading voice" style="max-width:190px;text-overflow:ellipsis"></select>
           </label>
           <div class="tts-status">
             <span class="pulse-indicator" id="ttsPulse"></span>
@@ -5523,6 +5596,7 @@ class BioSpeechEngine {
     this.index = 0;
     this.state = "idle";      // idle | playing | paused
     this.gender = "female";
+    this.custom = { male: "", female: "" };   // voices the listener picked by hand
     this.rate = 0.8;   // default reading speed (male and female)
     this.session = 0;
     this.watchdog = null;
@@ -5581,11 +5655,17 @@ class BioSpeechEngine {
   androidGender(v) {
     const m = ((v.name || "") + " " + (v.voiceURI || "")).toLowerCase().match(/-x-([a-z]{3})/);
     if (!m) return null;
-    if (["iob", "tpc", "tpf", "sfg", "gba", "gbc", "fis"].includes(m[1])) return "female";
-    if (["iol", "iom", "tpd", "gbb", "gbd", "rjs"].includes(m[1])) return "male";
+    if (["iob", "tpc", "tpf", "sfg", "gba", "gbc", "fis", "aua", "auc", "ena"].includes(m[1])) return "female";
+    if (["iol", "iom", "tpd", "gbb", "gbd", "rjs", "aub", "aud", "end"].includes(m[1])) return "male";
     return null;
   }
+  voiceKey(v) { return v.voiceURI || v.name; }
   pickVoice() {
+    const chosen = this.custom && this.custom[this.gender];
+    if (chosen) {
+      const cv = this.voices.find((v) => this.voiceKey(v) === chosen);
+      if (cv) return { voice: cv, pitch: 1, simulated: false };
+    }
     if (this.isMobileDevice()) {
       /* Phones: aim for the same clear US-English female sound as desktop (e.g. Google US English) and never pitch-shift it */
       const rank = (v) => (/^en[-_]US/i.test(v.lang) ? 3 : /^en[-_]GB/i.test(v.lang) ? 1.5 : /^en[-_]IN/i.test(v.lang) ? 1 : 0) + (v.localService ? 0.3 : 0) + (/natural|neural|enhanced|premium/i.test(v.name) ? 0.5 : 0);
@@ -5595,7 +5675,11 @@ class BioSpeechEngine {
       if (exact.length) return { voice: exact[0], pitch: 1, simulated: false };
       const def = sorted.find((v) => /^en[-_]US/i.test(v.lang) && !g(v)) || sorted.find((v) => !g(v)) || sorted[0] || null;
       if (this.gender === "female") return { voice: def, pitch: 1, simulated: false };
-      return { voice: def, pitch: 0.7, simulated: true };
+      /* male: use a different voice from the female one when the phone has several, and only a gentle pitch drop */
+      const fem = sorted.find((v) => g(v) === "female") || def;
+      const other = sorted.find((v) => g(v) !== "female" && v !== fem && v !== def) || null;
+      if (other) return { voice: other, pitch: 0.85, simulated: true };
+      return { voice: def, pitch: 0.8, simulated: true };
     }
     const matches = this.voices.filter(v => this.genderOf(v) === this.gender).sort((a, b) => this.voiceScore(b) - this.voiceScore(a));
     if (matches.length) return { voice: matches[0], pitch: 1, simulated: false };
@@ -5604,6 +5688,9 @@ class BioSpeechEngine {
     return { voice: fallback, pitch: this.gender === "male" ? 0.7 : 1.2, simulated: true };
   }
   describeVoice() {
+    const cs = this.custom && this.custom[this.gender];
+    const pv = this.pickVoice();
+    if (cs && pv.voice && this.voiceKey(pv.voice) === cs) return `${this.gender === "male" ? "Male" : "Female"} voice (your choice): ${pv.voice.name}`;
     if (!this.supported) return "Read-aloud is not supported in this browser.";
     const v = this.pickVoice();
     const label = this.gender === "male" ? "Male" : "Female";
@@ -6016,6 +6103,7 @@ const app = {
   initReader() {
     const r = this.reader;
     r.gender = store.data.voice === "male" ? "male" : "female";
+    r.custom = Object.assign({ male: "", female: "" }, store.data.voiceCustom || {});
     r.rate = parseFloat(store.data.speed) || 0.8;
     document.getElementById("ttsSpeed").value = String(r.rate);
     r.onState = (st) => { this.updateTTSButtonState(st === "playing", st === "paused"); this.updateMini(); };
@@ -6034,7 +6122,29 @@ const app = {
   syncVoiceUI() {
     const r = this.reader;
     document.querySelectorAll("#voiceSeg button").forEach(b => b.classList.toggle("active", b.dataset.g === r.gender));
+    this.fillVoicePicker();
     document.getElementById("ttsVoiceNote").textContent = r.describeVoice();
+  },
+  fillVoicePicker() {
+    const r = this.reader, sel = document.getElementById("ttsVoicePick");
+    if (!sel) return;
+    if (!sel.dataset.bound) {
+      sel.dataset.bound = "1";
+      sel.addEventListener("change", () => {
+        r.custom[r.gender] = sel.value;
+        store.data.voiceCustom = Object.assign({}, r.custom);
+        store.save();
+        document.getElementById("ttsVoiceNote").textContent = r.describeVoice();
+        if (r.state === "playing") r.restartSoon();
+      });
+    }
+    const cur = r.custom[r.gender] || "";
+    const tag = (v) => { const g = r.genderOf(v) || r.androidGender(v); return g ? " (" + g + ")" : ""; };
+    sel.innerHTML = '<option value="">Auto (' + (r.gender === "male" ? "male" : "female") + ")</option>" +
+      r.voices.map((v) => '<option value="' + String(r.voiceKey(v)).replace(/"/g, "&quot;") + '">' + v.name + " - " + v.lang + tag(v) + "</option>").join("");
+    sel.value = cur;
+    if (sel.value !== cur) sel.value = "";
+    sel.disabled = !r.supported || r.voices.length < 2;
   },
   updateMini() {
     const mini = document.getElementById("miniPlayer");
@@ -6725,7 +6835,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 
     const dash = document.createElement("div"); dash.className = "home-dash"; dash.id = "homeDash";
     dash.innerHTML = '<div class="dash-card ring-card"><div class="ring" id="dashRing"><b id="dashPct">0%</b></div><div class="ring-txt"><h4>Your progress</h4><p id="dashTxt">Start a chapter to begin tracking.</p></div></div>' +
-      '<div class="dash-card fact-card"><div class="fk">Did you know?</div><div class="ft" id="factText"></div><button type="button" id="factNext">Another fact &rarr;</button></div>';
+      '<div class="dash-card fact-card"><div class="fk"><span>Did you know?</span><em id="factCount"></em></div><div class="ft" id="factText" aria-live="polite"></div><div class="fbtns"><button type="button" id="factPrev" aria-label="Previous fact">&larr;</button><button type="button" id="factNext">Another fact &rarr;</button><button type="button" class="fpause" id="factPause" aria-label="Pause rotation">Pause</button></div><div class="fact-timer"><i id="factBar"></i></div></div>';
     const feats = document.createElement("div"); feats.className = "feat-strip";
     feats.innerHTML = [["🎧", "Listen along", "Read-aloud with word highlighting"], ["⭐", "Save chapters", "Bookmark and revisit anytime"], ["📴", "Works offline", "Install it and study without internet"], ["🌗", "Day & night", "Comfortable reading in any light"]]
       .map((f) => '<div class="feat"><span>' + f[0] + "</span><b>" + f[1] + "</b><small>" + f[2] + "</small></div>").join("");
@@ -6739,13 +6849,222 @@ window.addEventListener("DOMContentLoaded", () => app.init());
       "The human kidneys filter around 180 litres of blood plasma every day.",
       "Neurons can pass signals at speeds of up to about 120 metres per second.",
       "Mitochondria carry their own small DNA, inherited almost entirely from the mother.",
-      "Enzymes can speed up reactions by factors of millions, without being used up."
+      "Enzymes can speed up reactions by factors of millions, without being used up.",
+      "Lactobacillus converts milk into curd by producing lactic acid.",
+      "Humans have 23 pairs of chromosomes, which makes 46 in total.",
+      "Lysosomes are called suicide bags because their enzymes can digest the cell itself.",
+      "Antibodies are Y-shaped proteins made by plasma cells derived from B lymphocytes.",
+      "Frederick Banting and Charles Best isolated insulin in 1921.",
+      "Human sperm cells are among the smallest cells, while the egg is the largest human cell.",
+      "Fish mostly excrete ammonia, which is very toxic but dissolves easily in water.",
+      "Neanderthals had a brain size comparable to or slightly larger than modern humans.",
+      "The appendix may act as a reservoir for beneficial gut bacteria.",
+      "Octopuses have three hearts and blue blood, thanks to copper-based haemocyanin.",
+      "The polymerase chain reaction, or PCR, can make billions of copies of a DNA segment in a few hours.",
+      "Platelets are cell fragments from megakaryocytes and help blood clot within minutes.",
+      "Each kidney contains about a million nephrons, the functional units of excretion.",
+      "Enzymes have an optimum temperature and pH, and extreme heat can denature them.",
+      "Glycolysis takes place in the cytoplasm and yields a net 2 ATP per glucose molecule.",
+      "The pancreas is both an exocrine and an endocrine gland.",
+      "Photosynthesis traps solar energy at roughly 1 to 2 percent efficiency in most plants.",
+      "Antidiuretic hormone (ADH) helps the kidneys conserve water.",
+      "Honeybees and ants are examples of organisms where unfertilised eggs develop into males by parthenogenesis.",
+      "Oxygen is the final electron acceptor in the mitochondrial electron transport chain.",
+      "Your gut hosts trillions of microbes, collectively called the gut microbiome.",
+      "The diaphragm, a dome-shaped muscle, is the main muscle of breathing.",
+      "Human insulin was the first genetically engineered drug, produced in E. coli in 1982.",
+      "Saliva contains salivary amylase, which begins starch digestion in the mouth.",
+      "Peroxisomes break down hydrogen peroxide using the enzyme catalase.",
+      "Edward Jenner developed the first vaccine, for smallpox, in 1796.",
+      "Plasmids are small circular DNA molecules in bacteria that are widely used as cloning vectors.",
+      "The Rh factor is named after the rhesus monkey, in which it was first studied.",
+      "The cerebellum coordinates balance and fine movement.",
+      "Lichens are a symbiosis between a fungus and an alga or cyanobacterium and are indicators of air pollution.",
+      "Coconut water is liquid endosperm, and the white kernel is cellular endosperm.",
+      "The sodium-potassium pump moves three sodium ions out for every two potassium ions in.",
+      "Arteries carry blood away from the heart, and most carry oxygenated blood, except the pulmonary artery.",
+      "The tobacco mosaic virus was the first virus ever crystallised, by Wendell Stanley in 1935.",
+      "Transfer RNA molecules fold into a clover-leaf shape.",
+      "The sliding filament theory of muscle contraction was proposed in 1954 by Huxley and Hanson, and by Huxley and Niedergerke.",
+      "Eukaryotic mRNA gets a 5 prime cap and a poly-A tail before leaving the nucleus.",
+      "Dinosaurs dominated the land for about 160 million years before most went extinct about 66 million years ago.",
+      "Humans convert toxic ammonia to less harmful urea in the liver through the ornithine cycle.",
+      "The stomach secretes hydrochloric acid with a pH of about 1.5 to 3.5.",
+      "Amniocentesis can detect chromosomal disorders in the fetus, but misuse for sex determination is banned in India.",
+      "Klinefelter syndrome is caused by a male having an extra X chromosome (44 plus XXY).",
+      "Catalytic converters reduce harmful gases in vehicle exhaust.",
+      "Cyanide poisons cells by blocking cytochrome c oxidase in the respiratory chain.",
+      "HIV attacks helper T cells, weakening the immune system and leading to AIDS.",
+      "The Nile perch introduced into Lake Victoria drove many native cichlid species to extinction.",
+      "Mushrooms are only the fruiting bodies of fungi, and the main body is a network of hyphae called mycelium.",
+      "The current rate of species extinction is estimated to be far higher than the natural background rate.",
+      "Golden rice is engineered to produce beta-carotene, a precursor of vitamin A.",
+      "The blue whale is the largest animal ever known, and its heart is roughly the size of a small car.",
+      "The human genome has about 3.1 billion base pairs and roughly 20,000 protein-coding genes.",
+      "Test-tube baby technology, IVF, resulted in the world's first IVF baby, Louise Brown, in 1978.",
+      "The placenta secretes hormones such as human chorionic gonadotropin (hCG) that maintain pregnancy.",
+      "Flowers use scent, colour and nectar to attract pollinators.",
+      "Darwin's On the Origin of Species was published in 1859.",
+      "The largest single cell is the ostrich egg, and the longest cells in the body are neurons.",
+      "The spleen filters old red blood cells and stores blood.",
+      "White blood cells called neutrophils are the most abundant type of leucocyte in human blood.",
+      "Mycorrhizae are partnerships between fungi and plant roots that help plants absorb phosphorus.",
+      "The Montreal Protocol, signed in 1987, was adopted to phase out ozone-depleting substances.",
+      "The world's smallest flowering plant, Wolffia, is about the size of a grain of rice.",
+      "Rubisco is believed to be the most abundant enzyme on Earth.",
+      "Vitamin B12 contains cobalt and is made only by microorganisms.",
+      "Mutations in DNA can arise by errors in replication or by UV light and chemicals.",
+      "Fossils of Homo erectus show it was the first hominin to leave Africa.",
+      "Colostrum, the first milk, is rich in antibodies and protects newborns.",
+      "Reptiles like snakes sense chemicals using Jacobson's organ on the roof of the mouth.",
+      "Viruses are not made of cells and can only multiply inside a host cell.",
+      "One haemoglobin molecule can carry up to four molecules of oxygen.",
+      "Cockroaches have an open circulatory system, and their blood is colourless.",
+      "Water moves up tall trees mainly by transpiration pull and cohesion of water molecules.",
+      "Phenylketonuria is an inborn error of metabolism that results from a defective enzyme for phenylalanine.",
+      "Growth hormone excess in childhood causes gigantism, and in adults causes acromegaly.",
+      "Horseshoe crabs have changed little in over 400 million years and their blood is used to test vaccines for contamination.",
+      "The dodo disappeared from Mauritius in the late 1600s, after humans arrived.",
+      "Glucagon from alpha cells of the pancreas raises blood glucose.",
+      "Melvin Calvin traced the path of carbon in photosynthesis using radioactive carbon-14.",
+      "Collagen is the most abundant protein in the animal kingdom.",
+      "The human brain contains roughly 86 billion neurons.",
+      "Amoeba moves by pseudopodia, which means false feet.",
+      "Wind-pollinated flowers typically have feathery stigmas and produce large amounts of light pollen.",
+      "A cell membrane is only about 7 to 10 nanometres thick.",
+      "Short-day plants flower when nights are longer than a critical length.",
+      "Insectivorous plants like Nepenthes and Drosera get nitrogen by trapping insects.",
+      "Antibiotics do not work against viruses because viruses lack the cell structures they target.",
+      "Crossing over during prophase I of meiosis creates new combinations of alleles.",
+      "Rosalind Franklin's X-ray image, Photo 51, was key evidence for the helical structure of DNA.",
+      "Sunlight helps your skin make vitamin D from a cholesterol derivative.",
+      "Charles Darwin visited the Galapagos Islands in 1835 on HMS Beagle.",
+      "The genetic code is nearly universal, with 64 codons that code for 20 amino acids and stop signals.",
+      "Cyclosporin A, an immunosuppressant used in organ transplants, is obtained from a fungus.",
+      "C4 plants such as maize and sugarcane are more efficient in hot, dry climates because they minimise photorespiration.",
+      "Platypus and echidna are mammals that lay eggs.",
+      "The nucleolus is the site of ribosomal RNA synthesis.",
+      "Eutrophication occurs when excess nutrients cause algal blooms that deplete oxygen in a lake.",
+      "Red blood cells of mammals lack a nucleus, leaving more room for haemoglobin.",
+      "Camels store fat, not water, in their humps.",
+      "The corpus callosum connects the left and right cerebral hemispheres with about 200 million nerve fibres.",
+      "A single plant cell can regenerate into a whole plant, a property called totipotency.",
+      "Succession on bare rock begins with lichens, which are called pioneer species.",
+      "Aedes mosquitoes spread dengue and chikungunya.",
+      "Human blood is about 55 percent plasma and 45 percent cellular components.",
+      "The cornea has no blood vessels and gets its oxygen directly from the air.",
+      "Green revolution wheat varieties were developed by Norman Borlaug, who won a Nobel Peace Prize in 1970.",
+      "Alfred Russel Wallace independently came up with the idea of natural selection.",
+      "Watson and Crick proposed the double helix structure of DNA in 1953.",
+      "Honey never spoils easily because its low water content and acidity stop microbes from growing.",
+      "The species-area relationship was described by Alexander von Humboldt in South American forests.",
+      "Stanley Miller's 1953 experiment produced amino acids from simple gases and electric sparks.",
+      "Amazon rainforest is often called the lungs of the Earth, but its net contribution to world oxygen is actually small.",
+      "The resting membrane potential of a typical neuron is about minus 70 millivolts.",
+      "Analogous organs such as the wings of birds and insects have similar functions but different origins.",
+      "Mendel's work was rediscovered in 1900 by de Vries, Correns and Tschermak.",
+      "Fermentation in yeast produces ethanol and carbon dioxide, which makes dough rise.",
+      "Sickle cell anaemia is caused by a single base substitution that changes one amino acid in haemoglobin.",
+      "Adults have 206 bones, but babies are born with about 270 that gradually fuse.",
+      "CRISPR-Cas9, adapted from a bacterial immune system, lets scientists edit genes precisely.",
+      "AUG codes for methionine and also acts as the start codon.",
+      "Melatonin from the pineal gland helps regulate the sleep-wake cycle.",
+      "Bacteriophages are viruses that infect bacteria.",
+      "Dogs were domesticated from wolves at least 15,000 years ago, making them among our oldest companions.",
+      "Project Tiger was launched in India in 1973 to protect the Bengal tiger.",
+      "Schleiden and Schwann proposed the cell theory, and Rudolf Virchow added that all cells arise from pre-existing cells.",
+      "The heart is made of cardiac muscle, which is involuntary and never tires like skeletal muscle.",
+      "The Western Ghats and the Himalaya are two of India's biodiversity hotspots.",
+      "Pepsin is activated from pepsinogen by the acidic conditions of the stomach.",
+      "Carbon dioxide, methane and nitrous oxide are major greenhouse gases.",
+      "In humans, the sex of a child is determined by the sperm, which carries either an X or a Y chromosome.",
+      "The fruit fly Drosophila has only four pairs of chromosomes, which made it ideal for genetic studies.",
+      "The complete oxidation of one glucose molecule can yield about 30 to 32 ATP in the cell.",
+      "Only about 10 percent of the energy at one trophic level passes to the next, as per the 10 percent law.",
+      "Proteins are polymers of amino acids joined by peptide bonds.",
+      "Birds are living descendants of theropod dinosaurs.",
+      "Haemophilia and colour blindness are X-linked recessive disorders that are more common in males.",
+      "Cytokinins promote cell division and delay leaf senescence.",
+      "Synapses pass signals using neurotransmitters such as acetylcholine and dopamine.",
+      "Double fertilisation, in which one sperm fuses with the egg and the other with the polar nuclei, is unique to flowering plants.",
+      "Taq polymerase, used in PCR, comes from the heat-loving bacterium Thermus aquaticus.",
+      "Streptomyces bacteria give us antibiotics such as streptomycin.",
+      "Tardigrades can survive extreme dehydration, radiation and even the vacuum of space.",
+      "Thalassaemia is caused by a defect in the synthesis of globin chains of haemoglobin.",
+      "The lac operon of E. coli, described by Jacob and Monod, explains how genes can be switched on and off.",
+      "Gregor Mendel studied pea plants for about eight years before publishing his laws of inheritance.",
+      "Capillaries can be so thin that red blood cells pass through them in single file.",
+      "Scurvy results from a lack of vitamin C, and rickets from a lack of vitamin D.",
+      "Blood group O negative is called the universal donor because its red cells lack A, B and Rh antigens.",
+      "Mammals can make urine more concentrated than blood because of the loop of Henle.",
+      "The peppered moth in industrial England is a classic example of natural selection.",
+      "The tongue of a chameleon can shoot out at over 20 body lengths per second.",
+      "The cell cycle of a human cell takes about 24 hours, with mitosis lasting only about an hour.",
+      "The femur is the longest and strongest bone in the human body.",
+      "Chlorophyll a absorbs mainly blue-violet and red light and reflects green light.",
+      "Mangrove forests, like the Sundarbans, protect coasts from storms and tsunamis.",
+      "The medulla oblongata controls breathing, heartbeat and other vital reflexes.",
+      "Hydra shows both budding and amazing powers of regeneration.",
+      "Your small intestine is about 6 metres long and has a surface area boosted enormously by villi and microvilli.",
+      "Single cell protein from microbes like Spirulina is a protein-rich food source.",
+      "Competitive inhibitors resemble the substrate and block the active site of an enzyme.",
+      "Auxins, the first plant hormones discovered, promote cell elongation and apical dominance.",
+      "Prokaryotic ribosomes are 70S, while eukaryotic ribosomes are 80S.",
+      "Erwin Chargaff showed that in DNA the amount of adenine equals thymine and guanine equals cytosine.",
+      "The dragonfly has nearly 30,000 individual lenses in each compound eye.",
+      "Frederick Sanger was the first to sequence a protein, insulin, and later won a second Nobel Prize for DNA sequencing.",
+      "Rod cells work in dim light, while cone cells give us colour vision in bright light.",
+      "Plant cell walls are made mainly of cellulose, which is the most abundant organic compound on Earth.",
+      "Paramecium has contractile vacuoles that pump out excess water.",
+      "The earliest cells on Earth are thought to have appeared about 3.5 to 3.8 billion years ago.",
+      "Louis Pasteur showed that microbes cause fermentation and disproved spontaneous generation.",
+      "Bamboo can grow almost a metre in a single day in some species.",
+      "Smallpox was declared eradicated by the World Health Organization in 1980.",
+      "Some orchids mimic the shape of female insects to attract males for pollination.",
+      "The giant redwood Sequoia sempervirens can grow taller than 110 metres.",
+      "The Golgi apparatus was discovered by Camillo Golgi in 1898.",
+      "M. S. Swaminathan is known as the father of the Green Revolution in India.",
+      "An adult human lung has around 300 to 500 million alveoli, giving a huge surface for gas exchange.",
+      "Ethylene is a gaseous plant hormone that ripens fruit.",
+      "The sinoatrial node, the natural pacemaker, starts each heartbeat.",
+      "Mycoplasma are the smallest known cells, at about 0.3 micrometres.",
+      "Vitamin A is needed to make rhodopsin, the light-sensitive pigment in rod cells.",
+      "Homologous organs share a common origin, such as the forelimbs of whales, bats and humans.",
+      "Species richness generally increases as you move from the poles to the equator.",
+      "Human skin is the largest organ of the body and sheds roughly 30,000 to 40,000 dead cells every minute.",
+      "Gibberellins cause stem elongation and were first found in the fungus Gibberella.",
+      "The human heart beats roughly 100,000 times a day, pumping about 7,000 litres of blood.",
+      "Ovulation in humans usually occurs around the 14th day of the menstrual cycle.",
+      "Hans Krebs described the citric acid cycle in 1937, which is also called the Krebs cycle.",
+      "Kangaroo joeys are born very tiny and complete development in the mother's pouch.",
+      "The retina contains about 120 million rod cells and 6 million cone cells.",
+      "Mitosis keeps the chromosome number the same, while meiosis halves it.",
+      "The Human Genome Project was declared complete in 2003 after 13 years of work.",
+      "Penicillin, discovered by Alexander Fleming in 1928, comes from the fungus Penicillium.",
+      "Your brain uses about 20 percent of your body's energy while making up only about 2 percent of its weight.",
+      "Electrostatic precipitators remove over 99 percent of particulate matter from thermal power plant exhaust.",
+      "Restriction enzymes cut DNA at specific palindromic sequences.",
+      "Anton van Leeuwenhoek was the first to see living bacteria and protozoa in the 1670s.",
+      "Bt cotton carries a gene from Bacillus thuringiensis that makes it toxic to certain insect pests.",
+      "Cyanobacteria were among the first organisms to produce oxygen, some 2.4 billion years ago.",
+      "Abscisic acid is called the stress hormone because it closes stomata during drought.",
+      "Banana is a parthenocarpic fruit that develops without fertilisation, so it has no true seeds.",
+      "Alexander Fleming noticed that a mould contaminant killed bacteria on his culture plate by accident."
     ];
+    for (let i = facts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [facts[i], facts[j]] = [facts[j], facts[i]]; }
     let fi = Math.floor(Math.random() * facts.length);
-    const ft = $("factText"), show = () => { ft.classList.add("swap"); setTimeout(() => { ft.textContent = facts[fi]; ft.classList.remove("swap"); }, 250); };
-    ft.textContent = facts[fi];
-    $("factNext").addEventListener("click", () => { fi = (fi + 1) % facts.length; show(); });
-    setInterval(() => { if (document.body.classList.contains("is-home") && !document.hidden) { fi = (fi + 1) % facts.length; show(); } }, 15000);
+    const ft = $("factText"), card = ft.closest(".fact-card"), bar = $("factBar"), cnt = $("factCount"); let paused = false, timer = null;
+    const render = () => { cnt.textContent = (fi + 1) + " / " + facts.length; };
+    const show = () => { ft.classList.add("swap"); setTimeout(() => { ft.textContent = facts[fi]; ft.classList.remove("swap"); render(); }, 250); };
+    const restart = () => { bar.classList.remove("run"); void bar.offsetWidth; bar.classList.add("run"); clearTimeout(timer); timer = setTimeout(tickFn, 15000); };
+    const go = (d) => { fi = (fi + d + facts.length) % facts.length; show(); restart(); };
+    const tickFn = () => { if (!paused && document.body.classList.contains("is-home") && !document.hidden) go(1); else restart(); };
+    ft.textContent = facts[fi]; render(); restart();
+    $("factNext").addEventListener("click", () => go(1));
+    $("factPrev").addEventListener("click", () => go(-1));
+    const pb = $("factPause"); pb.addEventListener("click", () => { paused = !paused; card.classList.toggle("paused", paused); pb.textContent = paused ? "Resume" : "Pause"; if (!paused) restart(); });
+    card.addEventListener("mouseenter", () => { if (!paused) { card.classList.add("paused"); clearTimeout(timer); } });
+    card.addEventListener("mouseleave", () => { if (!paused) { card.classList.remove("paused"); restart(); } });
 
     /* rotating search hint */
     const hs = $("homeSearch"); let ti = 0;
@@ -6771,6 +7090,47 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   }
   window.addEventListener("load", () => setTimeout(build, 120));
   window.addEventListener("hashchange", () => setTimeout(updateRing, 200));
+})();
+/* ULTRA UI v4: spotlight, scroll bar, reveal, ripple, greeting, count-up */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const bar = document.createElement("div"); bar.id = "scrollBar"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+  let tick = false;
+  const upd = () => { tick = false; const h = document.documentElement; const sc = h.scrollHeight - h.clientHeight; bar.style.transform = "scaleX(" + (sc > 0 ? Math.min(1, h.scrollTop / sc) : 0) + ")"; };
+  addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+  let pt = false;
+  addEventListener("pointermove", (e) => {
+    if (pt) return; pt = true;
+    requestAnimationFrame(() => {
+      pt = false;
+      document.body.style.setProperty("--mx", e.clientX + "px"); document.body.style.setProperty("--my", e.clientY + "px");
+      const c = e.target.closest && e.target.closest(".dash-card,.feat,.class-card,.stat");
+      if (c) { const r = c.getBoundingClientRect(); c.style.setProperty("--cx", e.clientX - r.left + "px"); c.style.setProperty("--cy", e.clientY - r.top + "px"); }
+    });
+  }, { passive: true });
+  document.addEventListener("pointerdown", (e) => {
+    const b = e.target.closest && e.target.closest("button,.btn-primary"); if (!b || reduce) return;
+    const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height) * 2, d = document.createElement("span");
+    d.className = "rip"; d.style.cssText = "width:" + s + "px;height:" + s + "px;left:" + (e.clientX - r.left - s / 2) + "px;top:" + (e.clientY - r.top - s / 2) + "px";
+    b.appendChild(d); setTimeout(() => d.remove(), 650);
+  });
+  function countUp(el) {
+    const to = parseInt(el.textContent, 10); if (reduce || isNaN(to) || to < 1 || el.dataset.cu) return; el.dataset.cu = 1;
+    const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / 900); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); else el.textContent = to; })(t0);
+  }
+  function setup() {
+    const hero = document.querySelector(".home-hero"); if (!hero || $("heroGreet")) return;
+    const h = new Date().getHours(), g = h < 5 ? "Burning the midnight oil" : h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : h < 21 ? "Good evening" : "Late-night study";
+    const w = document.createElement("div"); w.className = "hero-greet-wrap";
+    w.innerHTML = '<span class="hero-greet" id="heroGreet"><i></i>' + g + ", future doctor</span>"; hero.insertBefore(w, hero.querySelector(".hero-wordmark"));
+    const targets = document.querySelectorAll(".hero-tag,.hero-sub,.home-search,.topic-chips,.continue-box,.stats .stat,.home-dash .dash-card,.feat,.class-card");
+    let n = 0;
+    if (!("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); e.target.querySelectorAll && e.target.matches(".stat") && countUp(e.target.querySelector("b")); } }), { threshold: .12 });
+    targets.forEach((el) => { if (el.matches(".hero-tag,.hero-sub,.home-search")) return; el.classList.add("rv"); el.style.setProperty("--i", n++ % 6); io.observe(el); });
+  }
+  addEventListener("load", () => setTimeout(setup, 220));
 })();
 </script>
 </body>
