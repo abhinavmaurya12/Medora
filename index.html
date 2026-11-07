@@ -1847,6 +1847,282 @@ html { scrollbar-width: thin; }
 @media (prefers-reduced-motion: reduce) { .class-card::before, .ripple, .view-in { animation: none !important; } .class-card { transform: none !important; } }
 @media print { .ripple { display: none; } .chapter-heading { -webkit-text-fill-color: currentColor; background: none; } }
 </style>
+<style id="mobileMenuCss">
+/* ===== MOBILE MENU ===== */
+.btn-hamburger, .mm-overlay, .mm-panel { display: none; }
+@media (max-width: 960px) {
+  .btn-hamburger { display: inline-flex; align-items: center; justify-content: center; }
+  .topbar #themeToggle, .topbar #pdfBtn, .topbar .btn-dl-mobile { display: none !important; }
+  .mm-overlay { display: block; position: fixed; inset: 0; z-index: 340; background: rgba(0,0,0,.55); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .mm-overlay.show { opacity: 1; pointer-events: auto; }
+  .mm-panel {
+    display: flex; flex-direction: column; position: fixed; top: 0; right: 0; bottom: 0; z-index: 350;
+    width: min(86vw, 330px); background: var(--bg-surface); border-left: 1px solid var(--border);
+    border-radius: 18px 0 0 18px; box-shadow: var(--shadow); transform: translateX(105%); visibility: hidden;
+    transition: transform .28s ease, visibility 0s .28s;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 14px calc(16px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+  }
+  .mm-panel.open { transform: translateX(0); visibility: visible; transition: transform .28s ease, visibility 0s; }
+  body.mm-lock { overflow: hidden; }
+}
+.mm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.mm-title { font-weight: 800; font-size: 16px; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+.mm-close { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 16px; cursor: pointer; }
+.mm-label { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin: 14px 4px 6px; }
+.mm-item { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; font-weight: 700; font-size: 14.5px; color: var(--text-main); background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mm-item:active, .mm-item:hover { background: var(--brand-emerald-dim); border-color: var(--border-focus); }
+.mm-item .mm-ico { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border-radius: 9px; background: var(--bg-card); font-size: 16px; }
+.mm-item small { margin-left: auto; font-weight: 600; font-size: 12px; color: var(--text-muted); }
+.mm-item[hidden] { display: none; }
+.mm-size { display: flex; align-items: center; gap: 12px; padding: 8px 12px; }
+.mm-size span.mm-ico { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: var(--bg-card); font-size: 16px; }
+.mm-size b { flex: 1; font-size: 14.5px; }
+.mm-size button { width: 44px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-weight: 800; font-size: 14px; font-family: inherit; cursor: pointer; }
+@media print { .mm-overlay, .mm-panel, .btn-hamburger { display: none !important; } }
+</style>
+<style id="hlCss">
+/* ===== HIGHLIGHTS & NOTES ===== */
+:root { --hl0: rgba(250,204,21,.45); --hl1: rgba(74,222,128,.40); --hl2: rgba(96,165,250,.42); --hl3: rgba(244,114,182,.42); --hs0: #facc15; --hs1: #4ade80; --hs2: #60a5fa; --hs3: #f472b6; }
+.hl { background: var(--hlc, var(--hl0)); color: inherit; border-radius: 3px; padding: 1px 0; cursor: pointer; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: box-shadow .2s, background .2s; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.hl[data-c="0"] { --hlc: var(--hl0); --hsc: var(--hs0); } .hl[data-c="1"] { --hlc: var(--hl1); --hsc: var(--hs1); } .hl[data-c="2"] { --hlc: var(--hl2); --hsc: var(--hs2); } .hl[data-c="3"] { --hlc: var(--hl3); --hsc: var(--hs3); }
+.hl:hover { box-shadow: 0 0 0 2px var(--border-focus); }
+.hl.has-note.hl-last::after { content: "✎"; font-size: .62em; vertical-align: super; margin-left: 2px; opacity: .75; font-style: normal; }
+.hl.flash { animation: hlFlash 1.6s ease 1; }
+@keyframes hlFlash { 0%,60% { box-shadow: 0 0 0 4px var(--brand-emerald); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.btn-notes { position: relative; }
+.nb-count { position: static; flex: none; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; margin-left: 2px; background: var(--brand-gold); color: #fff; font: 800 10.5px/18px 'Plus Jakarta Sans', system-ui, sans-serif; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.nb-count[hidden] { display: none; }
+
+.hlbar { position: fixed; z-index: 380; width: max-content; max-width: min(94vw, 340px); background: #16222a; color: #e6f1ef; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; box-shadow: 0 14px 40px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25); padding: 6px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; animation: hlPop .16s ease; --ax: 50%; }
+.hlbar[hidden] { display: none; }
+.hlbar.has-note-open { width: min(94vw, 330px); }
+@keyframes hlPop { from { opacity: 0; transform: translateY(5px) scale(.96); } to { opacity: 1; transform: none; } }
+.hl-arrow { position: absolute; left: var(--ax); width: 12px; height: 12px; background: #16222a; transform: translateX(-50%) rotate(45deg); border: 1px solid rgba(255,255,255,.14); }
+.hlbar[data-pos="above"] .hl-arrow { bottom: -7px; border-top: none; border-left: none; }
+.hlbar[data-pos="below"] .hl-arrow { top: -7px; border-bottom: none; border-right: none; }
+.hlbar[data-pos="float"] .hl-arrow { display: none; }
+.hl-tools { display: flex; align-items: center; gap: 2px; }
+.hl-colors { display: flex; align-items: center; gap: 6px; padding: 0 6px 0 4px; }
+.hl-dot { position: relative; width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,.85); background: var(--c); cursor: pointer; padding: 0; flex: none; -webkit-tap-highlight-color: transparent; transition: transform .12s, box-shadow .12s; }
+.hl-dot:hover { transform: scale(1.14); }
+.hl-dot:active { transform: scale(.94); }
+.hl-dot.sel { box-shadow: 0 0 0 2px #16222a, 0 0 0 4px #fff; }
+.hl-dot.sel::after { content: ""; position: absolute; inset: 0; margin: auto; width: 8px; height: 5px; border-left: 2.5px solid #16222a; border-bottom: 2.5px solid #16222a; transform: translateY(-1px) rotate(-45deg); }
+.hl-sep { width: 1px; height: 22px; background: rgba(255,255,255,.16); margin: 0 4px; flex: none; }
+.hl-act { width: 34px; height: 34px; border: none; border-radius: 9px; background: transparent; color: #e6f1ef; display: grid; place-items: center; cursor: pointer; flex: none; font: 800 15px 'Plus Jakarta Sans', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; transition: background .15s, color .15s; }
+.hl-act svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hl-act:hover { background: rgba(255,255,255,.12); }
+.hl-act:active { background: rgba(255,255,255,.2); }
+.hl-act.on { background: rgba(16,185,129,.28); color: #6ee7b7; }
+.hl-act.hl-u span { text-decoration: underline; text-decoration-thickness: 2.5px; text-underline-offset: 3px; }
+.hl-act.hl-del { color: #fca5a5; }
+.hl-act[hidden] { display: none; }
+.hl-notebox { padding: 6px 4px 4px; }
+.hl-notebox[hidden] { display: none; }
+.hl-note { display: block; width: 100%; min-height: 62px; resize: none; font: 500 14px/1.45 'Plus Jakarta Sans', system-ui, sans-serif; color: #f1f5f4; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; padding: 9px 10px; outline: none; max-height: 140px; }
+.hl-note::placeholder { color: rgba(230,241,239,.55); }
+.hl-note:focus { border-color: #34d399; background: rgba(255,255,255,.1); }
+.hl-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 7px; font-size: 11px; color: rgba(230,241,239,.6); }
+.hl-save { font: 800 12.5px 'Plus Jakarta Sans', system-ui, sans-serif; padding: 7px 16px; border-radius: 9px; border: none; background: #10b981; color: #fff; cursor: pointer; }
+.hl-save:active { transform: scale(.96); }
+@media (hover: none) { .hl-dot { width: 30px; height: 30px; } .hl-act { width: 38px; height: 38px; } .hl-colors { gap: 7px; } }
+@media (max-width: 380px) { .hl-colors { gap: 5px; padding: 0 3px; } .hl-dot { width: 28px; height: 28px; } .hl-act { width: 34px; } .hl-sep { margin: 0 2px; } }
+::highlight(medora-pending) { background-color: rgba(16,185,129,.35); color: inherit; }
+.hl[data-k="u"] { background: none; text-decoration: underline; text-decoration-color: var(--hsc, var(--hs0)); text-decoration-thickness: 3px; text-underline-offset: 3px; text-decoration-skip-ink: none; border-radius: 0; }
+.hl-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 390; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 14px; background: #16222a; color: #e6f1ef; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; padding: 10px 14px; font: 600 13px 'Plus Jakarta Sans', system-ui, sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: opacity .2s, transform .2s; max-width: 92vw; }
+.hl-toast.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+.hl-toast button { background: none; border: none; color: #6ee7b7; font: 800 13px 'Plus Jakarta Sans', system-ui, sans-serif; cursor: pointer; padding: 2px 4px; }
+.hl-toast button[hidden] { display: none; }
+@media (max-width: 960px) { body:not(.is-home) .hl-toast { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); } }
+
+.hlp-overlay { position: fixed; inset: 0; z-index: 355; background: rgba(0,0,0,.55); opacity: 0; pointer-events: none; transition: opacity .25s; }
+.hlp-overlay.show { opacity: 1; pointer-events: auto; }
+.hlp { position: fixed; top: 0; right: 0; bottom: 0; z-index: 360; width: min(94vw, 420px); display: flex; flex-direction: column; background: var(--bg-surface); border-left: 1px solid var(--border); border-radius: 18px 0 0 18px; box-shadow: var(--shadow); transform: translateX(105%); visibility: hidden; transition: transform .28s ease, visibility 0s .28s; padding-top: env(safe-area-inset-top, 0px); }
+.hlp.open { transform: none; visibility: visible; transition: transform .28s ease, visibility 0s; }
+body.hlp-lock { overflow: hidden; }
+.hlp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 16px 16px 8px; }
+.hlp-head h2 { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
+.hlp-head p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.hlp-x { width: 36px; height: 36px; flex: none; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 16px; cursor: pointer; }
+.hlp-tools { display: flex; align-items: center; gap: 8px; padding: 6px 16px 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.hlp-copy { font: 800 13px 'Plus Jakarta Sans', system-ui, sans-serif; padding: 9px 14px; border-radius: 10px; border: none; background: var(--brand-emerald); color: #fff; cursor: pointer; }
+.hlp-copy:disabled { opacity: .45; cursor: default; }
+.hlp-filter { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.hlp-fdot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; background: var(--c); cursor: pointer; padding: 0; opacity: .55; }
+.hlp-fdot.on { opacity: 1; box-shadow: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--text-main); }
+.hlp-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.hlp-empty { text-align: center; color: var(--text-muted); font-size: 14px; line-height: 1.6; padding: 48px 12px; }
+.hlp-ch { margin: 16px 0 8px; font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--brand-emerald); }
+.hlp-ch small { color: var(--text-muted); font-weight: 700; text-transform: none; letter-spacing: 0; margin-left: 6px; }
+.hlp-item { border: 1px solid var(--border); border-left: 5px solid var(--c); border-radius: 12px; background: var(--bg-card); padding: 10px 12px; margin-bottom: 10px; }
+.hlp-quote { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-align: left; width: 100%; font: 600 13.5px/1.5 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--text-main); background: none; border: none; padding: 0; cursor: pointer; }
+.hlp-nt { margin-top: 7px; font-size: 13px; line-height: 1.5; color: var(--text-main); background: var(--brand-emerald-dim); border-radius: 8px; padding: 7px 9px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.hlp-meta { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 11.5px; color: var(--text-muted); }
+.hlp-meta button { font: 700 12px 'Plus Jakarta Sans', system-ui, sans-serif; background: none; border: none; color: var(--brand-emerald); cursor: pointer; padding: 2px 0; }
+.hlp-meta .hlp-rm { margin-left: auto; color: #ef4444; }
+@media (max-width: 600px) { .btn-notes .nb-count { position: absolute; top: 2px; right: 2px; margin: 0; min-width: 16px; height: 16px; line-height: 16px; padding: 0 4px; font-size: 9.5px; } }
+@media print { .hlbar, .hlp, .hlp-overlay, .btn-notes { display: none !important; } .hl { background: var(--hlc) !important; } }
+@media (prefers-reduced-motion: reduce) { .hlbar, .hl.flash { animation: none; } }
+
+/* ===== QUIZ QUESTION CARD v2: fixed to screen, zero scrollbars, desktop + mobile ===== */
+html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; height: 100dvh; }
+.quiz.qa-mode { --qa-top: 67px; --fs: 1; box-sizing: border-box; width: 100%; max-width: 1040px; height: calc(100dvh - var(--qa-top)); padding: 16px 24px 18px; margin: 0 auto; display: flex; flex-direction: column; justify-content: stretch; overflow: hidden; }
+.quiz.qa-mode .qa { flex: 1 1 auto; min-height: 0; height: auto; max-height: none; max-width: none; margin: 0; display: grid; grid-template-rows: auto auto auto minmax(0,1fr) auto; row-gap: 12px; padding: 18px 22px 16px; border-radius: 24px; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--brand-emerald) 5%, var(--bg-surface)), var(--bg-surface) 45%); }
+.quiz.qa-mode .qa-top, .quiz.qa-mode .qa-meta, .quiz.qa-mode .qa-prog { margin: 0; }
+.quiz.qa-mode .qa-ttl b { font-size: 14px; -webkit-line-clamp: 1; }
+.quiz.qa-mode .qa-ttl span { display: inline-flex; width: fit-content; padding: 2px 9px; border-radius: 999px; background: var(--brand-emerald-dim); color: var(--brand-emerald); font-size: 11.5px; }
+.quiz.qa-mode .qa-meta { display: flex; gap: 12px; align-items: center; }
+.quiz.qa-mode .qa-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; flex: 1; }
+.quiz.qa-mode .qa-stat { max-width: none; flex-direction: row; justify-content: center; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 14px; }
+.quiz.qa-mode .qa-stat small { display: inline; font-size: 11px; }
+.quiz.qa-mode .qa-stat b { font-size: 16px; }
+.quiz.qa-mode .qa-ring { width: 54px; height: 54px; }
+.quiz.qa-mode .qa-ring em { font-size: 18px; }
+.quiz.qa-mode .qa-prog { height: 6px; }
+.quiz.qa-mode .qa-body { min-height: 0; display: grid; grid-template-rows: auto minmax(0,1fr) auto; row-gap: 12px; overflow: hidden !important; }
+.quiz.qa-mode .qa-q { margin: 0; min-height: 0; max-height: 42dvh; overflow: hidden; padding: 14px 18px; gap: 14px; align-items: center; flex-direction: row; border-radius: 18px; background: linear-gradient(135deg, color-mix(in srgb, var(--brand-emerald) 10%, var(--bg-card)), var(--bg-card)); border-color: color-mix(in srgb, var(--brand-emerald) 22%, var(--border)); }
+.quiz.qa-mode .qa-qn { align-self: flex-start; margin-top: 2px; }
+.quiz.qa-mode .qa-qt { font-size: calc(clamp(16px, 2.9dvh, 23px) * var(--fs)); line-height: 1.38; font-weight: 700; }
+.quiz.qa-mode .qa-opts { display: grid; grid-template-columns: 1fr; grid-auto-rows: minmax(0,1fr); gap: 9px; min-height: 0; }
+.quiz.qa-mode .qa-opt { min-height: 0; max-height: none; height: 100%; padding: 6px 14px; gap: 12px; border-radius: 15px; overflow: hidden; }
+.quiz.qa-mode .qa-ot { font-size: calc(clamp(13.5px, 2.2dvh, 16.5px) * var(--fs)); line-height: 1.3; }
+.quiz.qa-mode .qa-let { width: 32px; height: 32px; border-radius: 10px; }
+.quiz.qa-mode .qa-fb { margin: 0; min-height: 40px; max-height: 40px; padding: 0 14px; align-items: center; font-size: 13.5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border: 1px solid transparent; border-radius: 12px; }
+.quiz.qa-mode .qa-fb span { overflow: hidden; text-overflow: ellipsis; }
+.quiz.qa-mode .qa-fb { flex-wrap: nowrap; gap: 8px; } .quiz.qa-mode .qa-fb b { flex: none; } .quiz.qa-mode .qa-fb span { min-width: 0; white-space: nowrap; }
+.quiz.qa-mode .qa-fb.ph { visibility: hidden; animation: none; }
+.quiz.qa-mode .qa-hint { margin: 0; padding: 0; text-align: left; font-size: 11.5px; }
+.quiz.qa-mode .qa-foot { position: static; margin: 0; padding: 0; background: none; border: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 0; }
+.quiz.qa-mode .qa-foot .q-btn { padding: 11px 24px; border-radius: 12px; }
+.quiz.qa-mode .qa-foot .q-btn.primary { box-shadow: 0 8px 20px -8px var(--brand-emerald); }
+.quiz.qa-mode .qa-foot .qa-hint { flex: 1; text-align: center; }
+/* desktop: 2 x 2 options when there is room */
+@media (min-width: 900px) and (min-height: 640px) {
+  .quiz.qa-mode .qa-opts { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(2, minmax(0,1fr)); }
+  .quiz.qa-mode .qa-q { padding: 18px 22px; }
+}
+@media (max-height: 640px) { .quiz.qa-mode { padding-top: 8px; padding-bottom: 8px; } .quiz.qa-mode .qa { row-gap: 8px; padding: 12px 16px; } .quiz.qa-mode .qa-stat { padding: 4px 8px; } .quiz.qa-mode .qa-ring { width: 44px; height: 44px; } .quiz.qa-mode .qa-hint { display: none; } }
+@media (max-width: 960px) { .quiz.qa-mode { --qa-top: calc(58px + env(safe-area-inset-top, 0px) + 3px); } }
+@media (max-width: 700px) {
+  .quiz.qa-mode { padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px)); height: calc(100dvh - var(--qa-top)); }
+  .quiz.qa-mode .qa { padding: 12px 12px 10px; row-gap: 8px; border-radius: 18px; }
+  .quiz.qa-mode .qa-top { gap: 8px; }
+  .quiz.qa-mode .qa-ttl b { font-size: 13px; }
+  .quiz.qa-mode .q-music .q-ml { display: none; }
+  .quiz.qa-mode .qa-meta { gap: 8px; }
+  .quiz.qa-mode .qa-stats { gap: 5px; }
+  .quiz.qa-mode .qa-stat { padding: 5px 4px; gap: 4px; border-radius: 11px; }
+  .quiz.qa-mode .qa-stat small { display: none; }
+  .quiz.qa-mode .qa-stat b { font-size: 14px; }
+  .quiz.qa-mode .qa-ring { width: 44px; height: 44px; } .quiz.qa-mode .qa-ring em { font-size: 15px; }
+  .quiz.qa-mode .qa-body { row-gap: 8px; }
+  .quiz.qa-mode .qa-q { padding: 10px 12px; gap: 8px; border-radius: 14px; max-height: 38dvh; align-items: flex-start; }
+  .quiz.qa-mode .qa-qt { font-size: calc(clamp(14.5px, 2.5dvh, 18px) * var(--fs)); }
+  .quiz.qa-mode .qa-opts { gap: 6px; }
+  .quiz.qa-mode .qa-opt { padding: 4px 10px; gap: 10px; border-radius: 12px; }
+  .quiz.qa-mode .qa-ot { font-size: calc(clamp(13px, 2dvh, 15px) * var(--fs)); }
+  .quiz.qa-mode .qa-let { width: 28px; height: 28px; border-radius: 8px; font-size: 13px; }
+  .quiz.qa-mode .qa-fb { min-height: 34px; max-height: 34px; font-size: 12.5px; }
+  .quiz.qa-mode .qa-hint { display: none; }
+  .quiz.qa-mode .qa-foot .q-btn { padding: 12px 10px; flex: 1; }
+  .quiz.qa-mode .qa-foot .q-btn.primary { flex: 2; }
+}
+.quiz.qa-mode * { scrollbar-width: none; }
+.quiz.qa-mode *::-webkit-scrollbar { display: none; }
+
+/* ===== QUIZ CARD v3: lifelines, mark, skip, entrance motion ===== */
+.quiz.qa-mode .qa-tools2 { display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; min-width: 0; }
+.qa-tool { position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; font-weight: 700; font-size: 12.5px; color: var(--text-main); background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; padding: 8px 13px; cursor: pointer; transition: .15s; -webkit-tap-highlight-color: transparent; }
+.qa-tool b { font-size: 14px; line-height: 1; font-weight: 800; }
+.qa-tool em { font-style: normal; }
+.qa-tool sup { position: absolute; top: -6px; right: -3px; min-width: 16px; height: 16px; line-height: 16px; border-radius: 99px; background: var(--brand-emerald); color: #fff; font-size: 10px; font-weight: 800; text-align: center; }
+.qa-tool:hover:not(:disabled) { border-color: var(--brand-emerald); color: var(--brand-emerald); transform: translateY(-1px); }
+.qa-tool:active:not(:disabled) { transform: scale(.95); }
+.qa-tool:disabled { opacity: .4; cursor: not-allowed; }
+.qa-tool:disabled sup { background: var(--text-muted); }
+.qa-tool.on { background: color-mix(in srgb, #f59e0b 16%, var(--bg-card)); border-color: #f59e0b; color: #d97706; }
+.qa-opt.gone { opacity: .22; pointer-events: none; text-decoration: line-through; filter: grayscale(1); }
+.qa-opt.gone .qa-let { background: transparent; }
+.qa-body.enter .qa-q { animation: qaFade .28s ease both; }
+.qa-body.enter .qa-opt { animation: qaFade .3s ease both; }
+.qa-body.enter .qa-opt:nth-child(1) { animation-delay: .04s; } .qa-body.enter .qa-opt:nth-child(2) { animation-delay: .09s; }
+.qa-body.enter .qa-opt:nth-child(3) { animation-delay: .14s; } .qa-body.enter .qa-opt:nth-child(4) { animation-delay: .19s; }
+@keyframes qaFade { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 700px) {
+  .quiz.qa-mode .qa-tools2 { gap: 6px; }
+  .qa-tool { padding: 0; width: 42px; height: 42px; justify-content: center; }
+  .qa-tool em { display: none; }
+  .qa-tool b { font-size: 16px; }
+  .quiz.qa-mode .qa-foot .q-btn { padding: 12px 14px; flex: none; }
+  .quiz.qa-mode .qa-foot .q-btn.primary { flex: 1; max-width: 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .qa-body.enter .qa-q, .qa-body.enter .qa-opt { animation: none; } }
+
+/* ===== QUIZ RULES SCREEN (shown before every quiz) ===== */
+.quiz.qa-mode .qa.qr { display: flex; flex-direction: column; gap: 12px; }
+.qr-head { display: flex; align-items: center; gap: 12px; flex: none; }
+.qr-badge { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; background: var(--brand-emerald-dim); flex: none; }
+.qr-ttl { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.qr-ttl b { font-size: 20px; font-weight: 800; letter-spacing: -.01em; }
+.qr-ttl span { font-size: 12.5px; font-weight: 700; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qr-list { flex: 1 1 auto; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr; grid-auto-rows: minmax(0, 1fr); gap: 8px; }
+.qr-item { display: flex; align-items: center; gap: 12px; min-height: 0; overflow: hidden; padding: 6px 12px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border); }
+.qr-item i { flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-style: normal; font-size: 16px; font-weight: 800; background: color-mix(in srgb, var(--brand-emerald) 14%, transparent); color: var(--brand-emerald); }
+.qr-item p { min-width: 0; line-height: 1.3; font-size: calc(13px * var(--fs)); color: var(--text-muted); font-weight: 600; }
+.qr-item p b { display: block; font-size: calc(14px * var(--fs)); color: var(--text-main); font-weight: 800; }
+.qr-item p span { display: block; }
+.qr-agree { flex: none; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--brand-emerald-dim); border: 1px solid var(--border-focus); font-size: 13.5px; font-weight: 700; cursor: pointer; }
+.qr-agree input { width: 20px; height: 20px; accent-color: var(--brand-emerald); flex: none; cursor: pointer; }
+@media (min-width: 900px) and (min-height: 560px) { .qr-list { grid-template-columns: 1fr 1fr; } .qr-item { padding: 8px 16px; } .qr-item p { font-size: calc(13.5px * var(--fs)); } .qr-item p b { font-size: calc(15px * var(--fs)); } }
+@media (max-width: 700px) {
+  .qr-ttl b { font-size: 17px; } .qr-badge { width: 38px; height: 38px; font-size: 19px; }
+  .qr-list { gap: 6px; } .qr-item { padding: 4px 10px; gap: 10px; border-radius: 12px; }
+  .qr-item i { width: 28px; height: 28px; font-size: 14px; border-radius: 8px; }
+  .qr-item p { font-size: calc(11.5px * var(--fs)); line-height: 1.25; } .qr-item p b { font-size: calc(12.5px * var(--fs)); }
+  .qr-agree { padding: 8px 10px; font-size: 12.5px; }
+  .quiz.qa-mode .qa.qr .qa-foot .q-btn.primary { max-width: none; flex: 1; }
+}
+
+/* rules screen: phone-friendly wording + sizes */
+.qr-item p .s { display: none; }
+@media (max-width: 700px), (hover: none) {
+  .qr-item p .l { display: none; } .qr-item p .s { display: block; }
+  .qr-item.kb { display: none; }
+}
+@media (max-width: 700px) {
+  .qr-list { gap: 7px; }
+  .qr-item { padding: 6px 12px; gap: 12px; }
+  .qr-item i { width: 32px; height: 32px; font-size: 16px; }
+  .qr-item p { font-size: calc(13px * var(--fs)); line-height: 1.3; }
+  .qr-item p b { font-size: calc(14px * var(--fs)); }
+  .qr-agree { font-size: 13.5px; padding: 10px 12px; }
+}
+
+/* rules screen v3: readable fixed text, scrolls inside its own list (quiz questions never scroll) */
+@media (max-width: 700px), (hover: none), (pointer: coarse) {
+  .qr-item p .l { display: none; } .qr-item p .s { display: block; }
+  .qr-item.kb { display: none; }
+}
+.quiz.qa-mode .qr-list { overflow-y: auto; overflow-x: hidden; grid-auto-rows: auto; align-content: start; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--brand-emerald) 55%, transparent) transparent; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-right: 4px; }
+.quiz.qa-mode .qr-list::-webkit-scrollbar { display: block; width: 6px; }
+.quiz.qa-mode .qr-list::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--brand-emerald) 55%, transparent); border-radius: 99px; }
+.quiz.qa-mode .qr-list::-webkit-scrollbar-track { background: transparent; }
+.qr-item { min-height: 58px; padding: 10px 14px; }
+.qr-item p { font-size: 15px; line-height: 1.35; }
+.qr-item p b { font-size: 16.5px; margin-bottom: 1px; }
+.qr-item i { width: 38px; height: 38px; font-size: 18px; }
+.qr-ttl b { font-size: 21px; } .qr-ttl span { font-size: 13.5px; }
+.qr-agree { font-size: 15px; padding: 12px 14px; }
+.quiz.qa-mode .qa.qr .qa-foot .q-btn { font-size: 15px; padding: 13px 20px; }
+@media (max-width: 700px), (pointer: coarse) {
+  .qr-item { min-height: 60px; }
+  .qr-item p { font-size: 15.5px; } .qr-item p b { font-size: 17px; }
+  .qr-agree { font-size: 15.5px; }
+  .quiz.qa-mode .qa.qr .qa-foot .q-btn.primary { flex: 1; max-width: none; }
+}
+@media (min-width: 900px) and (min-height: 560px) and (hover: hover) { .qr-item p { font-size: 14px; } .qr-item p b { font-size: 15px; } }
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
@@ -1856,7 +2132,7 @@ html { scrollbar-width: thin; }
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.2.0</span>
+    <span class="badge-tag">vr.1.3.0</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -1867,6 +2143,8 @@ html { scrollbar-width: thin; }
     <button class="btn-ui btn-chapters" id="chaptersBtn" type="button" aria-label="Chapters" aria-controls="sidebarNav" aria-expanded="false"><span class="ico" aria-hidden="true">📚</span><span class="lbl lbl-ch"> Chapters</span></button>
     <button class="btn-ui" id="themeToggle" type="button" aria-label="Switch day or night theme" title="Switch day / night"><span class="theme-ico" id="themeIco" aria-hidden="true"></span><span class="lbl" id="themeLbl"> Day</span></button>
     <button class="btn-ui btn-pdf" id="pdfBtn" type="button" aria-label="Save as PDF" title="Save as PDF / Print" onclick="window.print()">🖨️<span class="lbl"> PDF</span></button>
+    <button class="btn-ui btn-notes" id="notesBtn" type="button" aria-label="Highlights and notes" title="Highlights and notes" aria-controls="hlPanel"><span aria-hidden="true">🖍️</span><span class="lbl"> Notes</span><span class="nb-count" id="notesCount" hidden>0</span></button>
+    <button class="btn-ui btn-hamburger" id="menuBtn" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
 
@@ -1877,7 +2155,7 @@ html { scrollbar-width: thin; }
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.2.0">VR.1.2.0</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.3.0">VR.1.3.0</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2082,7 +2360,7 @@ html { scrollbar-width: thin; }
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.2.0</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.3.0</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2122,7 +2400,7 @@ html { scrollbar-width: thin; }
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.2.0</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.3.0</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -8575,6 +8853,478 @@ const QUIZ_EXTRA8 = {
   }
 })();
 
+const QUIZ_EXTRA9 = {
+ "11": {
+  "1": [
+   "While writing a scientific name by hand, the genus and species words are:|Underlined separately|Written in capital letters|Placed inside brackets|Left unmarked",
+   "The taxonomic category that comprises one or more related families is the:|Order|Genus|Species|Variety",
+   "A record of the actual habitat and distribution of plants of a given area is provided by a:|Flora|Key|Herbarium|Museum",
+   "According to NCERT, a defining feature of all living organisms without exception is:|Metabolism|Reproduction|Locomotion|Growth by accumulation of material",
+   "Systematics takes into account the:|Evolutionary relationships between organisms|Colour of organisms only|Habitat of organisms only|Size of organisms only"
+  ],
+  "2": [
+   "The five-kingdom system of classification was proposed by:|R.H. Whittaker|Carl Woese|Carolus Linnaeus|Ernst Haeckel",
+   "The cell wall of diatoms is made of:|Silica|Chitin|Cellulose|Peptidoglycan",
+   "Which organisms completely lack a cell wall?|Mycoplasma|Cyanobacteria|Archaebacteria|Nostoc",
+   "Viroids differ from viruses in having:|Free RNA without a protein coat|DNA with a protein coat|Only protein|Both DNA and RNA",
+   "Fungi in which the sexual stage is not known are placed in:|Deuteromycetes|Ascomycetes|Basidiomycetes|Phycomycetes"
+  ],
+  "3": [
+   "Algin is obtained from:|Brown algae|Red algae|Green algae|Diatoms",
+   "Agar, used to grow microbes, is obtained from:|Gelidium and Gracilaria|Laminaria|Chlorella|Volvox",
+   "Pteridophytes are called vascular cryptogams because they:|Have vascular tissue but no flowers or seeds|Lack vascular tissue|Bear naked seeds|Produce flowers and fruits",
+   "Coralloid roots of Cycas are associated with:|Cyanobacteria|Mycorrhizal fungi|Rhizobium|Frankia",
+   "Peat, used as fuel and packing material, is obtained from:|Sphagnum|Funaria|Marchantia|Riccia"
+  ],
+  "4": [
+   "Radial symmetry is found in:|Cnidarians|Annelids|Arthropods|Molluscs",
+   "Choanocytes (collar cells) are found in:|Porifera|Cnidaria|Ctenophora|Aschelminthes",
+   "Cnidoblasts of Hydra are used for:|Anchorage, defence and capture of prey|Excretion|Respiration|Reproduction",
+   "Which of the following has an open circulatory system?|Arthropods|Annelids|Fishes|Birds",
+   "In adult vertebrates, the notochord is replaced by a:|Vertebral column|Dorsal nerve cord|Pharyngeal gill slit|Post-anal tail"
+  ],
+  "5": [
+   "Parallel venation is typical of leaves of:|Monocots|Dicots|Gymnosperms only|Ferns only",
+   "Which root modification is used for storing food in sweet potato?|Tuberous roots|Prop roots|Stilt roots|Pneumatophores",
+   "An epigynous flower is one in which the ovary is:|Inferior|Superior|Absent|Fused with the stamens only",
+   "Twisted aestivation is seen in:|China rose|Calotropis|Pea|Cassia",
+   "The apple is a false fruit because its edible part develops from the:|Thalamus|Ovary wall|Seed coat|Embryo"
+  ],
+  "6": [
+   "Intercalary meristem is found in:|Grasses|Dicot roots|Conifers|Vascular cambium",
+   "Cork cambium is also known as:|Phellogen|Phellem|Phelloderm|Periderm",
+   "Bulliform cells are present in the epidermis of:|Grass leaves|Dicot stems|Roots|Fruits",
+   "The gritty texture of guava pulp is due to:|Sclereids|Collenchyma|Tracheids|Companion cells",
+   "The dark, non-functional central region of secondary xylem is called:|Heartwood|Sapwood|Phelloderm|Pith"
+  ],
+  "7": [
+   "Simple cuboidal epithelium with microvilli lines the:|Proximal convoluted tubule|Alveoli|Blood vessels|Stomach",
+   "Gap junctions in animal tissues facilitate:|Cytoplasmic communication between adjacent cells|Leak-proof sealing|Cementing of cells|Storage of fat",
+   "The type of cartilage found in the pinna of the ear is:|Elastic cartilage|Hyaline cartilage|Fibrous cartilage|Calcified cartilage",
+   "The Malpighian tubules of a cockroach open at the junction of the:|Midgut and hindgut|Foregut and midgut|Crop and gizzard|Rectum and anus",
+   "The heart of a frog is:|Three-chambered|Two-chambered|Four-chambered|Single-chambered"
+  ],
+  "8": [
+   "The statement that new cells arise from pre-existing cells was given by:|Rudolf Virchow|Schleiden|Schwann|Robert Brown",
+   "The sedimentation coefficient of prokaryotic ribosomes is:|70S|80S|60S|40S",
+   "Lipid synthesis takes place mainly in the:|Smooth endoplasmic reticulum|Rough endoplasmic reticulum|Lysosomes|Nucleus",
+   "The structure of a centriole shows:|Nine triplets arranged in a 9+0 pattern|Nine doublets with a central pair|Two central singlets only|A 9+2 pattern",
+   "The nucleolus is the site of synthesis of:|rRNA|DNA|ATP|Lipids"
+  ],
+  "9": [
+   "A peptide bond is formed between the:|Carboxyl group of one amino acid and the amino group of another|Two amino groups|Two carboxyl groups|Two R groups",
+   "The most abundant protein in the animal world is:|Collagen|RuBisCO|Insulin|Keratin",
+   "Malonate inhibits succinic dehydrogenase because it:|Resembles the substrate structurally|Denatures the enzyme|Acts as a cofactor|Binds the product",
+   "A glycosidic bond joins:|Monosaccharides in a polysaccharide|Amino acids|Fatty acids to glycerol|Nucleotides",
+   "A prosthetic group, such as the haem of catalase, is:|Tightly bound to the apoenzyme|Loosely bound and easily removed|A substrate|An inhibitor"
+  ],
+  "10": [
+   "DNA replication takes place in the:|S phase|G1 phase|G2 phase|M phase",
+   "The synaptonemal complex is formed during:|Zygotene|Leptotene|Diplotene|Diakinesis",
+   "Chromosomes line up on the equatorial plate during:|Metaphase|Prophase|Anaphase|Telophase",
+   "Splitting of the centromere and separation of chromatids occurs in:|Anaphase|Metaphase|Prophase|Telophase",
+   "Cells that exit the cell cycle and remain metabolically active but do not divide are in:|G0 phase|S phase|G2 phase|M phase"
+  ],
+  "11": [
+   "Photolysis of water is associated with:|Photosystem II|Photosystem I|Calvin cycle|Cytochrome b6f only",
+   "The primary CO₂ acceptor in C4 plants is:|Phosphoenolpyruvate|Ribulose bisphosphate|Oxaloacetic acid|Malic acid",
+   "For fixing one CO₂ in the Calvin cycle, the requirement is:|3 ATP and 2 NADPH|2 ATP and 3 NADPH|1 ATP and 1 NADPH|6 ATP and 6 NADPH",
+   "During photosynthesis, protons accumulate in the:|Thylakoid lumen|Stroma|Mitochondrial matrix|Cytoplasm",
+   "Cyclic photophosphorylation involves only:|Photosystem I|Photosystem II|Both photosystems|Neither photosystem"
+  ],
+  "12": [
+   "The Krebs cycle takes place in the:|Mitochondrial matrix|Cytoplasm|Outer membrane|Thylakoid",
+   "When acetyl CoA condenses with oxaloacetate in the Krebs cycle, the first product formed is:|Citric acid|Succinic acid|Malic acid|Fumaric acid",
+   "The final acceptor of electrons in the respiratory electron transport chain is:|Oxygen|NAD⁺|FAD|Cytochrome c",
+   "Alcoholic fermentation by yeast yields ethanol and:|CO₂|O₂|Lactic acid|Pyruvate",
+   "The respiratory quotient when fats are the respiratory substrate is:|Less than 1|Equal to 1|Zero|Greater than 1"
+  ],
+  "13": [
+   "In the sigmoid growth curve, the phase of the fastest growth is the:|Log (exponential) phase|Lag phase|Stationary phase|Senescence phase",
+   "Bolting in rosette plants such as cabbage is induced by:|Gibberellin|Abscisic acid|Ethylene|Cytokinin",
+   "The hormone first isolated from the fungus Gibberella fujikuroi is:|Gibberellin|Abscisic acid|Ethylene|Cytokinin",
+   "Seedless fruit formation without fertilisation can be promoted by:|Auxin|Abscisic acid|Ethylene|Florigen",
+   "Regaining of the capacity to divide by mature cells, as in interfascicular cambium, is called:|Dedifferentiation|Redifferentiation|Differentiation|Senescence"
+  ],
+  "14": [
+   "Inspiration is brought about mainly by the contraction of the:|Diaphragm and external intercostal muscles|Internal intercostal muscles|Abdominal muscles only|Biceps",
+   "The volume of air remaining in the lungs after a forced expiration is the:|Residual volume|Tidal volume|Expiratory reserve volume|Inspiratory reserve volume",
+   "Most of the carbon dioxide in blood is carried as:|Bicarbonate|Carbamino-haemoglobin|Dissolved CO₂|Carbonic acid only",
+   "The chloride shift involves the movement of Cl⁻ into RBCs to balance the:|Outward movement of HCO₃⁻|Entry of Na⁺|Entry of O₂|Exit of H⁺",
+   "The primary respiratory rhythm centre is located in the:|Medulla oblongata|Cerebellum|Hypothalamus|Cerebrum"
+  ],
+  "15": [
+   "The universal recipient blood group in the ABO system is:|AB|O|A|B",
+   "A condition caused when an Rh-negative mother carries an Rh-positive foetus is:|Erythroblastosis foetalis|Thalassaemia|Leukaemia|Haemophilia",
+   "The first heart sound 'lub' is associated with the closure of the:|Tricuspid and bicuspid valves|Semilunar valves|Coronary vessels|Vena cava",
+   "Cardiac output is equal to:|Stroke volume × heart rate|Heart rate ÷ stroke volume|Blood pressure × heart rate|Stroke volume ÷ heart rate",
+   "Lymph is a colourless fluid that lacks:|Erythrocytes|Lymphocytes|Water|Nutrients"
+  ],
+  "16": [
+   "The approximate glomerular filtration rate in a healthy adult is:|125 mL/min|12.5 mL/min|1250 mL/min|5 mL/min",
+   "Juxtaglomerular cells secrete:|Renin|ADH|Aldosterone|Atrial natriuretic factor",
+   "Water reabsorption in the collecting duct is increased by:|ADH|Aldosterone|Renin|ANF",
+   "Birds excrete nitrogenous waste mainly as:|Uric acid|Urea|Ammonia|Creatinine",
+   "Atrial natriuretic factor causes:|Vasodilation and a fall in blood pressure|Vasoconstriction|A rise in blood pressure|Increased renin release"
+  ],
+  "17": [
+   "The number of bones in the adult human skeleton is:|206|200|213|300",
+   "A ball-and-socket joint is found at the:|Shoulder|Knee|Elbow|Between atlas and axis",
+   "Accumulation of uric acid crystals in joints causes:|Gout|Osteoporosis|Myasthenia gravis|Tetany",
+   "An autoimmune disorder affecting the neuromuscular junction and causing fatigue and paralysis is:|Myasthenia gravis|Gout|Osteoporosis|Muscular dystrophy",
+   "Red muscle fibres appear red because of a high content of:|Myoglobin|Collagen|Keratin|Actin only"
+  ],
+  "18": [
+   "The resting membrane potential of a neuron is approximately:|−70 mV|+70 mV|0 mV|+30 mV",
+   "Saltatory conduction of impulses occurs in:|Myelinated nerve fibres|Non-myelinated fibres|Dendrites only|Muscle fibres",
+   "The part of the ear that converts sound vibrations to nerve impulses is the:|Organ of Corti|Eustachian tube|Tympanic membrane|Ear ossicles",
+   "The photopigment present in rods is:|Rhodopsin|Iodopsin|Melanin|Opsin cone pigment",
+   "The corpus callosum connects the:|Two cerebral hemispheres|Cerebrum and cerebellum|Medulla and pons|Thalamus and hypothalamus"
+  ],
+  "19": [
+   "The pineal gland secretes:|Melatonin|Thyroxine|Insulin|Cortisol",
+   "Deficiency of ADH causes:|Diabetes insipidus|Diabetes mellitus|Goitre|Addison's disease",
+   "Hypothyroidism during pregnancy can cause in the child:|Cretinism|Acromegaly|Gigantism|Tetany",
+   "Cortisol belongs to the group of:|Glucocorticoids|Mineralocorticoids|Catecholamines|Gonadotropins",
+   "A common second messenger for many protein hormones is:|cAMP|ATP|NADH|ADP"
+  ]
+ },
+ "12": {
+  "1": [
+   "The innermost wall layer of the microsporangium that nourishes the developing pollen grains is the:|Tapetum|Endothecium|Epidermis|Middle layer",
+   "The outer layer of the pollen grain wall, the exine, is made of:|Sporopollenin|Pectin|Cellulose|Lignin",
+   "The filiform apparatus is present in the:|Synergids|Antipodals|Egg cell|Central cell",
+   "Tender coconut water is a type of:|Free-nuclear endosperm|Cellular endosperm|Perisperm|Mesocarp",
+   "The residual persistent nucellus in seeds such as black pepper and beet is called:|Perisperm|Pericarp|Endosperm|Testa"
+  ],
+  "2": [
+   "Sertoli cells in the seminiferous tubules:|Nourish the developing sperm|Secrete testosterone|Secrete LH|Store sperm",
+   "Interstitial (Leydig) cells of the testis secrete:|Androgens|Estrogen|Progesterone|FSH",
+   "Sperm acquire the capacity to fertilise an ovum after:|Capacitation in the female genital tract|Spermiogenesis in the testis|Storage in the vas deferens|Mixing with seminal plasma only",
+   "In a typical 28-day human menstrual cycle, ovulation occurs about on:|Day 14|Day 5|Day 21|Day 28",
+   "Implantation occurs when the embryo is at the:|Blastocyst stage|Zygote stage|Morula stage|Gastrula stage"
+  ],
+  "3": [
+   "Copper-T is a/an:|Intrauterine device|Barrier method|Oral pill|Surgical method",
+   "A test of the amniotic fluid used to detect chromosomal abnormalities in the foetus is:|Amniocentesis|Laparoscopy|Tubectomy|Vasectomy",
+   "Lactational amenorrhoea is effective as a natural contraceptive method for about:|Six months after parturition|Two years|One week|Three days",
+   "In ZIFT, the zygote or early embryo with up to 8 blastomeres is transferred into the:|Fallopian tube|Uterus|Vagina|Cervix",
+   "Vasectomy involves:|Cutting and tying the vas deferens|Tying the fallopian tubes|Removal of the testes|Removal of the prostate"
+  ],
+  "4": [
+   "A test cross is a cross between an individual of unknown genotype and a:|Homozygous recessive individual|Homozygous dominant individual|Heterozygous individual|F2 individual",
+   "The phenotypic ratio of a Mendelian dihybrid cross in F2 is:|9:3:3:1|3:1|1:2:1|1:1",
+   "The genotype of a person with blood group AB is:|IᴬIᴮ|IᴬIᴬ|IᴮIᴮ|ii",
+   "If a carrier mother and a normal father have a son, the chance that he is haemophilic is:|50%|25%|100%|0%",
+   "The karyotype of a person with Turner syndrome is:|45, XO|47, XXY|47, XXX|47, trisomy 21"
+  ],
+  "5": [
+   "Hershey and Chase labelled the protein coat of bacteriophage with:|³⁵S|³²P|¹⁴C|³H",
+   "Semi-conservative replication of DNA was demonstrated by Meselson and Stahl in:|E. coli|Pneumococcus|T2 phage|Neurospora",
+   "In E. coli, the factor that helps RNA polymerase recognise the promoter is the:|Sigma factor|Rho factor|Release factor|Elongation factor",
+   "The codon AUG also functions as the:|Initiator codon|Stop codon|Terminator codon|Operator",
+   "The inducer of the lac operon is:|Lactose|Glucose|Repressor protein|Operator"
+  ],
+  "6": [
+   "Homologous organs are exemplified by the:|Forelimbs of whales and bats|Wings of butterfly and birds|Eyes of octopus and mammals|Flippers of penguin and shark fins",
+   "Industrial melanism in the peppered moth is an example of:|Natural selection|Mutation without selection|Genetic drift only|Use and disuse",
+   "According to the Hardy–Weinberg principle, the frequency of heterozygotes is:|2pq|p²|q²|p + q",
+   "The gas mixture used in Miller's experiment was:|CH₄, H₂, NH₃ and water vapour|O₂ and N₂|CO₂ and O₂|N₂ and H₂ only",
+   "Change in allele frequency by chance in a small population is called:|Genetic drift|Gene flow|Mutation|Natural selection"
+  ],
+  "7": [
+   "The causative agent of malaria is:|Plasmodium|Entamoeba|Trypanosoma|Giardia",
+   "Pneumonia in humans is commonly caused by:|Streptococcus pneumoniae|Salmonella typhi|Vibrio cholerae|Plasmodium",
+   "Early detection of HIV infection can be done using:|ELISA|Widal test|Mantoux test|Pap smear",
+   "HIV mainly infects:|Helper T-lymphocytes|B-lymphocytes|Red blood cells|Platelets",
+   "Cannabinoids are obtained from:|Cannabis sativa|Papaver somniferum|Erythroxylum coca|Atropa belladonna"
+  ],
+  "8": [
+   "The conversion of milk to curd is brought about by:|Lactic acid bacteria|Saccharomyces|Penicillium|Rhizobium",
+   "The antibiotic penicillin was discovered by:|Alexander Fleming|Louis Pasteur|Robert Koch|Edward Jenner",
+   "Methanobacterium is associated with the production of:|Biogas|Alcohol|Vinegar|Antibiotics",
+   "The blood-cholesterol-lowering agent statin is produced by:|Monascus purpureus|Aspergillus niger|Clostridium butylicum|Acetobacter aceti",
+   "Brewer's yeast used for ethanol production is:|Saccharomyces cerevisiae|Lactobacillus|Streptococcus|Trichoderma"
+  ],
+  "9": [
+   "The recognition sequence of the restriction enzyme EcoRI is:|GAATTC|GGATCC|AAGCTT|CCCGGG",
+   "In gel electrophoresis, the negatively charged DNA fragments move towards the:|Anode|Cathode|Both electrodes equally|Neither electrode",
+   "DNA bands in an agarose gel stained with ethidium bromide are seen as orange under:|UV light|Visible light|Infrared light|Red light",
+   "Bacterial cells are made competent to take up rDNA by treating them with a divalent cation followed by:|Heat shock|Freezing|Centrifugation|Chloroform",
+   "Insertional inactivation of the β-galactosidase gene gives recombinant colonies that are:|Colourless|Blue|Red|Yellow"
+  ],
+  "10": [
+   "The Bt toxin gene is obtained from:|Bacillus thuringiensis|Pseudomonas putida|Agrobacterium|Thermus aquaticus",
+   "RNA interference was used in tobacco plants to protect them from:|Meloidogyne incognita|Aphids|Fungi|Bollworm",
+   "During maturation of pro-insulin, the part removed is the:|C peptide|A chain|B chain|Disulphide bridge only",
+   "The first clinical gene therapy was given for:|ADA deficiency|Cystic fibrosis|Diabetes|Sickle-cell anaemia",
+   "Rosie, the first transgenic cow, produced milk rich in:|Human alpha-lactalbumin|Insulin|Vitamin A|Growth hormone"
+  ],
+  "11": [
+   "According to Allen's rule, mammals from colder climates generally have:|Shorter ears and limbs|Longer ears and limbs|Thinner fur|Larger surface area",
+   "The upper limit of population size that the environment can support is the:|Carrying capacity|Biotic potential|Natality|Density",
+   "Lichen is an example of:|Mutualism|Parasitism|Commensalism|Competition",
+   "Laying of eggs by cuckoo in the nest of a crow is an example of:|Brood parasitism|Mutualism|Commensalism|Amensalism",
+   "Organisms that maintain a constant internal environment despite external changes are:|Regulators|Conformers|Partial regulators|Migrants"
+  ],
+  "12": [
+   "In the grazing food chain, the first trophic level consists of:|Producers|Herbivores|Carnivores|Decomposers",
+   "Humus is a dark, amorphous substance that is:|Resistant to microbial action|Rapidly decomposed|Rich in cellulose only|Made by producers",
+   "The main reservoir of phosphorus in nature is:|Rocks|Atmosphere|Living plants|Fossil fuels",
+   "Fragmentation of detritus during decomposition is carried out by:|Detritivores such as earthworms|Producers|Primary consumers only|Viruses",
+   "The rate of biomass production per unit area per unit time is called:|Productivity|Standing crop|Biomass|Detritus"
+  ],
+  "13": [
+   "According to NCERT, the number of biodiversity hotspots in the world is:|34|25|12|50",
+   "In the species–area relationship on a log scale, the relationship is:|A straight line|A hyperbola|A circle|Random",
+   "The dodo became extinct in:|Mauritius|Madagascar|Australia|India",
+   "The introduction of Nile perch into Lake Victoria led to the extinction of more than 200 species of:|Cichlid fish|Frogs|Crocodiles|Water birds",
+   "Sacred groves are found in:|Khasi and Jaintia hills of Meghalaya|Thar desert|Gangetic plains only|Sundarbans only"
+  ]
+ }
+};
+(function () {
+  for (const c in QUIZ_EXTRA9) for (const id in QUIZ_EXTRA9[c]) {
+    QUIZ_DATA[c][id] = QUIZ_DATA[c][id].concat(QUIZ_EXTRA9[c][id].map(s => { const p = s.split("|"); return [p[0].trim(), p.slice(1, 5).map(x => x.trim()), 0]; }));
+  }
+})();
+
+const QUIZ_EXTRA10 = {
+ "11": {
+  "1": [
+   "The step of taxonomic study in which a scientifically accepted name is given to an organism is:|Nomenclature|Identification|Classification|Characterisation",
+   "The taxonomic category that includes the maximum number of organisms is:|Kingdom|Genus|Order|Class",
+   "The term 'taxon' refers to:|A taxonomic group of any rank|Only a species|Only a genus|A taxonomic key",
+   "Wheat is called Triticum aestivum. Here Triticum is the:|Genus|Species|Family|Order",
+   "Preserved plant and animal specimens for study are kept in a:|Museum|Botanical garden|Zoological park|Key"
+  ],
+  "2": [
+   "Chemosynthetic autotrophic bacteria obtain energy by:|Oxidising inorganic substances such as nitrites and ammonia|Capturing sunlight|Decomposing dead organic matter|Parasitising hosts",
+   "Heterocysts of Nostoc are specialised for:|Nitrogen fixation|Reproduction|Photosynthesis|Respiration",
+   "Plasmodium belongs to the group of protozoans called:|Sporozoans|Amoeboid protozoans|Flagellated protozoans|Ciliated protozoans",
+   "Mycorrhiza is a symbiotic association between a fungus and the:|Roots of higher plants|Leaves of ferns|Algae|Bacteria",
+   "Red tides in the sea are caused by the rapid multiplication of:|Gonyaulax|Euglena|Paramoecium|Plasmodium"
+  ],
+  "3": [
+   "The male sex organ of Chara is called the:|Globule|Nucule|Strobilus|Sorus",
+   "A haplontic life cycle is seen in:|Spirogyra|Fern|Pinus|Mango",
+   "The characteristic pigment that gives brown algae their colour is:|Fucoxanthin|Phycoerythrin|Chlorophyll b|Anthocyanin",
+   "Male cones of Pinus bear:|Microsporophylls|Megasporophylls|Ovules|Archegonia",
+   "Strobili are formed in:|Selaginella and Equisetum|Funaria and Marchantia|Chlamydomonas and Volvox|Cycas and Marchantia"
+  ],
+  "4": [
+   "Comb plates used for locomotion are found in:|Ctenophora|Cnidaria|Porifera|Platyhelminthes",
+   "Parapodia help in swimming in:|Nereis|Pheretima|Hirudinaria|Taenia",
+   "A rasping feeding organ called radula is a feature of:|Mollusca|Arthropoda|Annelida|Echinodermata",
+   "Aristotle's lantern is a feeding structure of the:|Sea urchin|Starfish|Octopus|Prawn",
+   "An air bladder that regulates buoyancy is present in:|Bony fishes|Cartilaginous fishes|Amphibians|Reptiles"
+  ],
+  "5": [
+   "Root hairs are found in the zone of:|Maturation|Elongation|Meristematic activity|The root cap",
+   "Parietal placentation is seen in:|Mustard|Pea|Tomato|Primrose",
+   "The swollen basal part of a carpel that contains the ovules is the:|Ovary|Style|Stigma|Filament",
+   "Tendrils of Cucurbita are modified:|Axillary buds|Leaflets|Roots|Stipules",
+   "In a floral diagram or formula, the symbol ⊕ indicates:|Actinomorphic flower|Zygomorphic flower|Unisexual flower|Epigynous flower"
+  ],
+  "6": [
+   "Phellem (cork) cells are impermeable to water due to the deposition of:|Suberin|Lignin|Pectin|Callose",
+   "Monocot roots generally have xylem that is:|Polyarch|Monarch|Diarch only|Triarch only",
+   "Annual rings are formed because of the seasonal activity of the:|Vascular cambium|Cork cambium|Apical meristem|Intercalary meristem",
+   "The guard cells of grasses are:|Dumb-bell shaped|Kidney shaped|Spherical|Rectangular",
+   "Sieve tube elements are associated with:|Companion cells|Phloem fibres|Xylem parenchyma|Tracheids"
+  ],
+  "7": [
+   "The matrix of bone is rich in:|Calcium salts and collagen fibres|Chondroitin salts|Fat droplets|Elastin only",
+   "Adipose tissue is specialised to store:|Fat|Glycogen|Protein|Water",
+   "Intercalated discs are a feature of:|Cardiac muscle|Skeletal muscle|Smooth muscle|Neurons",
+   "In a female cockroach, the sperms received during mating are stored in the:|Spermatheca|Seminal vesicle|Testis|Mushroom gland",
+   "Respiration through the skin in frogs is called:|Cutaneous respiration|Buccal respiration|Pulmonary respiration|Tracheal respiration"
+  ],
+  "8": [
+   "The fluid mosaic model of the plasma membrane was proposed by:|Singer and Nicolson|Robertson|Danielli and Davson|Schleiden and Schwann",
+   "Lysosomes contain mainly:|Hydrolytic enzymes|Oxidative enzymes|Photosynthetic pigments|DNA polymerases",
+   "The cristae of mitochondria are infoldings of the:|Inner membrane|Outer membrane|Matrix|Cytosol",
+   "Chromoplasts contain:|Carotenoids|Chlorophyll|Starch only|DNA only",
+   "Microtubules are made up of the protein:|Tubulin|Actin|Keratin|Myosin"
+  ],
+  "9": [
+   "A nitrogenous base found in RNA but not in DNA is:|Uracil|Thymine|Adenine|Guanine",
+   "Fatty acids having double bonds are called:|Unsaturated fatty acids|Saturated fatty acids|Essential amino acids|Steroids",
+   "The monomer units of proteins are:|Amino acids|Nucleotides|Monosaccharides|Fatty acids",
+   "Adult human haemoglobin is made of how many polypeptide chains?|4|1|2|3",
+   "The bond that joins two adjacent nucleotides in a nucleic acid is the:|Phosphodiester bond|Peptide bond|Hydrogen bond|Ionic bond"
+  ],
+  "10": [
+   "Meiosis I is called a reductional division because:|The chromosome number is halved|The DNA content doubles|Chromatids separate|The nucleus disappears",
+   "Breakdown of the nuclear envelope and nucleolus marks the end of:|Prophase|Telophase|S phase|G1 phase",
+   "The nuclear envelope reappears around the chromosomes during:|Telophase|Prophase|Metaphase|Anaphase",
+   "The stage in which chromosomes are most condensed and best suited for counting is:|Metaphase|Prophase|Telophase|Interphase",
+   "Proteins required for mitosis are synthesised mainly during:|G2 phase|S phase|Anaphase|Telophase"
+  ],
+  "11": [
+   "The primary pigment that traps light in photosynthesis is:|Chlorophyll a|Chlorophyll b|Xanthophyll|Carotene",
+   "The law of limiting factors in photosynthesis was proposed by:|Blackman|Engelmann|Hill|Calvin",
+   "The light reactions of photosynthesis occur in the:|Grana of the chloroplast|Stroma|Outer membrane|Cytosol",
+   "Photorespiration is considered wasteful because it:|Produces neither ATP nor NADPH|Produces large amounts of ATP|Fixes extra CO₂|Increases sugar synthesis",
+   "The reaction centre of Photosystem I absorbs light at:|700 nm|680 nm|650 nm|550 nm"
+  ],
+  "12": [
+   "The ATP synthase of mitochondria is also called:|Complex V|Complex I|Complex III|Complex IV",
+   "The link reaction converting pyruvate to acetyl CoA occurs in the:|Mitochondrial matrix|Cytoplasm|Inner membrane|Intermembrane space",
+   "Oxidative phosphorylation takes place in the:|Inner mitochondrial membrane|Matrix|Outer membrane|Cytoplasm",
+   "Cytochrome c oxidase is:|Complex IV|Complex I|Complex II|Complex V",
+   "In skeletal muscles during heavy exercise, pyruvic acid is reduced to:|Lactic acid|Ethanol|Acetyl CoA|Citric acid"
+  ],
+  "13": [
+   "Auxin was isolated from the tips of oat coleoptiles by:|F.W. Went|Skoog|Kurosawa|Miller",
+   "Phototropism in coleoptiles is mediated by the movement of:|Auxin|Ethylene|Abscisic acid|Cytokinin",
+   "The plant hormone called the stress hormone is:|Abscisic acid|Auxin|Gibberellin|Cytokinin",
+   "The photoperiodic stimulus for flowering is perceived by the:|Leaves|Roots|Flowers|Seeds",
+   "The pigment that regulates photoperiodic responses is:|Phytochrome|Chlorophyll|Carotene|Xanthophyll"
+  ],
+  "14": [
+   "The pleural fluid between the lungs and chest wall mainly reduces:|Friction|Volume of lungs|Temperature|Oxygen content",
+   "The partial pressure of CO₂ in the deoxygenated blood entering the alveoli is about:|45 mm Hg|40 mm Hg|104 mm Hg|0.3 mm Hg",
+   "Damage to the alveolar walls with reduced respiratory surface is seen in:|Emphysema|Asthma|Bronchitis only|Pneumonia only",
+   "Inflammation of the bronchi and bronchioles causing difficulty in breathing is:|Asthma|Emphysema|Tuberculosis|Pleurisy",
+   "The number of lobes in the right lung of a human is:|Three|Two|Four|One"
+  ],
+  "15": [
+   "The P-wave of an ECG represents:|Atrial depolarisation|Ventricular depolarisation|Ventricular repolarisation|Atrial repolarisation",
+   "The QRS complex of an ECG represents:|Ventricular depolarisation|Atrial depolarisation|Ventricular repolarisation|Atrial repolarisation",
+   "The hepatic portal vein carries blood from the:|Digestive tract to the liver|Liver to heart|Kidney to heart|Lungs to heart",
+   "Blood pressure is considered high (hypertension) when it is above about:|140/90 mm Hg|120/80 mm Hg|100/60 mm Hg|90/50 mm Hg",
+   "Platelets are produced from:|Megakaryocytes|Lymphocytes|Monocytes|Erythroblasts"
+  ],
+  "16": [
+   "Podocytes are found in the:|Bowman's capsule|Loop of Henle|Collecting duct|Distal tubule",
+   "Kidney stones (renal calculi) are mainly made of crystals of:|Calcium oxalate|Sodium chloride|Glucose|Urea",
+   "The dialysing fluid used in haemodialysis lacks:|Nitrogenous wastes|Glucose|Sodium|Potassium",
+   "Micturition, the release of urine, is controlled by:|A neural reflex|Hormones only|Blood pressure only|Renin",
+   "Conditional reabsorption of Na⁺ and water occurs in the:|Distal convoluted tubule|Descending limb|Glomerulus|Bowman's capsule"
+  ],
+  "17": [
+   "The sliding filament theory of muscle contraction was proposed by:|Huxley and Niedergerke|Watson and Crick|Mendel|Hershey and Chase",
+   "The A-band of a sarcomere contains:|Myosin|Only actin|Only titin|Only troponin",
+   "Osteoporosis in old age is associated with decreased levels of:|Estrogen|Insulin|Thyroxine|Adrenaline",
+   "The number of cervical vertebrae in humans is:|7|12|5|9",
+   "Tetany is caused by a low level of:|Calcium ions|Sodium ions|Potassium ions|Uric acid"
+  ],
+  "18": [
+   "Neurotransmitters are stored in:|Synaptic vesicles|Mitochondria|Nodes of Ranvier|Nissl granules",
+   "Stimulation of the sympathetic nervous system causes:|Increased heart rate|Decreased heart rate|Increased salivation|Constriction of pupils",
+   "The blind spot of the retina lacks:|Photoreceptors|Blood vessels only|Pigment cells|Ganglion cells",
+   "The brain stem is made up of the midbrain, pons and:|Medulla oblongata|Cerebellum|Thalamus|Corpus callosum",
+   "The afferent neuron carries impulses from:|Receptors to the CNS|CNS to effectors|Muscle to gland|Brain to spinal cord only"
+  ],
+  "19": [
+   "Glucagon is secreted by the:|α-cells of islets of Langerhans|β-cells of islets of Langerhans|Adrenal medulla|Thyroid",
+   "Thymosins are secreted by the:|Thymus|Thyroid|Pituitary|Pineal",
+   "Addison's disease is caused by hypofunction of the:|Adrenal cortex|Thyroid|Pituitary|Pancreas",
+   "Hormones of the hypothalamus that regulate the pituitary are called:|Releasing and inhibiting hormones|Tropic hormones|Steroid hormones|Peptide neurotransmitters",
+   "Parathyroid hormone raises blood levels of:|Calcium|Sodium|Glucose|Potassium"
+  ]
+ },
+ "12": {
+  "1": [
+   "Pollination by insects is called:|Entomophily|Anemophily|Hydrophily|Ornithophily",
+   "Transfer of pollen from one flower to another flower of the same plant is:|Geitonogamy|Autogamy|Xenogamy|Cleistogamy",
+   "Self-incompatibility prevents:|Self-pollen from fertilising the ovules|Cross-pollination|Seed formation in all cases|Pollen germination in all cases",
+   "Pollen grains can be preserved for years in liquid nitrogen at:|−196°C|0°C|−20°C|4°C",
+   "Of the four megaspores formed from a megaspore mother cell, the number that is functional in most flowering plants is:|One|Two|Three|Four"
+  ],
+  "2": [
+   "The acrosome of a sperm contains:|Hydrolytic enzymes|Mitochondria|DNA|Centrioles",
+   "The first milk produced after childbirth is called colostrum and is rich in:|Antibodies|Fat only|Glucose only|Prolactin",
+   "The surge of which hormone induces ovulation?|LH|FSH|Prolactin|Oxytocin",
+   "The cleavage divisions of the zygote are:|Mitotic|Meiotic|Amitotic|Reductional",
+   "Besides hCG, the placenta also produces:|Human placental lactogen|Insulin|Glucagon|Thyroxine"
+  ],
+  "3": [
+   "Periodic abstinence as a natural method of contraception avoids coitus during:|The ovulatory phase|The menstrual phase only|The whole month|The luteal phase only",
+   "Tubectomy involves the tying and cutting of the:|Fallopian tubes|Vas deferens|Cervix|Uterus",
+   "Condoms are barrier methods that also protect against:|Sexually transmitted infections|Anaemia|Diabetes|Malnutrition",
+   "In GIFT, the ovum collected from a donor is transferred into the:|Fallopian tube|Uterus|Vagina|Cervix",
+   "Intracytoplasmic sperm injection (ICSI) involves injecting a sperm directly into the:|Ovum|Uterus|Fallopian tube|Vagina"
+  ],
+  "4": [
+   "The plant used by Mendel for his experiments was:|Pisum sativum|Zea mays|Oryza sativa|Lathyrus odoratus",
+   "According to the law of segregation, the two alleles of a pair:|Separate during gamete formation|Always blend|Are always identical|Remain together in a gamete",
+   "Phenylketonuria is an inborn error caused by a deficiency of:|Phenylalanine hydroxylase|Tyrosinase|Amylase|Insulin",
+   "Klinefelter syndrome is characterised by the genotype:|XXY|XO|XXX|XYY",
+   "Sickle-cell anaemia results from the substitution of valine for glutamic acid in the:|β-globin chain|α-globin chain|Collagen|Albumin"
+  ],
+  "5": [
+   "The negatively charged DNA is wrapped around positively charged:|Histones|Collagen|Albumin|Tubulin",
+   "tRNA is called the adapter molecule because it:|Reads the codon and carries the amino acid|Carries DNA|Copies DNA|Makes ribosomes",
+   "The process of copying genetic information from DNA to mRNA is called:|Transcription|Translation|Replication|Splicing",
+   "The Human Genome Project determined the sequence of about:|3 × 10⁹ base pairs|3 × 10⁶ base pairs|3 × 10¹² base pairs|3 × 10³ base pairs",
+   "Genetic fingerprinting is based on:|Variable number of tandem repeats (VNTRs)|Mitochondria|Ribosomes|Proteins only"
+  ],
+  "6": [
+   "Darwin's finches on the Galápagos Islands are an example of:|Adaptive radiation|Convergent evolution|Genetic drift only|Mutation only",
+   "Wings of a bird and a butterfly are examples of:|Analogous organs|Homologous organs|Vestigial organs|Atavistic organs",
+   "The mutation theory of evolution was proposed by:|Hugo de Vries|Charles Darwin|Lamarck|Mendel",
+   "Among the following, the earliest human-like ancestor to use tools is:|Homo habilis|Homo sapiens|Neanderthal man|Cro-Magnon man",
+   "The theory of use and disuse of organs was proposed by:|Lamarck|Darwin|Wallace|Weismann"
+  ],
+  "7": [
+   "Interferons are:|Antiviral proteins secreted by virus-infected cells|Antibacterial enzymes|Antifungal drugs|Blood clotting factors",
+   "Vaccination works on the principle of:|Immunological memory|Passive transfer of antibodies|Antibiotic action|Phagocytosis only",
+   "The spread of cancer cells to distant sites of the body is called:|Metastasis|Mutation|Proliferation|Apoptosis",
+   "Morphine is obtained from the latex of:|Papaver somniferum|Cannabis sativa|Erythroxylum coca|Atropa belladonna",
+   "Passive immunity is provided by:|Readymade antibodies such as antitoxins|Vaccination|Memory cells|Phagocytes"
+  ],
+  "8": [
+   "The clot-buster streptokinase is produced by:|Streptococcus|Lactobacillus|Aspergillus|Trichoderma",
+   "The large holes in Swiss cheese are due to the production of CO₂ by:|Propionibacterium sharmanii|Lactobacillus|Aspergillus|Penicillium",
+   "Activated sludge in sewage treatment contains:|Flocs of bacteria and fungi|Only viruses|Only algae|Only protozoa",
+   "The immunosuppressive agent cyclosporin A is produced by the fungus:|Trichoderma polysporum|Monascus purpureus|Aspergillus niger|Penicillium notatum",
+   "Trichoderma species are effective biocontrol agents of:|Plant pathogens|Insects|Weeds|Nematodes"
+  ],
+  "9": [
+   "A cloning vector must have a:|Selectable marker|Cell wall|Ribosome|Nucleolus",
+   "Exonucleases remove nucleotides from the:|Ends of DNA|Middle of DNA|Promoter only|Proteins",
+   "The plasmid pBR322 carries resistance genes for:|Ampicillin and tetracycline|Kanamycin and streptomycin|Chloramphenicol and rifampicin|Penicillin only",
+   "A palindromic DNA sequence reads:|Same in 5'→3' direction on both strands|Different on each strand|Only on one strand|The same only on RNA",
+   "The process of separation and purification of the product after biosynthesis is called:|Downstream processing|Upstream processing|Transformation|Insertional inactivation"
+  ],
+  "10": [
+   "Cry proteins of Bacillus thuringiensis kill:|Specific groups of insects|All insects|Bacteria|Fungi",
+   "Bt cotton was developed to resist:|Bollworms|Nematodes|Fungal blight|Weeds",
+   "Use of bio-resources by multinational companies without proper authorisation is called:|Biopiracy|Biofortification|Bioremediation|Biomagnification",
+   "Transgenic animals are those that have:|A foreign gene incorporated into their genome|Lost a gene|No genes|Two nuclei",
+   "The enzyme deficient in ADA-deficiency patients helps in the functioning of the:|Immune system|Digestive system|Nervous system|Excretory system"
+  ],
+  "11": [
+   "The prickly pear cactus in Australia was brought under control by the:|Cochineal insect|Fungus|Virus|Wasp",
+   "The addition of new individuals to a population by birth is called:|Natality|Mortality|Immigration|Emigration",
+   "Suspended metabolic activity of animals to avoid cold winter is called:|Hibernation|Aestivation|Diapause|Migration",
+   "The kangaroo rat of the desert is able to meet water requirements through:|Internal fat oxidation|Drinking water frequently|Sweating|Panting",
+   "An age pyramid with a broad base indicates a population that is:|Expanding|Stable|Declining|Extinct"
+  ],
+  "12": [
+   "A pyramid of numbers in a tree ecosystem is:|Inverted|Upright|Spindle-shaped always|Absent",
+   "The pioneer species in hydrarch succession is:|Phytoplankton|Lichens|Mosses|Shrubs",
+   "The amount of nutrients present in the soil at a given time is called the:|Standing state|Standing crop|Productivity|Biomass",
+   "Decomposers obtain their energy from:|Dead organic matter|Sunlight|Herbivores only|Inorganic salts",
+   "The climax community is:|Stable and in equilibrium with the environment|Highly unstable|Always a grassland|Pioneer in nature"
+  ],
+  "13": [
+   "Preservation of gametes at very low temperatures in liquid nitrogen is called:|Cryopreservation|Vernalisation|Tissue culture|Hybridisation",
+   "The diversity of species between different habitats is:|Beta diversity|Alpha diversity|Gamma diversity|Genetic diversity",
+   "Information on endangered species is given in the:|Red Data Book|Flora|Monograph|Key",
+   "The Amazon rainforest is estimated to contribute about what share of Earth's oxygen through photosynthesis?|20%|50%|5%|80%",
+   "The 'evil quartet' refers to the major causes of:|Biodiversity loss|Global warming|Ozone depletion|Eutrophication"
+  ]
+ }
+};
+(function () {
+  for (const c in QUIZ_EXTRA10) for (const id in QUIZ_EXTRA10[c]) {
+    QUIZ_DATA[c][id] = QUIZ_DATA[c][id].concat(QUIZ_EXTRA10[c][id].map(s => { const p = s.split("|"); return [p[0].trim(), p.slice(1, 5).map(x => x.trim()), 0]; }));
+  }
+})();
+
 /* ===== QUIZ ANSWER VOICE (says "Correct" / "Wrong") ===== */
 const qsound = {
   enabled() { return !(store.data && store.data.quizVoice === false); },
@@ -9781,7 +10531,457 @@ C|Which metal is commonly extracted from bauxite ore?|Iron|Copper|Aluminium|Zinc
 C|Which of the following compounds is an aromatic hydrocarbon?|Ethane|Ethene|Benzene|Ethyne|C
 C|Which reagent is used in the conversion of an alcohol into an alkene by dehydration?|Concentrated H₂SO₄|Aqueous NaOH|Tollens' reagent|Fehling's solution|A
 C|Which of the following is a primary amine?|CH₃NH₂|(CH₃)₂NH|(CH₃)₃N|(CH₃)₄N⁺Cl⁻|A
-C|Which of the following is a biodegradable polymer?|PVC|Polythene|PHBV|Teflon|C`;
+C|Which of the following is a biodegradable polymer?|PVC|Polythene|PHBV|Teflon|C
+B|Which plant tissue is responsible for the conduction of water and minerals from roots to other parts?|Phloem|Xylem|Epidermis|Cortex|B
+B|Which of the following is a living component of xylem?|Tracheid|Vessel|Xylem fibre|Xylem parenchyma|D
+B|In a monocot stem, vascular bundles are generally:|Arranged in a ring|Scattered in the ground tissue|Restricted to the cortex|Arranged radially|B
+B|Which of the following is the main function of stomata?|Absorption of minerals|Gaseous exchange and regulation of transpiration|Storage of food|Transport of water through xylem|B
+B|Which photosynthetic pigment forms the reaction centre of Photosystem I?|P680|P700|P600|P450|B
+B|During the Calvin cycle, the first stable product formed after carbon dioxide fixation in C3 plants is:|Oxaloacetic acid|3-phosphoglyceric acid|Phosphoenolpyruvate|Ribulose bisphosphate|B
+B|Which plant hormone is associated with apical dominance?|Auxin|Cytokinin|Ethylene|Abscisic acid|A
+B|Which of the following is a short-day plant?|Wheat|Spinach|Chrysanthemum|Radish|C
+B|In bryophytes, the sporophyte is generally:|Independent and dominant|Dependent on the gametophyte|Completely absent|The main photosynthetic generation|B
+B|Which of the following is a heterosporous pteridophyte?|Lycopodium|Selaginella|Equisetum|Pteris|B
+B|The process of formation of male gametes in flowering plants occurs through:|Meiosis of the egg cell|Mitosis of the generative cell|Meiosis of the synergid|Fusion of polar nuclei|B
+B|Which of the following represents the correct relationship in a food chain?|Producers → Primary consumers → Secondary consumers|Primary consumers → Producers → Decomposers|Decomposers → Producers → Primary consumers|Secondary consumers → Producers → Primary consumers|A
+B|Which of the following is an example of an in situ conservation method?|Botanical garden|Seed bank|National park|Tissue culture laboratory|C
+Z|Which blood cells are mainly responsible for phagocytosis during innate immunity?|Erythrocytes|Neutrophils and monocytes|Platelets|Reticulocytes|B
+Z|Which structure connects the middle ear to the nasopharynx and helps equalise air pressure?|Cochlea|Eustachian tube|Semicircular canal|Organ of Corti|B
+Z|Which part of the brain controls body temperature and hunger?|Cerebellum|Hypothalamus|Medulla|Pons|B
+Z|Which of the following hormones is secreted by the thyroid gland?|Insulin|Thyroxine|Glucagon|Adrenaline|B
+Z|Which part of the male reproductive system stores sperm temporarily and allows their maturation?|Prostate gland|Epididymis|Seminal vesicle|Urethra|B
+Z|Which hormone is primarily responsible for ovulation in human females?|FSH|LH|Progesterone|Prolactin|B
+Z|Which of the following is the correct chromosome number in a normal human somatic cell?|23|44|46|48|C
+Z|Which of the following is an example of a genetic disorder caused by an extra chromosome 21?|Turner syndrome|Down syndrome|Klinefelter syndrome|Haemophilia|B
+Z|Which enzyme converts fibrinogen into fibrin during blood clotting?|Pepsin|Thrombin|Trypsin|Amylase|B
+Z|Which of the following is the functional unit of skeletal muscle contraction?|Neuron|Sarcomere|Nephron|Alveolus|B
+Z|Which respiratory volume represents the maximum amount of air that can be exhaled after a maximum inspiration?|Tidal volume|Inspiratory reserve volume|Vital capacity|Residual volume|C
+Z|Which of the following diseases is caused by a deficiency of vitamin D?|Scurvy|Rickets|Beriberi|Pellagra|B
+P|A body travels 60 m in 10 seconds. Its average speed is:|3 m/s|6 m/s|10 m/s|12 m/s|B
+P|A projectile is launched with a speed of 20 m/s at an angle of 30° to the horizontal. Taking g = 10 m/s², its time of flight is:|1 s|2 s|3 s|4 s|B
+P|The work done by a force perpendicular to the displacement of an object is:|Maximum|Minimum but non-zero|Zero|Negative|C
+P|The dimensional formula of momentum is:|[MLT⁻¹]|[MLT⁻²]|[ML²T⁻²]|[ML⁻¹T⁻¹]|A
+P|The value of acceleration due to gravity at a height equal to Earth's radius above its surface is approximately:|g|g/2|g/4|g/9|C
+P|The angular momentum of a particle moving in a circular path of radius r with momentum p is:|pr|p/r|pr²|p²r|A
+P|In simple harmonic motion, acceleration is:|Constant and positive|Directly proportional to displacement and in the same direction|Directly proportional to displacement and opposite in direction|Independent of displacement|C
+P|The speed of sound in a gas increases when:|Absolute temperature increases|Density increases at constant pressure|Temperature becomes zero|Molecular mass increases at the same temperature|A
+P|Which law explains the relationship between pressure and volume of a fixed mass of gas at constant temperature?|Charles' law|Boyle's law|Avogadro's law|Graham's law|B
+P|The critical angle for a denser medium with respect to air is 30°. Its refractive index is approximately:|1.0|1.5|2.0|2.5|C
+P|A wire of resistance R is stretched to twice its original length without changing its volume. Its new resistance is:|R/2|R|2R|4R|D
+P|The magnetic flux through a surface is maximum when the magnetic field is:|Parallel to the surface|Perpendicular to the surface|At 45° to the surface|Zero|B
+P|In a half-wave rectifier, the output current through the load flows:|In both directions|In one direction as pulsating current|As perfectly constant DC|Only when the diode is reverse biased|B
+C|Which of the following elements has the highest electronegativity?|Oxygen|Nitrogen|Fluorine|Chlorine|C
+C|Which of the following compounds contains an ionic bond?|CH₄|H₂O|NaCl|CO₂|C
+C|Which of the following has the highest boiling point?|CH₄|NH₃|H₂O|H₂S|C
+C|The conjugate base of H₂CO₃ after loss of one proton is:|CO₃²⁻|HCO₃⁻|H₃CO₃⁺|OH⁻|B
+C|Which of the following is the strongest acid in aqueous solution?|HCl|CH₃COOH|H₂CO₃|HCN|A
+C|For a first-order reaction, the unit of the rate constant is:|mol L⁻¹ s⁻¹|s⁻¹|L mol⁻¹ s⁻¹|mol² L⁻² s⁻¹|B
+C|Which of the following processes is spontaneous at constant temperature and pressure when Gibbs free energy change is negative?|ΔG > 0|ΔG < 0|ΔG = 0 only|ΔH = 0 only|B
+C|The standard electrode potential of the standard hydrogen electrode is defined as:|+1.00 V|−1.00 V|0.00 V|+0.50 V|C
+C|Which of the following is a nucleophile?|BF₃|AlCl₃|OH⁻|H⁺|C
+C|Which reaction is characteristic of alkenes?|Electrophilic addition|Nucleophilic substitution only|Free-radical polymerisation only|Neutralisation|A
+C|Which of the following is used as a ligand in the complex [Ag(NH₃)₂]⁺?|Ag⁺|NH₃|Cl⁻|H⁺|B
+C|Which of the following is an example of a condensation polymer?|Polythene|PVC|Nylon-6,6|Teflon|C
+B|Which of the following cells are responsible for opening and closing stomata?|Epidermal cells|Guard cells|Companion cells|Sieve tube elements|B
+B|Which type of root system is commonly found in monocot plants?|Tap root system|Fibrous root system|Prop root system only|Pneumatophore system|B
+B|Which tissue provides mechanical support to young growing plant parts?|Parenchyma|Collenchyma|Phloem|Epidermis|B
+B|Which of the following is a characteristic feature of the bundle sheath cells in C4 plants?|They lack chloroplasts|They contain numerous chloroplasts|They contain no mitochondria|They are always dead cells|B
+B|Which molecule acts as the final electron acceptor in non-cyclic photophosphorylation?|Oxygen|NADP⁺|ATP|Carbon dioxide|B
+B|Which of the following is a characteristic feature of CAM plants?|Stomata open mainly during the night|Stomata remain permanently open|Carbon dioxide is never fixed|They lack chlorophyll|A
+B|Which plant hormone is primarily responsible for delaying leaf senescence?|Cytokinin|Ethylene|Abscisic acid|Jasmonic acid|A
+B|Which of the following is a characteristic of the gametophyte generation in bryophytes?|It is diploid|It produces spores by meiosis|It is haploid and dominant|It is always dependent on the sporophyte|C
+B|Which of the following plants is commonly used as a source of quinine?|Cinchona|Rauwolfia|Papaver|Digitalis|A
+B|Which structure in the angiosperm ovule is the opening through which the pollen tube generally enters?|Chalaza|Micropyle|Hilum|Funicle|B
+B|Which enzyme is responsible for unwinding the DNA double helix during replication?|DNA ligase|DNA helicase|DNA polymerase|RNA polymerase|B
+B|Which of the following is an example of a decomposer in an ecosystem?|Grass|Deer|Fungi|Eagle|C
+B|Which of the following is a major cause of biodiversity loss?|Habitat destruction and fragmentation|Natural pollination|Photosynthesis|Nitrogen fixation|A
+Z|Which part of the human respiratory system is the primary site of gaseous exchange?|Trachea|Bronchi|Alveoli|Larynx|C
+Z|Which of the following increases the oxygen affinity of haemoglobin?|Increased carbon dioxide concentration|Increased hydrogen ion concentration|Decreased carbon dioxide concentration|Increased temperature|C
+Z|Which part of the nephron is impermeable to water under normal conditions and helps establish the medullary osmotic gradient?|Descending limb of Henle|Ascending limb of Henle|Proximal convoluted tubule|Bowman's capsule|B
+Z|Which hormone stimulates the contraction of uterine muscles during childbirth?|Insulin|Oxytocin|Thyroxine|Glucagon|B
+Z|Which of the following is the correct site of sperm production?|Epididymis|Seminiferous tubules|Vas deferens|Prostate gland|B
+Z|Which hormone maintains the endometrium during pregnancy?|Progesterone|FSH|LH|Oxytocin|A
+Z|Which of the following is an example of a non-communicable genetic disorder?|Malaria|Tuberculosis|Sickle-cell anaemia|Typhoid|C
+Z|Which cells are responsible for producing myelin in the peripheral nervous system?|Astrocytes|Schwann cells|Microglia|Ependymal cells|B
+Z|Which of the following hormones is secreted by the adrenal medulla?|Cortisol|Aldosterone|Adrenaline|Testosterone|C
+Z|Which component of blood is primarily involved in clot formation?|Erythrocytes|Platelets|Plasma albumin|Lymphocytes|B
+Z|Which of the following is a characteristic feature of innate immunity?|It is antigen-specific|It develops only after vaccination|It is present from birth|It requires memory B cells|C
+Z|Which hormone is secreted by the corpus luteum after ovulation?|Progesterone|Thyroxine|Insulin|Adrenaline|A
+P|A body starts from rest and accelerates uniformly at 4 m/s² for 3 seconds. The distance travelled is:|6 m|12 m|18 m|36 m|C
+P|The angle of projection for maximum horizontal range on level ground is:|30°|45°|60°|90°|B
+P|The work-energy theorem states that the net work done on a body is equal to the change in its:|Momentum|Potential energy|Kinetic energy|Mass|C
+P|The SI unit of gravitational potential is:|N|J/kg|N/m|kg/m³|B
+P|The time period of a satellite in a circular orbit depends on:|Mass of the satellite only|Radius of the orbit and mass of the central body|Colour of the satellite|Shape of the satellite|B
+P|Which of the following quantities is conserved in an isolated system during a collision?|Kinetic energy in every collision|Linear momentum|Speed of every particle|Temperature|B
+P|The ratio of the rms speed of hydrogen molecules to that of oxygen molecules at the same temperature is approximately:|1/4|2|4|16|C
+P|In an isothermal process for an ideal gas, the change in internal energy is:|Positive|Negative|Zero|Infinite|C
+P|A concave mirror forms a real, inverted image of the same size as the object when the object is placed:|At the focus|At the centre of curvature|Between the pole and focus|Beyond the centre of curvature|B
+P|The equivalent resistance of two resistors of 6 Ω and 3 Ω connected in parallel is:|2 Ω|3 Ω|6 Ω|9 Ω|A
+P|The electric field inside a conductor in electrostatic equilibrium is:|Infinite|Zero|Maximum at the centre|Equal to the external field|B
+P|The induced emf in a coil is proportional to the rate of change of:|Electric charge|Magnetic flux linked with the coil|Resistance|Temperature|B
+P|In the photoelectric effect, increasing the intensity of incident light while keeping its frequency above threshold generally increases:|Maximum kinetic energy of photoelectrons|Stopping potential|Photoelectric current|Work function|C
+C|Which of the following elements belongs to the halogen family?|Neon|Chlorine|Sodium|Magnesium|B
+C|Which of the following has a tetrahedral molecular geometry?|BF₃|CH₄|CO₂|NH₃|B
+C|Which of the following compounds exhibits hydrogen bonding between its molecules?|CH₄|H₂O|CO₂|CCl₄|B
+C|The oxidation number of manganese in KMnO₄ is:|+2|+4|+6|+7|D
+C|Which of the following is a buffer solution?|HCl and NaCl|CH₃COOH and CH₃COONa|NaOH and NaCl|HNO₃ and KNO₃|B
+C|According to Le Chatelier's principle, increasing pressure favours the side with:|More gaseous molecules|Fewer gaseous molecules|More solid particles|Higher temperature|B
+C|Which of the following is a colligative property that can be used to determine the molar mass of a solute?|Viscosity|Elevation in boiling point|Surface tension|Refractive index|B
+C|In an electrolytic cell, the electrode connected to the positive terminal of the battery is the:|Cathode|Anode|Salt bridge|Reference electrode|B
+C|Which of the following is the major product when ethene reacts with hydrogen in the presence of a suitable catalyst?|Ethanol|Ethane|Ethyne|Ethanal|B
+C|Which of the following reagents is commonly used to oxidise a primary alcohol to an aldehyde without extensive oxidation to a carboxylic acid?|PCC|LiAlH₄|NaBH₄|H₂/Ni|A
+C|Which of the following is the functional group present in aldehydes?|–COOH|–CHO|–OH|–CO–|B
+C|Which of the following is a bidentate ligand?|NH₃|H₂O|Ethylenediamine|Cl⁻|C
+B|Which part of the plant cell is primarily responsible for modifying, sorting and packaging proteins?|Ribosome|Golgi apparatus|Lysosome|Peroxisome|B
+B|Which of the following is a characteristic feature of sieve tube elements in angiosperms?|They possess a prominent nucleus at maturity|They have thick lignified walls|They lack a nucleus at maturity|They are dead at maturity|C
+B|Which type of placentation is found in tomato?|Marginal|Axile|Parietal|Free central|B
+B|Which of the following is responsible for the opening and closing of stomata?|Epidermal hairs|Guard cells|Companion cells|Sclerenchyma cells|B
+B|The primary function of the Casparian strips in roots is to:|Increase photosynthesis|Prevent uncontrolled apoplastic movement of water|Store starch|Transport sugars through phloem|B
+B|Which enzyme is responsible for the fixation of atmospheric nitrogen in biological nitrogen fixation?|Nitrate reductase|Nitrogenase|RuBisCO|Amylase|B
+B|In which stage of meiosis does crossing over occur?|Leptotene|Zygotene|Pachytene|Diplotene|C
+B|Which plant hormone is commonly associated with the breaking of seed dormancy and promotion of germination?|Abscisic acid|Gibberellin|Ethylene|Auxin|B
+B|Which of the following plants is commonly used as a source of the drug quinine?|Rauwolfia serpentina|Cinchona officinalis|Papaver somniferum|Atropa belladonna|B
+B|Which structure in an angiosperm ovule develops into the seed after fertilisation?|Ovary|Integument|Ovule|Nucellus only|C
+B|Which of the following is an example of a pioneer species during primary succession on bare rocks?|Large trees|Lichens|Mammals|Grasses only|B
+B|Which of the following is a characteristic feature of an ecosystem's detritus food chain?|It begins with green plants|It begins with dead organic matter|It depends only on herbivores|It excludes decomposers|B
+B|Which of the following is an example of ex situ conservation?|National park|Wildlife sanctuary|Botanical garden|Biosphere reserve|C
+Z|Which region of the brain is mainly responsible for maintaining posture and balance of the body?|Cerebrum|Cerebellum|Hypothalamus|Medulla oblongata|B
+Z|Which hormone stimulates the production of milk in mammary glands after childbirth?|Oxytocin|Prolactin|Estrogen|Progesterone|B
+Z|Which of the following cells is responsible for the production of antibodies?|Erythrocytes|Plasma cells|Platelets|Neutrophils|B
+Z|The functional unit of the human kidney is:|Neuron|Nephron|Alveolus|Villus|B
+Z|Which component of blood is primarily responsible for the transport of carbon dioxide in dissolved form as bicarbonate ions?|Haemoglobin only|Plasma|Platelets|Fibrinogen|B
+Z|Which part of the human eye contains photoreceptor cells?|Cornea|Retina|Iris|Sclera|B
+Z|Which hormone is secreted by the beta cells of the pancreas?|Glucagon|Insulin|Adrenaline|Thyroxine|B
+Z|In humans, fertilisation normally takes place in which part of the female reproductive tract?|Uterus|Cervix|Ampullary-isthmic junction|Vagina|C
+Z|Which of the following is a sex-linked recessive disorder?|Down syndrome|Haemophilia|Turner syndrome|Klinefelter syndrome|B
+Z|Which part of the nephron is mainly responsible for the reabsorption of glucose under normal conditions?|Proximal convoluted tubule|Descending limb of Henle|Distal convoluted tubule|Collecting duct|A
+Z|Which neurotransmitter is released at the neuromuscular junction of skeletal muscles?|Dopamine|Acetylcholine|Serotonin|GABA|B
+Z|Which of the following provides passive immunity to a newborn through the placenta?|IgA|IgE|IgG|IgM|C
+P|A body moves in a circle of radius 2 m with a constant speed of 4 m/s. What is its centripetal acceleration?|2 m/s²|4 m/s²|8 m/s²|16 m/s²|C
+P|The dimensional formula of pressure is:|[MLT⁻²]|[ML⁻¹T⁻²]|[ML²T⁻²]|[M⁰LT⁻²]|B
+P|A force of 10 N acts on a body and produces a displacement of 5 m in the direction of the force. Calculate the work done.|2 J|15 J|50 J|100 J|C
+P|The escape velocity from the surface of a planet depends on:|Mass of the escaping body|Radius and mass of the planet|Shape of the escaping body|Colour of the planet|B
+P|A simple pendulum has a length of 1 m. Taking g = 9.8 m/s², its approximate time period is:|1 s|2 s|3 s|4 s|B
+P|The speed of a wave is 340 m/s and its frequency is 170 Hz. What is its wavelength?|0.5 m|1 m|2 m|4 m|C
+P|Which law states that the pressure of a fixed mass of gas is inversely proportional to its volume at constant temperature?|Charles' law|Boyle's law|Avogadro's law|Dalton's law|B
+P|The refractive index of a medium is 1.5. If the speed of light in vacuum is 3 × 10⁸ m/s, the speed of light in the medium is:|1 × 10⁸ m/s|2 × 10⁸ m/s|3 × 10⁸ m/s|4.5 × 10⁸ m/s|B
+P|Two resistors of 4 Ω and 6 Ω are connected in series. Their equivalent resistance is:|2 Ω|5 Ω|10 Ω|24 Ω|C
+P|The electric field inside an ideal conductor in electrostatic equilibrium is:|Infinite|Zero|Constant but non-zero|Dependent on its mass|B
+P|A charged particle moves parallel to a uniform magnetic field. The magnetic force acting on it is:|Maximum|Minimum but non-zero|Zero|Infinite|C
+P|The half-life of a radioactive substance is 10 days. What fraction of the original substance remains after 20 days?|1/2|1/4|1/8|1/16|B
+P|In a p-n junction diode under forward bias, the width of the depletion region:|Increases|Decreases|Remains unchanged|Becomes infinite|B
+C|Which of the following elements has the highest first ionisation enthalpy?|Sodium|Magnesium|Aluminium|Silicon|D
+C|The shape of the SF₆ molecule is:|Tetrahedral|Trigonal bipyramidal|Octahedral|Square planar|C
+C|Which of the following has the highest bond order?|O₂|O₂⁺|O₂⁻|O₂²⁻|B
+C|What is the oxidation number of chromium in K₂Cr₂O₇?|+2|+3|+6|+7|C
+C|Which of the following is a strong electrolyte in aqueous solution?|Glucose|Urea|Sodium chloride|Ethanol|C
+C|For an exothermic reaction, the enthalpy change (ΔH) is:|Positive|Negative|Always zero|Infinite|B
+C|Which of the following factors does not change the equilibrium constant of a chemical reaction?|Temperature|Catalyst|Nature of the reaction|Standard thermodynamic conditions|B
+C|The unit of the rate constant for a first-order reaction is:|mol L⁻¹ s⁻¹|L mol⁻¹ s⁻¹|s⁻¹|mol² L⁻² s⁻¹|C
+C|Which reagent is commonly used to distinguish aldehydes from most ketones?|Tollens' reagent|Sodium chloride solution|Dilute hydrochloric acid|Bromine water|A
+C|The product formed when ethanol is heated with concentrated sulphuric acid at approximately 443 K is:|Ethane|Ethene|Ethanal|Ethanoic acid|B
+C|Which of the following is a bidentate ligand?|NH₃|H₂O|Ethylenediamine|Cl⁻|C
+C|Which polymer is formed by the condensation polymerisation of hexamethylenediamine and adipic acid?|Nylon-6|Nylon-6,6|Teflon|Buna-S|B
+B|Which of the following organelles contains its own circular DNA and 70S ribosomes?|Golgi apparatus|Mitochondrion|Lysosome|Endoplasmic reticulum|B
+B|Which tissue is responsible for the conduction of water and minerals in vascular plants?|Phloem|Xylem|Collenchyma|Parenchyma|B
+B|In a typical dicot embryo, the embryonal axis above the cotyledons is called:|Hypocotyl|Epicotyl|Radicle|Coleorhiza|B
+B|Which of the following is a characteristic feature of the family Fabaceae?|Epigynous flowers|Diadelphous stamens commonly present|Trimerous flowers|Parallel venation|B
+B|Which pigment is directly involved in the reaction centre of Photosystem II?|P700|P680|Chlorophyll b|Xanthophyll|B
+B|The first stable product of carbon fixation in C4 plants is:|3-phosphoglycerate|Oxaloacetic acid|Ribulose bisphosphate|Phosphoglyceraldehyde|B
+B|Which plant hormone is primarily associated with fruit ripening?|Auxin|Cytokinin|Ethylene|Abscisic acid|C
+B|Which of the following is a heterosporous pteridophyte?|Lycopodium|Selaginella|Equisetum|Pteris|B
+B|In angiosperms, the male gametophyte is represented by:|Ovule|Pollen grain|Embryo sac|Anther wall|B
+B|Which of the following processes produces genetically different daughter cells?|Mitosis|Meiosis|Binary fission only|Amitosis only|B
+B|Which enzyme joins Okazaki fragments during DNA replication?|DNA helicase|DNA ligase|DNA primase|RNA polymerase|B
+B|Which ecological interaction benefits one species while the other is neither benefited nor harmed?|Mutualism|Parasitism|Commensalism|Competition|C
+B|Which of the following is considered a biodiversity hotspot in India?|Thar Desert only|Western Ghats|Indo-Gangetic plain only|Deccan plateau only|B
+Z|Which part of the human heart prevents the backflow of blood from the left ventricle into the left atrium?|Tricuspid valve|Bicuspid valve|Pulmonary semilunar valve|Aortic semilunar valve|B
+Z|Which blood vessel carries deoxygenated blood from the heart to the lungs?|Pulmonary vein|Aorta|Pulmonary artery|Superior vena cava|C
+Z|Which protein is mainly responsible for muscle contraction by interacting with myosin?|Actin|Keratin|Collagen|Elastin|A
+Z|Which hormone increases blood calcium levels by stimulating bone resorption?|Calcitonin|Parathyroid hormone|Insulin|Melatonin|B
+Z|Which part of the human respiratory system is the primary site of gaseous exchange?|Trachea|Bronchi|Alveoli|Larynx|C
+Z|Which enzyme converts angiotensinogen into angiotensin I?|Renin|Pepsin|Trypsin|Amylase|A
+Z|Which immunoglobulin is most abundant in human blood plasma?|IgA|IgE|IgG|IgM|C
+Z|Which hormone is responsible for the development of male secondary sexual characteristics?|Estrogen|Testosterone|Progesterone|Prolactin|B
+Z|Which stage of human embryonic development consists of a solid ball of blastomeres?|Blastula|Morula|Gastrula|Zygote|B
+Z|Which of the following is caused by a trisomy of chromosome 21?|Turner syndrome|Down syndrome|Klinefelter syndrome|Haemophilia|B
+Z|Which cells are primarily responsible for the production of myelin in the peripheral nervous system?|Astrocytes|Schwann cells|Microglia|Ependymal cells|B
+Z|Which hormone stimulates the reabsorption of water in the collecting ducts of the kidney?|Insulin|Antidiuretic hormone|Glucagon|Thyroxine|B
+P|A car increases its velocity from 10 m/s to 30 m/s in 5 seconds. Its acceleration is:|2 m/s²|4 m/s²|5 m/s²|8 m/s²|B
+P|The momentum of a body of mass 5 kg moving with a velocity of 4 m/s is:|5 kg m/s|10 kg m/s|20 kg m/s|25 kg m/s|C
+P|A body of mass 2 kg is lifted vertically through a height of 5 m. Taking g = 10 m/s², the increase in gravitational potential energy is:|10 J|25 J|50 J|100 J|D
+P|The moment of inertia of a thin ring about an axis passing through its centre and perpendicular to its plane is:|MR²|½MR²|⅖MR²|⅔MR²|A
+P|The value of acceleration due to gravity at the centre of a uniform spherical Earth is:|g|g/2|Zero|Infinite|C
+P|In simple harmonic motion, the acceleration of a particle is:|Directly proportional to displacement and in the same direction|Directly proportional to displacement and opposite in direction|Independent of displacement|Always zero|B
+P|The root mean square speed of gas molecules is proportional to:|Absolute temperature|Square root of absolute temperature|Pressure only|Volume only|B
+P|In an adiabatic process, the heat exchanged with the surroundings is:|Positive|Negative|Zero|Infinite|C
+P|A convex lens has a focal length of 50 cm. Its power is:|+0.5 D|+1 D|+2 D|−2 D|C
+P|Two capacitors of 3 μF and 6 μF are connected in parallel. Their equivalent capacitance is:|2 μF|3 μF|6 μF|9 μF|D
+P|The SI unit of magnetic flux is:|Tesla|Weber|Henry|Ampere|B
+P|The energy of a photon is directly proportional to its:|Wavelength|Frequency|Speed squared|Amplitude only|B
+P|A Zener diode is commonly used as a:|Rectifier only|Voltage regulator|Current amplifier|Light detector|B
+C|Which of the following has the highest electronegativity?|Oxygen|Nitrogen|Fluorine|Chlorine|C
+C|Which molecule has a trigonal pyramidal geometry?|BF₃|NH₃|CO₂|BeCl₂|B
+C|The conjugate acid of NH₃ is:|NH₂⁻|NH₄⁺|N₂H₄|NO₃⁻|B
+C|Which of the following is a colligative property?|Viscosity|Surface tension|Osmotic pressure|Refractive index|C
+C|For a spontaneous process at constant temperature and pressure, the Gibbs free energy change is:|Positive|Negative|Zero in all cases|Infinite|B
+C|Which of the following is the strongest reducing agent among alkali metals in aqueous solution?|Lithium|Sodium|Potassium|Caesium|A
+C|The standard electrode potential of the standard hydrogen electrode is defined as:|+1.00 V|−1.00 V|0.00 V|+0.50 V|C
+C|Which of the following compounds gives a positive iodoform test?|Methanol|Ethanol|Benzene|Formic acid|B
+C|Which reagent is commonly used to convert a primary alcohol into an aldehyde without extensive oxidation under controlled conditions?|PCC|KMnO₄ under vigorous conditions|Concentrated HNO₃|NaOH|A
+C|Which of the following is an example of an addition polymer?|Nylon-6,6|Terylene|Polyethene|Bakelite|C
+C|The coordination number of cobalt in [Co(NH₃)₆]Cl₃ is:|3|4|6|8|C
+C|Which of the following is the ore of aluminium?|Haematite|Bauxite|Galena|Calamine|B
+B|Which of the following is the main function of the middle lamella in plant cells?|Protein synthesis|Cementing neighbouring cells together|Photosynthesis|DNA replication|B
+B|Which type of vascular bundle is commonly found in a dicot stem?|Radial and closed|Conjoint, collateral and open|Concentric and closed|Radial and open|B
+B|Which of the following is an example of a root modification for storage of food?|Prop roots of banyan|Pneumatophores of mangroves|Conical roots of carrot|Stilt roots of maize|C
+B|In a typical dicot leaf, the vascular bundles are surrounded by:|Bundle sheath|Endodermis|Pericycle|Cork cambium|A
+B|Which enzyme catalyses the conversion of carbon dioxide and RuBP into two molecules of 3-phosphoglycerate?|PEP carboxylase|RuBisCO|ATP synthase|Nitrate reductase|B
+B|Which of the following is the primary electron donor in Photosystem II?|P700|P680|NADPH|Ferredoxin|B
+B|Which plant hormone is known for delaying leaf senescence?|Cytokinin|Abscisic acid|Ethylene|Auxin only|A
+B|Which of the following plants belongs to the family Solanaceae?|Pea|Mustard|Potato|Sunflower|C
+B|Which structure of the embryo sac is located at the micropylar end?|Antipodal cells|Egg apparatus|Central cell only|Polar nuclei only|B
+B|In flowering plants, double fertilisation involves:|Two pollen grains fertilising two ovules|Syngamy and triple fusion|Fusion of two egg cells|Fusion of two male gametes with the egg cell only|B
+B|Which of the following is a stop codon in the genetic code?|AUG|UGG|UAA|GCU|C
+B|Which of the following represents the correct ecological pyramid that is always upright in a natural ecosystem?|Pyramid of numbers|Pyramid of biomass|Pyramid of energy|All ecological pyramids|C
+B|Which of the following is an example of a sacred grove conservation practice?|Preservation of forests by local communities due to cultural traditions|Storage of seeds in laboratories|Breeding endangered animals in zoos|Tissue culture in laboratories|A
+Z|Which of the following blood components is primarily responsible for blood clot formation?|Erythrocytes|Platelets|Lymphocytes|Albumin|B
+Z|Which chamber of the human heart receives oxygenated blood from the lungs?|Right atrium|Right ventricle|Left atrium|Left ventricle|C
+Z|Which part of the brain controls involuntary activities such as breathing and heartbeat?|Cerebrum|Medulla oblongata|Cerebellum|Thalamus|B
+Z|Which hormone is secreted by the adrenal cortex and helps regulate sodium and potassium balance?|Adrenaline|Aldosterone|Insulin|Melatonin|B
+Z|Which enzyme in saliva begins the digestion of starch?|Pepsin|Salivary amylase|Trypsin|Lipase|B
+Z|Which hormone is primarily responsible for ovulation in human females?|FSH|LH|Progesterone|Prolactin|B
+Z|Which of the following structures connects the middle ear to the nasopharynx?|Cochlea|Eustachian tube|Semicircular canal|Auditory nerve|B
+Z|Which blood group is considered the universal donor for red blood cell transfusion in the ABO and Rh systems?|AB positive|O positive|O negative|AB negative|C
+Z|Which of the following is an example of a disorder caused by an extra X chromosome in males?|Turner syndrome|Klinefelter syndrome|Down syndrome|Sickle-cell anaemia|B
+Z|Which part of the human nephron is impermeable to water and helps dilute the filtrate?|Descending limb of Henle|Ascending limb of Henle|Glomerulus|Bowman's capsule|B
+Z|Which hormone is secreted by the corpus luteum after ovulation?|Progesterone|Oxytocin|Thyroxine|Adrenaline|A
+Z|Which cells of the immune system directly destroy virus-infected and certain tumour cells without prior antigen-specific sensitisation?|Natural killer cells|Erythrocytes|Platelets|Plasma cells|A
+P|A particle starts from rest and moves with a uniform acceleration of 2 m/s². Its velocity after 6 seconds is:|6 m/s|8 m/s|10 m/s|12 m/s|D
+P|A projectile is launched with a speed of 20 m/s at an angle of 30° to the horizontal. Taking g = 10 m/s², its time of flight is:|1 s|2 s|3 s|4 s|B
+P|The coefficient of friction between two surfaces is 0.5. If the normal reaction is 20 N, the limiting friction is:|5 N|10 N|20 N|40 N|B
+P|The dimensional formula of gravitational constant G is:|[M⁻¹L³T⁻²]|[ML³T⁻²]|[M⁻¹L²T⁻²]|[ML⁻²T⁻²]|A
+P|A satellite revolves around Earth in a circular orbit. If its orbital radius becomes four times, its time period becomes:|2 times|4 times|8 times|16 times|C
+P|The angular momentum of a particle moving in a circle of radius r with linear momentum p is:|p/r|pr|p²r|pr²|B
+P|The frequency of a simple pendulum is independent of its:|Length|Acceleration due to gravity|Mass of the bob|All of these|C
+P|The pressure exerted by a liquid at a depth h is given by:|ρgh|ρg/h|gh/ρ|ρh/g|A
+P|In an isochoric process, the work done by an ideal gas is:|Maximum|Minimum but non-zero|Zero|Infinite|C
+P|A concave mirror forms a real image of the same size as the object when the object is placed:|At the focus|At the centre of curvature|Between pole and focus|At infinity|B
+P|The equivalent resistance of three identical resistors, each of resistance R, connected in parallel is:|3R|R/2|R/3|R|C
+P|The magnetic field at the centre of a circular coil of N turns and radius R carrying current I is:|μ₀NI/2R|μ₀NI/R|μ₀I/2πR|μ₀NR/2I|A
+P|In a full-wave rectifier, the output current flows through the load:|Only during the positive half-cycle|Only during the negative half-cycle|During both half-cycles in the same direction|In alternating directions|C
+C|Which of the following elements has the largest atomic radius?|Li|Na|K|Rb|D
+C|Which of the following molecules has a linear shape?|NH₃|H₂O|CO₂|SO₂|C
+C|Which of the following has the highest bond order?|N₂|O₂|F₂|He₂|A
+C|The pH of a neutral aqueous solution at 25°C is:|0|5|7|14|C
+C|Which of the following is an example of a Lewis acid?|NH₃|BF₃|OH⁻|H₂O|B
+C|According to Le Chatelier's principle, increasing pressure favours the side of equilibrium having:|More gaseous moles|Fewer gaseous moles|Equal gaseous moles only|More solid particles|B
+C|Which of the following solutions will have the highest boiling point elevation at the same molality, assuming complete dissociation where applicable?|Glucose|NaCl|CaCl₂|Urea|C
+C|In an electrochemical cell, oxidation takes place at the:|Cathode|Anode|Salt bridge|Electrolyte only|B
+C|Which reagent converts an alkene into an alkane?|H₂/Ni|Br₂/CCl₄|O₃ followed by Zn|H₂O/H⁺|A
+C|Which functional group is present in carboxylic acids?|–CHO|–COOH|–OH only|–CO–|B
+C|The oxidation state of iron in [Fe(CN)₆]⁴⁻ is:|+1|+2|+3|+4|B
+C|Which of the following is a biodegradable polymer?|PVC|Teflon|PHBV|Polystyrene|C
+B|Which of the following is the main function of the rough endoplasmic reticulum?|Lipid synthesis|Protein synthesis and processing|ATP production|Intracellular digestion|B
+B|Which type of meristem is responsible for the increase in the girth of dicot stems?|Apical meristem|Intercalary meristem|Lateral meristem|Root cap|C
+B|Which of the following is a characteristic feature of monocot leaves?|Reticulate venation|Isobilateral leaf structure|Mesophyll differentiated into palisade and spongy tissues|Dorsiventral anatomy|B
+B|Which of the following plants exhibits phylloclade modification?|Opuntia|Pea|Bougainvillea|Cucurbita|A
+B|Which of the following is the final electron acceptor in non-cyclic photophosphorylation?|Oxygen|NADP⁺|ATP|Water|B
+B|Which of the following is the main role of photorespiration in C3 plants?|Production of large quantities of ATP|Oxygenation of RuBP by RuBisCO|Direct fixation of nitrogen|Formation of glucose from starch|B
+B|Which hormone is mainly associated with stomatal closure during water stress?|Gibberellin|Cytokinin|Abscisic acid|Auxin|C
+B|Which of the following is a characteristic feature of gymnosperms?|Seeds enclosed within fruits|Naked seeds|Double fertilisation|Flowers with ovary|B
+B|In a typical angiosperm embryo sac, the number of nuclei present at maturity is:|Four|Six|Eight|Ten|C
+B|Which of the following is an example of a plant showing polyembryony?|Wheat|Citrus|Pea|Sunflower|B
+B|Which enzyme is responsible for separating the two strands of DNA during replication?|DNA ligase|DNA helicase|DNA polymerase|RNA polymerase|B
+B|Which of the following is a density-independent factor affecting population size?|Competition|Predation|Flood|Parasitism|C
+B|Which of the following is an example of a decomposer in an ecosystem?|Grasshopper|Mushroom|Deer|Eagle|B
+Z|Which component of blood is mainly responsible for transporting oxygen?|Plasma|Red blood cells|Platelets|Lymphocytes|B
+Z|Which blood vessel carries oxygenated blood from the lungs to the heart?|Pulmonary artery|Pulmonary vein|Vena cava|Aorta|B
+Z|Which structure of the heart initiates the normal heartbeat?|AV node|SA node|Bundle of His|Purkinje fibres|B
+Z|Which hormone increases blood glucose levels by stimulating glycogen breakdown in the liver?|Insulin|Glucagon|Calcitonin|Oxytocin|B
+Z|Which part of the human digestive system is the major site of nutrient absorption?|Stomach|Small intestine|Large intestine|Oesophagus|B
+Z|Which part of the nephron is primarily responsible for maintaining the osmotic gradient in the renal medulla?|Bowman's capsule|Loop of Henle|Glomerulus|Proximal convoluted tubule only|B
+Z|Which hormone is secreted by the thyroid gland and helps regulate basal metabolic rate?|Insulin|Thyroxine|Adrenaline|Aldosterone|B
+Z|Which of the following is the correct chromosome number in a normal human somatic cell?|22|23|44|46|D
+Z|Which hormone triggers milk ejection from mammary glands?|Prolactin|Oxytocin|Estrogen|FSH|B
+Z|Which of the following is an example of a protozoan disease?|Typhoid|Malaria|Tuberculosis|Influenza|B
+Z|Which part of the human brain regulates body temperature and hunger?|Cerebellum|Hypothalamus|Medulla|Pons|B
+Z|Which hormone is responsible for stimulating the development of the uterine endometrium during the menstrual cycle?|Progesterone|Testosterone|Adrenaline|Melatonin|A
+P|A body of mass 10 kg moves with an acceleration of 3 m/s². The net force acting on it is:|10 N|20 N|30 N|40 N|C
+P|A ball is thrown vertically upward with an initial speed of 20 m/s. Taking g = 10 m/s², the maximum height reached is:|10 m|15 m|20 m|40 m|C
+P|The work done by a centripetal force on a body moving in a uniform circular path is:|Positive|Negative|Zero|Infinite|C
+P|The gravitational potential energy of two masses m₁ and m₂ separated by distance r is:|+Gm₁m₂/r|−Gm₁m₂/r|Gm₁m₂r|−Gm₁m₂r²|B
+P|The moment of inertia of a solid sphere about a diameter is:|MR²|½MR²|⅖MR²|⅔MR²|C
+P|The time period of a simple pendulum on the Moon compared with that on Earth is:|Smaller|Larger|Equal|Zero|B
+P|The speed of sound in a gas generally increases with:|Decrease in absolute temperature|Increase in absolute temperature|Decrease in molecular mass only|Increase in pressure at constant temperature|B
+P|According to Charles' law, at constant pressure, the volume of a fixed mass of gas is directly proportional to:|Pressure|Absolute temperature|Density|Molecular mass|B
+P|A ray of light travels from glass (refractive index 1.5) to air. The critical angle is approximately:|30°|42°|60°|90°|B
+P|The resistance of a wire is R. If its length is doubled and its cross-sectional area is halved, its new resistance is:|R|2R|4R|8R|C
+P|The force on a current-carrying conductor placed parallel to a uniform magnetic field is:|Maximum|Zero|Half maximum|Infinite|B
+P|The de Broglie wavelength of a particle is inversely proportional to its:|Momentum|Kinetic energy only|Charge|Temperature only|A
+P|In a transistor operating in the common-emitter configuration, the current gain β is defined as:|IC/IB|IB/IC|IE/IC|IC/IE|A
+C|Which of the following has the highest second ionisation enthalpy?|Na|Mg|Al|Si|A
+C|Which of the following compounds has the greatest ionic character?|LiCl|NaCl|KCl|CsCl|D
+C|Which of the following species has a bent molecular geometry?|CO₂|BeCl₂|H₂O|BF₃|C
+C|The oxidation number of sulphur in H₂SO₄ is:|+2|+4|+6|−2|C
+C|Which of the following is a buffer solution?|HCl and NaCl|CH₃COOH and CH₃COONa|NaOH and NaCl|HNO₃ and KNO₃|B
+C|For a reaction at equilibrium, the value of the reaction quotient Q is:|Always zero|Equal to the equilibrium constant K|Always greater than K|Always less than K|B
+C|Which of the following solutions has the lowest freezing point at equal molality, assuming ideal complete dissociation?|Glucose|NaCl|CaCl₂|Urea|C
+C|Which metal is commonly used as the cathode in the electrorefining of copper?|Impure copper|Pure copper sheet|Zinc sheet|Iron sheet|B
+C|Which of the following is the major product of the reaction of propene with HBr in the absence of peroxide?|1-bromopropane|2-bromopropane|1,2-dibromopropane|Propanol|B
+C|Which of the following compounds gives a positive Fehling's test?|Acetone|Benzaldehyde|Ethanal|Benzophenone|C
+C|Which of the following is a strong field ligand?|I⁻|Br⁻|H₂O|CN⁻|D
+C|Which of the following is a thermosetting polymer?|Polythene|PVC|Bakelite|Teflon|C
+B|Which enzyme is commonly used to join a foreign DNA fragment with a plasmid vector?|DNA helicase|DNA ligase|RNA polymerase|DNA primase|B
+B|In recombinant DNA technology, restriction endonucleases recognise:|Random DNA sequences|Specific palindromic DNA sequences|Only RNA sequences|Amino acid sequences|B
+B|Which of the following is an example of a selectable marker used in cloning vectors?|Origin of replication|Antibiotic resistance gene|Promoter only|Operator sequence only|B
+B|The first stable product of carbon fixation in the C4 pathway is:|3-phosphoglyceric acid|Oxaloacetic acid|Ribulose bisphosphate|Pyruvic acid|B
+B|Which plant tissue is responsible for the transport of food from leaves to other parts?|Xylem|Phloem|Collenchyma|Sclerenchyma|B
+B|In angiosperms, the fusion of one male gamete with two polar nuclei is called:|Syngamy|Triple fusion|Plasmogamy|Apogamy|B
+B|Which of the following is a characteristic feature of the family Brassicaceae?|Diadelphous stamens|Tetradynamous stamens|Monadelphous stamens|Epipetalous stamens|B
+B|The enzyme responsible for synthesising RNA from a DNA template is:|DNA polymerase|RNA polymerase|DNA ligase|Reverse transcriptase|B
+B|Which of the following is a post-transcriptional modification in eukaryotic mRNA?|DNA replication|Capping and tailing|Translation|DNA recombination|B
+B|The pyramid of biomass in an aquatic ecosystem is generally:|Always upright|Inverted|Always spindle-shaped|Absent|B
+B|Which of the following is an example of in situ conservation?|Seed bank|Botanical garden|National park|Tissue culture laboratory|C
+B|The process by which a plant cell loses water and its protoplast shrinks away from the cell wall is called:|Imbibition|Plasmolysis|Deplasmolysis|Diffusion|B
+B|Which plant hormone is mainly associated with cell division and delays leaf senescence?|Abscisic acid|Cytokinin|Ethylene|Auxin|B
+Z|Which group of animals possesses a water vascular system?|Mollusca|Annelida|Echinodermata|Arthropoda|C
+Z|The excretory organs of cockroaches are:|Nephridia|Malpighian tubules|Flame cells|Green glands|B
+Z|Which type of joint is present between the atlas and axis vertebrae?|Hinge joint|Pivot joint|Ball-and-socket joint|Gliding joint|B
+Z|During muscle contraction, calcium ions bind to:|Actin|Myosin|Troponin|Tropomyosin|C
+Z|Which hormone stimulates the development of mammary glands during pregnancy?|Prolactin|Estrogen|Progesterone|All of the above|D
+Z|The acrosome of a human sperm is derived from:|Mitochondria|Golgi apparatus|Endoplasmic reticulum|Nucleus|B
+Z|Which immunoglobulin is most abundant in human blood plasma?|IgA|IgE|IgG|IgM|C
+Z|Which of the following diseases is caused by a protozoan parasite?|Typhoid|Malaria|Tuberculosis|Pneumonia caused by bacteria|B
+Z|The hormone responsible for milk ejection during breastfeeding is:|Prolactin|Oxytocin|FSH|Thyroxine|B
+Z|Which part of the brain regulates body temperature?|Cerebellum|Hypothalamus|Medulla oblongata|Pons|B
+Z|In humans, the site of fertilisation is generally the:|Cervix|Uterus|Ampullary-isthmic junction of the fallopian tube|Vagina|C
+Z|Which of the following is an example of a sex-linked recessive disorder?|Sickle-cell anaemia|Haemophilia|Down syndrome|Turner syndrome|B
+P|The electric field due to a point charge at a distance r is proportional to:|r|r²|1/r|1/r²|D
+P|The SI unit of electric potential is:|Coulomb|Volt|Ampere|Ohm|B
+P|The capacitance of a parallel-plate capacitor increases when:|Plate separation increases|Plate area decreases|A dielectric is inserted between the plates|Charge is removed from the plates|C
+P|Two resistors of 4 Ω and 6 Ω are connected in series. Their equivalent resistance is:|2 Ω|10 Ω|24 Ω|1.5 Ω|B
+P|The drift velocity of electrons in a metallic conductor is directly proportional to:|Electric field|Resistance only|Length squared|Temperature only|A
+P|Kirchhoff's junction rule is based on the conservation of:|Energy|Charge|Momentum|Angular momentum|B
+P|The magnetic field at the centre of a circular current-carrying coil of N turns and radius R is:|μ₀NI/(2R)|μ₀NI/R|μ₀I/(4πR)|μ₀NR/(2I)|A
+P|Lenz's law is a consequence of the conservation of:|Charge|Energy|Mass|Linear momentum|B
+P|In a purely inductive AC circuit, the current:|Leads voltage by 90°|Lags voltage by 90°|Is in phase with voltage|Lags voltage by 180°|B
+P|The power factor of a purely resistive AC circuit is:|0|0.5|1|Infinite|C
+P|Which phenomenon demonstrates the wave nature of light?|Photoelectric effect|Compton effect|Diffraction|Pair production|C
+P|The focal length of a plane mirror is:|Zero|One metre|Infinite|Negative|C
+P|The energy of a photon is directly proportional to its:|Wavelength|Frequency|Speed squared|Amplitude|B
+C|Which of the following is a reducing sugar?|Sucrose|Glucose|Starch|Cellulose|B
+C|The linkage joining amino acids in a protein is called:|Glycosidic linkage|Peptide linkage|Phosphodiester linkage|Hydrogen bond|B
+C|Which of the following compounds gives the iodoform test?|Methanol|Ethanol|Methanoic acid|Benzene|B
+C|The product formed when an aldehyde reacts with Tollens' reagent is generally:|An alcohol|A carboxylate ion|An alkene|An ether|B
+C|Which reagent is commonly used to convert an alcohol into an alkyl chloride?|SOCl₂|NaOH|H₂O₂|NH₃|A
+C|The major product of dehydration of ethanol using concentrated H₂SO₄ at about 443 K is:|Ethane|Ethene|Ethanal|Ethanoic acid|B
+C|Which of the following is the strongest acid?|CH₃COOH|ClCH₂COOH|Cl₂CHCOOH|CCl₃COOH|D
+C|The oxidation state of cobalt in [Co(NH₃)₆]Cl₃ is:|+1|+2|+3|+6|C
+C|The coordination number of the central metal ion in [Fe(CN)₆]⁴⁻ is:|2|4|6|8|C
+C|For a first-order reaction, the half-life is:|Directly proportional to initial concentration|Inversely proportional to initial concentration|Independent of initial concentration|Equal to zero|C
+C|Which of the following has the highest electrical conductivity in aqueous solution at the same concentration under comparable conditions?|Glucose|Urea|NaCl|Ethanol|C
+C|Which element has the highest electronegativity in the periodic table?|Oxygen|Chlorine|Nitrogen|Fluorine|D
+B|Which of the following is the correct sequence of events during microsporogenesis?|Pollen mother cell → Meiosis → Microspores|Microspore → Mitosis → Pollen mother cell|Pollen grain → Meiosis → Microspore|Megaspore mother cell → Meiosis → Microspores|A
+B|In a typical angiosperm embryo sac, the antipodal cells are located at the:|Micropylar end|Chalazal end|Centre|Funicular end|B
+B|Which of the following is an example of a plant exhibiting hypogeal germination?|Bean|Castor|Pea|Mustard|C
+B|The enzyme nitrogenase is highly sensitive to:|Carbon dioxide|Oxygen|Nitrogen|Hydrogen|B
+B|Which of the following is an example of a CAM plant?|Wheat|Maize|Opuntia|Rice|C
+B|In the Calvin cycle, the primary CO₂ acceptor is:|PEP|RuBP|PGA|OAA|B
+B|Which of the following structures develops into the fruit wall?|Ovule|Integument|Ovary wall|Nucellus|C
+B|The phenomenon in which a plant produces seeds without fertilisation is called:|Syngamy|Apomixis|Double fertilisation|Parthenocarpy|B
+B|Which of the following is a non-protein amino acid found in plants and associated with defence?|Glycine|Alanine|Canavanine|Valine|C
+B|The site of synthesis of most plant cell wall components is:|Ribosome|Plasma membrane and Golgi apparatus|Nucleus only|Mitochondrial matrix|B
+B|Which ecological interaction benefits one species while harming the other?|Mutualism|Commensalism|Parasitism|Protocooperation|C
+B|The term 'standing crop' in ecology refers to:|Total rainfall in an ecosystem|Amount of living material present at a given time|Total number of decomposers|Total solar energy received|B
+B|Which of the following is a biofertiliser associated with nitrogen fixation in paddy fields?|Azolla-Anabaena association|Penicillium|Rhizopus|Saccharomyces|A
+Z|Which of the following animals exhibits metameric segmentation?|Hydra|Earthworm|Ascaris|Sycon|B
+Z|The respiratory pigment present in the blood of many annelids is:|Haemoglobin|Haemocyanin|Chlorocruorin only|Haemerythrin only|A
+Z|Which part of the human respiratory system prevents food from entering the trachea?|Alveolus|Epiglottis|Bronchiole|Diaphragm|B
+Z|The functional unit of skeletal muscle contraction is:|Neuron|Sarcomere|Myofibril|Tendon|B
+Z|Which hormone is secreted by the zona glomerulosa of the adrenal cortex?|Cortisol|Aldosterone|Adrenaline|Noradrenaline|B
+Z|Which of the following cells produces antibodies?|Cytotoxic T cells|Plasma cells|Neutrophils|Platelets|B
+Z|The hormone responsible for maintaining the endometrium during the secretory phase of the menstrual cycle is:|FSH|LH|Progesterone|Oxytocin|C
+Z|Which of the following is a characteristic feature of mammals?|Presence of gills throughout life|Mammary glands|Two-chambered heart|Exoskeleton made of chitin|B
+Z|Which blood cells are primarily responsible for phagocytosis?|Erythrocytes|Neutrophils and monocytes|Platelets|Basophils only|B
+Z|The genetic disorder caused by the presence of an extra chromosome 21 is:|Turner syndrome|Klinefelter syndrome|Down syndrome|Sickle-cell anaemia|C
+Z|Which part of the nephron is mainly responsible for selective reabsorption of glucose and amino acids?|Distal convoluted tubule|Proximal convoluted tubule|Collecting duct|Ascending limb of Henle|B
+Z|Which of the following is an example of a hormone secreted by the posterior pituitary but synthesised in the hypothalamus?|Growth hormone|Prolactin|Oxytocin|TSH|C
+P|A body moving with uniform circular motion has:|Constant velocity|Constant speed but changing velocity|Constant acceleration vector|Zero acceleration|B
+P|The dimensional formula of Planck's constant is:|[ML²T⁻¹]|[MLT⁻²]|[ML²T⁻²]|[M⁰L⁰T⁻¹]|A
+P|A projectile is launched at an angle of 45° to the horizontal. Its horizontal range is maximum for a given initial speed when the angle is:|30°|45°|60°|90°|B
+P|The work done by a conservative force over a closed path is:|Positive|Negative|Zero|Infinite|C
+P|The escape velocity from the surface of a planet depends on:|Mass of the escaping object|Radius and mass of the planet|Shape of the escaping object|Colour of the planet|B
+P|If the length of a simple pendulum is increased to four times its original value, its time period becomes:|Half|Twice|Four times|Unchanged|B
+P|The pressure at a depth h in a liquid of density ρ is given by:|ρg/h|ρgh|ρh/g|gh/ρ|B
+P|In an ideal gas undergoing an isothermal process, the change in internal energy is:|Positive|Negative|Zero|Infinite|C
+P|The SI unit of surface tension is:|N m|N/m|N/m²|J/m|B
+P|The power of a convex lens having focal length 0.5 m is:|+0.5 D|+2 D|−2 D|+5 D|B
+P|In Young's double-slit experiment, the fringe width is directly proportional to:|Slit separation|Wavelength of light|Inverse of screen distance|Frequency squared|B
+P|The de Broglie wavelength of a particle is inversely proportional to its:|Momentum|Charge|Potential energy only|Mass squared|A
+P|In a p-type semiconductor, the majority charge carriers are:|Electrons|Holes|Neutrons|Protons|B
+C|Which of the following molecules has zero dipole moment?|NH₃|H₂O|CO₂|SO₂|C
+C|The hybridisation of the central atom in SF₄ is:|sp|sp²|sp³d|sp³d²|C
+C|Which of the following has the highest boiling point?|CH₄|NH₃|H₂O|H₂S|C
+C|The pH of a 10⁻³ M HCl solution at 25°C is approximately:|1|2|3|4|C
+C|Which of the following is the strongest oxidising agent among the halogens?|I₂|Br₂|Cl₂|F₂|D
+C|Which of the following compounds exhibits geometrical isomerism?|CH₄|CH₃–CH₃|CH₃–CH=CH–CH₃|CH₃–CH₂–CH₃|C
+C|Which reagent is used in the Cannizzaro reaction?|Dilute HCl|Concentrated NaOH|H₂/Ni|Br₂ water|B
+C|Which of the following compounds gives a positive Fehling's test?|Benzaldehyde|Ethanal|Acetone|Benzophenone|B
+C|The monomer used in the preparation of PVC is:|Ethene|Vinyl chloride|Styrene|Tetrafluoroethene|B
+C|Which of the following is a biodegradable polymer?|PVC|Polythene|PHBV|Teflon|C
+C|The shape of the complex ion [Ni(CN)₄]²⁻ is:|Tetrahedral|Square planar|Octahedral|Linear|B
+C|Which of the following is the correct relationship between Gibbs free energy change and spontaneity at constant temperature and pressure?|ΔG > 0 for spontaneous processes|ΔG < 0 for spontaneous processes|ΔG = 0 for all spontaneous processes|ΔG is always positive|B
+B|Which of the following is the correct sequence of events in the development of a male gametophyte in angiosperms?|Microspore → Mitosis → Vegetative cell and generative cell|Pollen mother cell → Mitosis → Two sperm cells|Ovule → Meiosis → Pollen grain|Anther → Fertilisation → Microspore|A
+B|Which of the following is a characteristic feature of a dicotyledonous embryo?|One cotyledon|Two cotyledons|Absence of plumule|Absence of radicle|B
+B|Which plant hormone is primarily responsible for breaking seed dormancy and promoting germination?|Abscisic acid|Gibberellin|Ethylene|Auxin|B
+B|The respiratory quotient (RQ) for carbohydrates is generally:|0.7|0.8|1.0|1.5|C
+B|Which of the following is the main site of photorespiration in plant cells?|Chloroplast only|Mitochondrion only|Chloroplast, peroxisome and mitochondrion|Nucleus and Golgi apparatus|C
+B|Which enzyme catalyses the conversion of pyruvate into acetyl-CoA during aerobic respiration?|RuBisCO|Pyruvate dehydrogenase complex|ATP synthase|Hexokinase|B
+B|Which of the following is a characteristic of a pioneer species in primary succession on bare rocks?|Large trees|Lichens|Large mammals|Aquatic plants|B
+B|Which of the following is an example of an incomplete dominant inheritance pattern?|Flower colour in Snapdragon|ABO blood group in humans|Haemophilia in humans|Pea seed shape|A
+B|The enzyme used in PCR to synthesise DNA at high temperatures is:|DNA ligase|Taq DNA polymerase|RNA polymerase|Restriction endonuclease|B
+B|Which of the following is used as a cloning vector in plant genetic engineering?|Ti plasmid|F plasmid only|Human mitochondrial DNA|Ribosomal RNA|A
+B|The 10% law of energy transfer in an ecosystem was proposed by:|Charles Darwin|Raymond Lindeman|Gregor Mendel|Alexander Fleming|B
+B|Which of the following is an example of an ex situ conservation method?|Wildlife sanctuary|National park|Seed bank|Biosphere reserve|C
+B|Which of the following is a plant defence mechanism against herbivores?|Production of alkaloids|Production of chlorophyll only|Reduction of photosynthesis in all conditions|Absence of secondary metabolites|A
+Z|Which of the following animals has a closed circulatory system?|Cockroach|Earthworm|Prawn|Pila|B
+Z|The excretory structures of flatworms are called:|Malpighian tubules|Flame cells|Nephridia|Green glands|B
+Z|Which of the following is the correct pathway of blood through the human heart?|Right atrium → Right ventricle → Pulmonary artery|Left atrium → Right ventricle → Aorta|Right ventricle → Left atrium → Pulmonary vein|Left ventricle → Right atrium → Aorta|A
+Z|Which component of blood is mainly responsible for the transport of oxygen?|Platelets|Plasma proteins|Haemoglobin in RBCs|WBCs|C
+Z|Which part of the human brain is primarily responsible for maintaining posture and balance?|Cerebrum|Cerebellum|Hypothalamus|Medulla oblongata|B
+Z|The hormone that stimulates the thyroid gland to release thyroid hormones is:|ACTH|TSH|FSH|ADH|B
+Z|Which of the following is the correct site of sperm production in humans?|Epididymis|Seminiferous tubules|Vas deferens|Prostate gland|B
+Z|Which hormone is secreted by the placenta during pregnancy and is detected in pregnancy tests?|Insulin|Human chorionic gonadotropin|Thyroxine|Glucagon|B
+Z|Which of the following is an example of active immunity?|Receiving ready-made antibodies|Antibodies transferred through placenta|Antibody production after vaccination|Injection of antiserum|C
+Z|Which of the following diseases is caused by a deficiency of insulin?|Diabetes mellitus|Diabetes insipidus|Goitre|Addison's disease|A
+Z|The phenomenon of one gene influencing multiple phenotypic traits is called:|Polygenic inheritance|Pleiotropy|Incomplete dominance|Codominance|B
+Z|Which of the following is a sexually transmitted infection caused by a bacterium?|AIDS|Gonorrhoea|Genital herpes|Hepatitis B|B
+P|The SI unit of electric charge is:|Ampere|Volt|Coulomb|Ohm|C
+P|Two charges of equal magnitude and opposite signs are separated by a distance. The electric field at the midpoint is directed:|From negative to positive charge|From positive to negative charge|Perpendicular to the line joining the charges|Zero|B
+P|The energy stored in a capacitor of capacitance C charged to potential V is:|CV|CV²|½CV²|2CV²|C
+P|A wire has resistance R. If its length is doubled while its cross-sectional area remains unchanged, its resistance becomes:|R/2|R|2R|4R|C
+P|The terminal voltage of a cell supplying current is:|E + Ir|E − Ir|Ir − E|E/I|B
+P|The force experienced by a moving charge in a magnetic field is maximum when the angle between velocity and magnetic field is:|0°|30°|60°|90°|D
+P|The magnetic field inside a long solenoid is approximately:|Zero everywhere|Uniform and parallel to its axis|Circular around the axis|Radially outward|B
+P|The SI unit of magnetic flux is:|Tesla|Weber|Henry|Ampere|B
+P|A transformer works on the principle of:|Electrostatic induction|Mutual induction|Photoelectric effect|Thermionic emission|B
+P|The rms value of an alternating current having peak value I₀ is:|I₀|I₀/2|I₀/√2|√2 I₀|C
+P|In the photoelectric effect, increasing the intensity of incident light while keeping its frequency above threshold increases:|Maximum kinetic energy of electrons|Stopping potential|Number of emitted photoelectrons per unit time|Work function of the metal|C
+P|The half-life of a radioactive substance is 10 days. The fraction remaining after 30 days is:|1/2|1/4|1/8|1/16|C
+P|In a full-wave rectifier, the output current flows through the load:|In only one half-cycle|In both half-cycles in the same direction|Alternately in opposite directions|Only when the input voltage is zero|B
+C|Which of the following elements has the electronic configuration [Ne] 3s² 3p⁵?|Sulphur|Chlorine|Argon|Phosphorus|B
+C|Which of the following has the highest first ionisation enthalpy?|Na|Mg|Al|Si|D
+C|Which of the following molecules has a trigonal pyramidal shape?|BF₃|NH₃|CO₂|BeCl₂|B
+C|Which of the following is an example of a strong electrolyte?|Glucose solution|Urea solution|NaCl solution|Ethanol solution|C
+C|For an exothermic reaction, the enthalpy change ΔH is:|Positive|Negative|Always zero|Infinite|B
+C|Which of the following factors increases the rate of a chemical reaction?|Decreasing temperature|Decreasing reactant concentration|Increasing temperature|Removing the catalyst|C
+C|The oxidation number of manganese in KMnO₄ is:|+2|+4|+6|+7|D
+C|Which of the following compounds undergoes nucleophilic substitution most readily by an SN1 mechanism under comparable conditions?|CH₃Cl|CH₃CH₂Cl|(CH₃)₃CCl|CH₂=CHCl|C
+C|Which of the following is the correct order of acidity?|Phenol > Ethanol|Ethanol > Phenol|Ethane > Phenol|Ethane > Ethanol > Phenol|A
+C|Which of the following compounds gives a positive carbylamine test?|Primary amines|Secondary amines|Tertiary amines|Amides only|A
+C|Which of the following is the correct IUPAC name of CH₃COCH₃?|Propanal|Propanone|Propanol|Propanoic acid|B
+C|Which of the following is the main ore of aluminium?|Haematite|Bauxite|Galena|Cinnabar|B`;
 const PYQ = PYQ_RAW.split("\n").map((ln, n) => {
   const p = ln.split("|");
   return { sub: p[0], batch: Math.floor(n / 50) + 1, q: [p[1], p.slice(2, 6), "ABCD".indexOf(p[6].trim())] };
@@ -9822,7 +11022,7 @@ const quiz = {
   },
   pyqList() {
     const b = this.pbest(), sets = this.pyqSets();
-    this.stopTimer(); this.run = null; qmusic.stop(); qsound.stop(); this.root().classList.remove("qa-mode");
+    this.stopTimer(); this.run = null; this.pending = null; qmusic.stop(); qsound.stop(); this.root().classList.remove("qa-mode");
     const total = sets.filter(x => b["pyq-" + x.id] !== undefined).length;
     const bv = x => b["pyq-" + x.id];
     const btn = (x, top, sub, lbl) => { const v = bv(x); return '<button class="q-btn' + (v !== undefined ? ' done' : '') + '" data-q="pyq-' + x.id + '">' + (lbl ? '<small class="lbl">' + lbl + '</small>' : '') + '<b>' + top + '</b><small>' + sub + '</small>' + (v !== undefined ? '<small class="best">Best ' + v + ' / ' + x.n + '</small>' : '') + '</button>'; };
@@ -9873,13 +11073,40 @@ const quiz = {
     return out;
   },
   shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; },
-  start(items, title, bestKey) {
+  start(items, title, bestKey, skipRules) {
+    if (skipRules) return this.begin(items, title, bestKey);
+    this.pending = { items, title, bestKey };
+    this.showRules();
+  },
+  showRules() {
+    const pd = this.pending, root = this.root(); if (!pd) return;
+    this.stopTimer(); this.run = null;
+    root.classList.add("qa-mode");
+    const n = pd.items.length, esc2 = esc;
+    const rules = [
+      ["⏱", "Timer", "30 seconds per question. If time runs out it counts as incorrect and the right answer is shown.", "30 sec each. Time out = incorrect."],
+      ["🎯", "Scoring", "+1 for every correct answer. There is no negative marking. Score, streak and accuracy update live.", "+1 per correct. No negative marking."],
+      ["🔒", "One attempt", "Your answer locks the moment you choose it. You cannot go back to a previous question.", "Answers lock instantly. No going back."],
+      ["½", "50:50 lifeline", "3 per quiz. Removes two wrong options on the current question. Only once per question, and only before you answer.", "3 per quiz. Removes 2 wrong options."],
+      ["★", "Mark", "Flags a question so you can find it in the review list at the end. It does not change your score.", "Flag for review. No effect on score."],
+      ["⏭", "Skip", "Moves on without answering. A skipped question counts as not correct, resets your streak and cannot be revisited.", "Counts as wrong. Can’t revisit."],
+      ["⌨", "Keyboard", "1–4 or A–D to answer, H for 50:50, M to mark, S to skip, Enter for next.", "1–4 or A–D to answer, H, M, S, Enter.", "kb"],
+      ["🏆", "Saving", "Your best score is saved only when you finish the quiz. Exiting midway does not save progress.", "Best score saves only if you finish."]
+    ];
+    const sub = pd.title.replace(/\s*\(\d+\s*Q\)/i, "");
+    root.innerHTML = '<div class="qa qr"><div class="qr-head"><div class="qr-badge">📋</div><div class="qr-ttl"><b>Before you start</b><span>' + esc2(sub) + ' · ' + n + ' question' + (n === 1 ? "" : "s") + '</span></div></div>' +
+      '<div class="qr-list">' + rules.map(r => '<div class="qr-item' + (r[4] ? " " + r[4] : "") + '"><i>' + r[0] + '</i><p><b>' + r[1] + '</b><span class="l">' + r[2] + '</span><span class="s">' + r[3] + '</span></p></div>').join("") + '</div>' +
+      '<label class="qr-agree"><input type="checkbox" id="qAgree" data-q="agree"' + (this.agreed ? " checked" : "") + '><span>I’ve read the rules and I’m ready.</span></label>' +
+      '<div class="qa-foot"><button class="q-btn" data-q="back">✕ Cancel</button><button class="q-btn primary" id="qGo" data-q="go"' + (this.agreed ? "" : " disabled") + '>Start quiz →</button></div></div>';
+    this.fit();
+  },
+  begin(items, title, bestKey) {
     const qs = items.map(it => {
       const [text, opts, ans] = it.q;
       const order = this.shuffle(opts.map((o, i) => i));
       return { text, opts: order.map(i => opts[i]), ans: order.indexOf(ans) };
     });
-    this.run = { qs, i: 0, score: 0, streak: 0, picked: [], title, bestKey, done: false };
+    this.run = { qs, i: 0, score: 0, streak: 0, picked: [], title, bestKey, done: false, life: 3, marked: {}, elim: {}, skipped: 0 };
     this.render();
     qsound.prime();
     qmusic.start();
@@ -9905,9 +11132,9 @@ const quiz = {
       qmusic.stop();
       const pct = Math.round(r.score / r.qs.length * 100);
       const msg = pct >= 80 ? "Excellent work! 🎉" : pct >= 50 ? "Good effort, keep revising 👍" : "Revise the chapter and try again 📖";
-      root.innerHTML = '<div class="q-card q-result"><div>' + esc(r.title) + '</div><div class="q-score">' + r.score + ' / ' + r.qs.length + '</div><p>' + pct + '% · ' + msg + '</p>' +
+      root.innerHTML = '<div class="q-card q-result"><div>' + esc(r.title) + '</div><div class="q-score">' + r.score + ' / ' + r.qs.length + '</div><p>' + pct + '% · ' + msg + '</p>' + (r.skipped ? '<p style="color:var(--text-muted);font-size:13px">' + r.skipped + ' skipped</p>' : '') +
         '<div class="q-foot" style="justify-content:center;margin-top:18px"><button class="q-btn primary" data-q="retry">Try again</button><button class="q-btn" data-q="back">All quizzes</button></div>' +
-        '<div class="q-review">' + r.qs.map((q, i) => '<div><i>' + (i + 1) + '. ' + (r.picked[i] === q.ans ? "✅" : "❌") + '</i> ' + esc(q.text) + '<br><small style="color:var(--text-muted)">Answer: ' + esc(q.opts[q.ans]) + '</small></div>').join("") + '</div></div>';
+        '<div class="q-review">' + r.qs.map((q, i) => '<div><i>' + (i + 1) + '. ' + (r.picked[i] === q.ans ? "✅" : r.picked[i] === -3 ? "⏭" : "❌") + (r.marked[i] ? " ⭐" : "") + '</i> ' + esc(q.text) + '<br><small style="color:var(--text-muted)">Answer: ' + esc(q.opts[q.ans]) + '</small></div>').join("") + '</div></div>';
       return;
     }
     root.classList.add("qa-mode");
@@ -9915,24 +11142,44 @@ const quiz = {
     const timedOut = answered && pk === -1, ok = answered && pk === q.ans, L = "ABCD";
     const pct = Math.round(r.i / r.qs.length * 100), done = r.i;
     const ringIcon = !answered ? '<span id="qTimer"></span>' : ok ? "✓" : timedOut ? "⏰" : "✗";
-    const fb = !answered ? "" : ok
+    const fb = !answered ? '<div class="qa-fb ph"><b>.</b></div>' : ok
       ? '<div class="qa-fb good"><b>Correct!</b>' + (r.streak >= 3 ? ' <span>🔥 ' + r.streak + ' in a row</span>' : "") + '</div>'
       : '<div class="qa-fb bad"><b>' + (timedOut ? "⏰ Time\u2019s up" : "Not quite") + '</b> <span>Correct answer: ' + esc(q.opts[q.ans]) + '</span></div>';
     root.innerHTML = '<div class="qa">' +
-      '<div class="qa-top"><div class="qa-ttl"><b>' + esc(r.title) + '</b><span>Question ' + (r.i + 1) + ' of ' + r.qs.length + '</span></div>' +
+      '<div class="qa-top"><div class="qa-ttl"><b>' + esc(r.title) + '</b><span>Question ' + (r.i + 1) + ' of ' + r.qs.length + ' · ' + pct + '% done</span></div>' +
       '<div class="qa-tools"><button type="button" class="q-voice" id="qVoice" data-q="voice" aria-label="Toggle answer voice"></button><button type="button" class="q-music" id="qMusic" data-q="music" aria-label="Toggle study music"><span class="q-eq"><i></i><i></i><i></i></span><span class="q-ml">Music on</span></button></div></div>' +
       '<div class="qa-meta"><div class="qa-stats"><span class="qa-stat sc"><i>✅</i><b>' + r.score + '</b><small>Score</small></span><span class="qa-stat st' + (r.streak >= 3 ? " hot" : "") + '"><i>🔥</i><b>' + r.streak + '</b><small>Streak</small></span><span class="qa-stat ac"><i>🎯</i><b>' + (done ? Math.round(r.score / done * 100) : 0) + '%</b><small>Accuracy</small></span></div>' +
       '<div class="qa-ring' + (answered ? (ok ? " ok" : " no") : "") + '" id="qRing"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="trk" cx="28" cy="28" r="24"/><circle class="arc" id="qArc" cx="28" cy="28" r="24"/></svg><em>' + ringIcon + '</em></div></div>' +
       '<div class="qa-prog"><span style="width:' + pct + '%"></span></div>' +
-      '<div class="qa-body"><div class="qa-q"><span class="qa-qn">Q' + (r.i + 1) + '</span><div class="qa-qt">' + esc(q.text) + '</div></div>' +
+      '<div class="qa-body' + (answered ? "" : " enter") + '"><div class="qa-q"><span class="qa-qn">Q' + (r.i + 1) + '</span><div class="qa-qt">' + esc(q.text) + '</div></div>' +
       '<div class="qa-opts">' + q.opts.map((o, i) => {
-        const cls = answered ? (i === q.ans ? " right" : i === pk ? " wrong" : " dim") : "";
-        return '<button class="qa-opt' + cls + '" data-q="opt" data-i="' + i + '"' + (answered ? " disabled" : "") + '><span class="qa-let">' + L[i] + '</span><span class="qa-ot">' + esc(o) + '</span><span class="qa-ic">' + (answered && i === q.ans ? "✓" : answered && i === pk ? "✗" : "") + '</span></button>';
+        const gone = !answered && (r.elim[r.i] || []).indexOf(i) > -1;
+        const cls = answered ? (i === q.ans ? " right" : i === pk ? " wrong" : " dim") : (gone ? " gone" : "");
+        return '<button class="qa-opt' + cls + '" data-q="opt" data-i="' + i + '"' + (answered || gone ? " disabled" : "") + '><span class="qa-let">' + L[i] + '</span><span class="qa-ot">' + esc(o) + '</span><span class="qa-ic">' + (answered && i === q.ans ? "✓" : answered && i === pk ? "✗" : "") + '</span></button>';
       }).join("") + '</div>' + fb + '</div>' +
-      '<div class="qa-hint">Press 1–4 or A–D to answer · Enter for next</div>' +
-      '<div class="qa-foot"><button class="q-btn" data-q="back">✕ Exit</button><button class="q-btn primary" data-q="next"' + (answered ? "" : " disabled") + '>' + (r.i === r.qs.length - 1 ? "Finish" : "Next →") + '</button></div></div>';
+      '<div class="qa-foot"><button class="q-btn" data-q="back">✕ Exit</button><div class="qa-tools2">' +
+      '<button type="button" class="qa-tool" id="qFifty" data-q="fifty" title="50:50 · remove two wrong options (H)"' + (answered || r.life < 1 || (r.elim[r.i] || []).length ? " disabled" : "") + '><b>½</b><em>50:50</em><sup>' + r.life + '</sup></button>' +
+      '<button type="button" class="qa-tool' + (r.marked[r.i] ? " on" : "") + '" id="qMark" data-q="mark" title="Mark for review (M)"><b>' + (r.marked[r.i] ? "★" : "☆") + '</b><em>Mark</em></button>' +
+      '<button type="button" class="qa-tool" id="qSkip" data-q="skip" title="Skip question (S)"' + (answered ? " disabled" : "") + '><b>⏭</b><em>Skip</em></button></div><button class="q-btn primary" data-q="next"' + (answered ? "" : " disabled") + '>' + (r.i === r.qs.length - 1 ? "Finish" : "Next →") + '</button></div></div>';
     this.startTimer();
     qmusic.paint(); qsound.paint();
+    this.fit();
+  },
+  fit() {
+    const root = this.root(); if (!root || !root.classList.contains("qa-mode")) return;
+    let f = 1; root.style.setProperty("--fs", f);
+    const over = () => [...root.querySelectorAll(".qa-q, .qa-opt")].some(el => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) || root.scrollHeight > root.clientHeight + 1;
+    while (over() && f > 0.55) { f = Math.round((f - 0.04) * 100) / 100; root.style.setProperty("--fs", f); }
+  },
+  advance() {
+    const r = this.run; if (!r) return;
+    if (r.i < r.qs.length - 1) r.i++;
+    else {
+      r.done = true;
+      if (r.bestKey) { const bs = this.pyq ? this.pbest() : this.best(); if (bs[r.bestKey] === undefined || r.score > bs[r.bestKey]) { bs[r.bestKey] = r.score; store.save(); } }
+    }
+    this.render();
+    window.scrollTo({ top: 0 });
   },
   handle(e) {
     const b = e.target.closest("[data-q]"); if (!b) return;
@@ -9950,21 +11197,30 @@ const quiz = {
     else if (a === "ch") this.startChapter(parseInt(b.dataset.id, 10));
     else if (a.startsWith("mix")) this.startMix(a);
     else if (a === "back") this.list();
+    else if (a === "agree") { this.agreed = b.checked; const g = document.getElementById("qGo"); if (g) g.disabled = !b.checked; }
+    else if (a === "go" && this.pending && !r) { if (!this.agreed) return; const pd = this.pending; this.pending = null; this.begin(pd.items, pd.title, pd.bestKey); }
+    else if (a === "fifty" && r && !r.done && r.picked[r.i] === undefined && r.life > 0 && !(r.elim[r.i] || []).length) {
+      const q = r.qs[r.i], wrong = q.opts.map((o, i) => i).filter(i => i !== q.ans);
+      if (wrong.length < 3) return;
+      const gone = this.shuffle(wrong).slice(0, 2); r.elim[r.i] = gone; r.life--;
+      gone.forEach(i => { const o = document.querySelector('.qa-opt[data-i="' + i + '"]'); if (o) { o.classList.add("gone"); o.disabled = true; } });
+      b.disabled = true; const sp = b.querySelector("sup"); if (sp) sp.textContent = r.life;
+    }
+    else if (a === "mark" && r && !r.done) {
+      r.marked[r.i] = !r.marked[r.i]; b.classList.toggle("on", !!r.marked[r.i]); b.querySelector("b").textContent = r.marked[r.i] ? "★" : "☆";
+    }
+    else if (a === "skip" && r && !r.done && r.picked[r.i] === undefined) {
+      r.picked[r.i] = -3; r.streak = 0; r.skipped++; this.advance();
+    }
     else if (a === "opt" && r && r.picked[r.i] === undefined) {
       const i = parseInt(b.dataset.i, 10); r.picked[r.i] = i;
       const good = i === r.qs[r.i].ans;
       if (good) { r.score++; r.streak = (r.streak || 0) + 1; } else r.streak = 0;
       this.render(); qsound.play(good);
     } else if (a === "next" && r) {
-      if (r.i < r.qs.length - 1) r.i++;
-      else {
-        r.done = true;
-        if (r.bestKey) { const bs = this.pyq ? this.pbest() : this.best(); if (bs[r.bestKey] === undefined || r.score > bs[r.bestKey]) { bs[r.bestKey] = r.score; store.save(); } }
-      }
-      this.render();
-      window.scrollTo({ top: 0 });
+      this.advance();
     } else if (a === "retry" && r) {
-      this.start(r.qs.map(q => ({ q: [q.text, q.opts, q.ans] })), r.title, r.bestKey);
+      this.start(r.qs.map(q => ({ q: [q.text, q.opts, q.ans] })), r.title, r.bestKey, true);
     }
   }
 };
@@ -10445,6 +11701,8 @@ const app = {
       const r = quiz.run; if (!r || r.done || !document.body.classList.contains("is-quiz")) return;
       if (e.ctrlKey || e.metaKey || e.altKey || (e.target && /input|textarea|select/i.test(e.target.tagName))) return;
       const k = e.key.toLowerCase(), map = { "1": 0, "2": 1, "3": 2, "4": 3, a: 0, b: 1, c: 2, d: 3 };
+      if (r.picked[r.i] === undefined && (k === "h" || k === "s")) { const t = document.querySelector(k === "h" ? "#qFifty" : "#qSkip"); if (t && !t.disabled) { e.preventDefault(); t.click(); } return; }
+      if (k === "m") { const t = document.querySelector("#qMark"); if (t) { e.preventDefault(); t.click(); } return; }
       if (r.picked[r.i] === undefined && k in map && map[k] < r.qs[r.i].opts.length) { e.preventDefault(); const o = document.querySelector('.qa-opt[data-i="' + map[k] + '"]'); if (o) o.click(); }
       else if (r.picked[r.i] !== undefined && (k === "enter" || k === "arrowright")) { const n = document.querySelector('.qa-foot [data-q="next"]'); if (n && e.target.tagName !== "BUTTON") { e.preventDefault(); n.click(); } }
     });
@@ -10459,6 +11717,7 @@ const app = {
     $("drawerClose").addEventListener("click", () => this.closeDrawer());
     $("drawerOverlay").addEventListener("click", () => this.closeDrawer());
     window.addEventListener("resize", () => { if (window.innerWidth > 960) this.closeDrawer(); });
+    window.addEventListener("resize", () => { if (typeof quiz !== "undefined" && quiz.fit) quiz.fit(); });
 
     // Sidebar filter + chips
     $("chapterFilter").addEventListener("input", (e) => { this.filterText = e.target.value; this.renderNav(); });
@@ -11172,6 +12431,442 @@ window.addEventListener("DOMContentLoaded", () => app.init());
       mo.observe(document.body,{attributes:true,attributeFilter:['class']});
     });
   }catch(err){ console.warn('UI upgrade skipped', err); }
+})();
+</script>
+<div class="mm-overlay" id="mmOverlay"></div>
+<aside class="mm-panel" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="mm-head">
+    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA</div>
+    <button class="mm-close" id="mmClose" type="button" aria-label="Close menu">✕</button>
+  </div>
+  <button class="mm-item" data-mm="home" type="button"><span class="mm-ico">🏠</span>Home</button>
+  <button class="mm-item" data-mm="search" type="button"><span class="mm-ico">🔍</span>Search</button>
+  <button class="mm-item" data-mm="chapters" type="button"><span class="mm-ico">📚</span>Chapters</button>
+  <button class="mm-item" data-mm="notes" type="button"><span class="mm-ico">🖍️</span>Highlights &amp; notes</button>
+
+  <div class="mm-label">Read</div>
+  <button class="mm-item" data-mm="class11" type="button"><span class="mm-ico">📘</span>Class 11th Biology</button>
+  <button class="mm-item" data-mm="class12" type="button"><span class="mm-ico">📗</span>Class 12th Biology</button>
+
+  <div class="mm-label">Practice</div>
+  <button class="mm-item" data-mm="quiz" type="button"><span class="mm-ico">📝</span>Bio Quiz</button>
+  <button class="mm-item" data-mm="pyq" type="button"><span class="mm-ico">🎯</span>NEET UG PYQ Quiz</button>
+
+  <div class="mm-label">Settings</div>
+  <button class="mm-item" data-mm="theme" type="button"><span class="mm-ico" id="mmThemeIco">🌓</span>Theme<small id="mmThemeLbl"></small></button>
+  <button class="mm-item" data-mm="focus" type="button"><span class="mm-ico">🧘</span>Focus reading mode</button>
+  <div class="mm-size"><span class="mm-ico">🔠</span><b>Text size</b><button type="button" data-mm="fontdec" aria-label="Smaller text">A−</button><button type="button" data-mm="fontinc" aria-label="Larger text">A+</button></div>
+  <button class="mm-item" data-mm="pdf" type="button"><span class="mm-ico">🖨️</span>Save as PDF / Print</button>
+  <button class="mm-item" data-mm="install" type="button"><span class="mm-ico">⬇️</span>Download the app</button>
+</aside>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var panel=$('mobileMenu'), ov=$('mmOverlay'), btn=$('menuBtn');
+  if(!panel||!ov||!btn) return;
+  function syncState(){
+    var lbl=$('themeLbl'), ico=$('themeIco');
+    $('mmThemeLbl').textContent=lbl?lbl.textContent.trim():'';
+    if(ico&&ico.innerHTML.trim()){ var m=$('mmThemeIco'); m.innerHTML=ico.innerHTML; var sv=m.querySelector('svg'); if(sv){sv.style.width='18px';sv.style.height='18px';} }
+    var dl=document.querySelector('.btn-dl-mobile');
+    panel.querySelector('[data-mm="install"]').hidden=!!(dl&&dl.hidden);
+    panel.querySelector('[data-mm="focus"]').hidden=document.body.classList.contains('is-home')||document.body.classList.contains('is-quiz');
+  }
+  function open(){ syncState(); panel.classList.add('open'); ov.classList.add('show'); document.body.classList.add('mm-lock'); panel.setAttribute('aria-hidden','false'); btn.setAttribute('aria-expanded','true'); }
+  function close(){ panel.classList.remove('open'); ov.classList.remove('show'); document.body.classList.remove('mm-lock'); panel.setAttribute('aria-hidden','true'); btn.setAttribute('aria-expanded','false'); }
+  var map={
+    home:'homeBtn', notes:'notesBtn', search:'cmdkBtn', chapters:'chaptersBtn', class11:'card11', class12:'card12',
+    theme:'themeToggle', focus:'focusBtn', fontdec:'fontDec', fontinc:'fontInc', pdf:'pdfBtn'
+  };
+  btn.addEventListener('click',function(){ panel.classList.contains('open')?close():open(); });
+  ov.addEventListener('click',close);
+  $('mmClose').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&panel.classList.contains('open')) close(); });
+  window.addEventListener('resize',function(){ if(window.innerWidth>960) close(); });
+  window.addEventListener('hashchange',close);
+  panel.addEventListener('click',function(e){
+    var t=e.target.closest('[data-mm]'); if(!t) return;
+    var k=t.getAttribute('data-mm');
+    if(k==='fontdec'||k==='fontinc'){ var f=$(map[k]); if(f) f.click(); return; }   // keep menu open for text size
+    if(k==='theme'){ var th=$('themeToggle'); if(th) th.click(); setTimeout(syncState,50); return; } // keep open to see the change
+    close();
+    if(k==='quiz'){ location.hash='#quiz'; return; }
+    if(k==='pyq'){ location.hash='#pyq'; return; }
+    if(k==='install'){ var d=document.querySelector('[data-goto-footer]'); if(d) setTimeout(function(){d.click();},300); return; }
+    var el=$(map[k]);
+    if(el) setTimeout(function(){ el.click(); },k==='pdf'?320:60);
+  });
+})();
+</script>
+<div class="hlbar" id="hlBar" role="dialog" aria-label="Highlight tools" data-pos="above" hidden>
+  <div class="hl-tools">
+    <div class="hl-colors" role="group" aria-label="Highlight color">
+      <button type="button" class="hl-dot" data-c="0" style="--c:var(--hs0)" aria-label="Yellow" title="Yellow (1)"></button>
+      <button type="button" class="hl-dot" data-c="1" style="--c:var(--hs1)" aria-label="Green" title="Green (2)"></button>
+      <button type="button" class="hl-dot" data-c="2" style="--c:var(--hs2)" aria-label="Blue" title="Blue (3)"></button>
+      <button type="button" class="hl-dot" data-c="3" style="--c:var(--hs3)" aria-label="Pink" title="Pink (4)"></button>
+    </div>
+    <span class="hl-sep"></span>
+    <button type="button" class="hl-act hl-u" id="hlKind" aria-label="Underline style" title="Underline instead of highlight (U)"><span>U</span></button>
+    <button type="button" class="hl-act" id="hlNoteBtn" aria-label="Add note" title="Add note (N)"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+    <button type="button" class="hl-act" id="hlCopy" aria-label="Copy text" title="Copy text"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+    <button type="button" class="hl-act" id="hlSpeak" aria-label="Listen" title="Listen to this text"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14"/></svg></button>
+    <button type="button" class="hl-act hl-del" id="hlDel" aria-label="Delete highlight" title="Delete highlight" hidden><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg></button>
+  </div>
+  <div class="hl-notebox" id="hlNoteBox" hidden>
+    <textarea class="hl-note" id="hlNote" rows="2" maxlength="1000" placeholder="Write a note…" aria-label="Note"></textarea>
+    <div class="hl-foot"><span>Enter to save · Shift+Enter new line</span><button type="button" class="hl-save" id="hlSave">Save</button></div>
+  </div>
+  <span class="hl-arrow" aria-hidden="true"></span>
+</div>
+<div class="hl-toast" id="hlToast" role="status" aria-live="polite"><span></span><button type="button" hidden>Undo</button></div>
+<div class="hlp-overlay" id="hlpOverlay"></div>
+<aside class="hlp" id="hlPanel" role="dialog" aria-modal="true" aria-label="Highlights and notes" aria-hidden="true">
+  <div class="hlp-head">
+    <div><h2>🖍️ Highlights &amp; notes</h2><p id="hlpSub"></p></div>
+    <button type="button" class="hlp-x" id="hlpClose" aria-label="Close">✕</button>
+  </div>
+  <div class="hlp-tools">
+    <button type="button" class="hlp-copy" id="hlpCopy">📋 Copy all</button>
+    <div class="hlp-filter" id="hlpFilter" aria-label="Filter by color">
+      <button type="button" class="hlp-fdot" data-c="0" style="--c:var(--hs0)" aria-label="Filter yellow"></button>
+      <button type="button" class="hlp-fdot" data-c="1" style="--c:var(--hs1)" aria-label="Filter green"></button>
+      <button type="button" class="hlp-fdot" data-c="2" style="--c:var(--hs2)" aria-label="Filter blue"></button>
+      <button type="button" class="hlp-fdot" data-c="3" style="--c:var(--hs3)" aria-label="Filter pink"></button>
+    </div>
+  </div>
+  <div class="hlp-list" id="hlpList"></div>
+</aside>
+<script>
+(function(){
+  "use strict";
+  var KEY="medora.highlights.v1", CKEY="medora.highlights.colors";
+  var $=function(id){return document.getElementById(id);};
+  var area=$("contentArea"), bar=$("hlBar"), note=$("hlNote"), panel=$("hlPanel"), pov=$("hlpOverlay");
+  if(!area||!bar||!panel||typeof app==="undefined") return;
+  var touch=window.matchMedia&&matchMedia("(hover: none)").matches;
+  var data={}, lastColors={h:2,u:3}, mode=null, pending=null, editId=null, anchorEl=null, filterC=null, focusId=null, busy=false;
+  try{ var raw=localStorage.getItem(KEY); if(raw) data=JSON.parse(raw)||{}; var lc=JSON.parse(localStorage.getItem(CKEY)||"null"); if(lc){ if(lc.h>=0&&lc.h<=3) lastColors.h=lc.h; if(lc.u>=0&&lc.u<=3) lastColors.u=lc.u; } }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(data)); }catch(e){} updateCount(); }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function curCh(){ try{ return textbookData[app.currentChapterIndex]; }catch(e){ return null; } }
+  function curKey(){ var c=curCh(); return c?c.key:null; }
+  function total(){ var n=0; for(var k in data) n+=(data[k]||[]).length; return n; }
+  function updateCount(){ var b=$("notesCount"), n=total(); if(!b) return; b.textContent=n>99?"99+":n; b.hidden=!n; }
+
+  /* ---------- offsets & wrapping ---------- */
+  function offsetOf(node,off){ var r=document.createRange(); r.selectNodeContents(area); r.setEnd(node,off); return r.toString().length; }
+  function unwrapAll(){
+    var spans=area.querySelectorAll("span.hl");
+    spans.forEach(function(sp){ var p=sp.parentNode; if(!p) return; while(sp.firstChild) p.insertBefore(sp.firstChild,sp); p.removeChild(sp); });
+    if(spans.length) area.normalize();
+  }
+  function wrap(h){
+    var nodes=[], tw=document.createTreeWalker(area,NodeFilter.SHOW_TEXT), pos=0, n;
+    while((n=tw.nextNode())){ var len=n.nodeValue.length, a=pos, b=pos+len; pos=b; if(b<=h.s) continue; if(a>=h.e) break; nodes.push({n:n,from:Math.max(h.s,a)-a,to:Math.min(h.e,b)-a}); }
+    var made=[];
+    nodes.forEach(function(o){
+      var node=o.n; if(!node.nodeValue.slice(o.from,o.to).trim()) return;
+      var mid=node; if(o.to<node.nodeValue.length) node.splitText(o.to); if(o.from>0) mid=node.splitText(o.from);
+      var sp=document.createElement("span"); sp.className="hl"+(h.n?" has-note":""); sp.dataset.hl=h.id; sp.dataset.c=h.c; sp.dataset.k=h.k||"h"; if(h.n) sp.title=h.n;
+      mid.parentNode.insertBefore(sp,mid); sp.appendChild(mid); made.push(sp);
+    });
+    if(made.length) made[made.length-1].classList.add("hl-last");
+  }
+  function render(){
+    if(busy) return; busy=true;
+    try{
+      unwrapAll();
+      var list=data[curKey()]||[]; if(!list.length) return;
+      var full=area.textContent;
+      list.slice().sort(function(a,b){return a.s-b.s;}).forEach(function(h){
+        if(full.slice(h.s,h.e)!==h.t){ var i=full.indexOf(h.t); if(i<0){ h.orphan=true; return; } h.s=i; h.e=i+h.t.length; }
+        h.orphan=false; wrap(h);
+      });
+    } finally { busy=false; }
+  }
+  function find(id){ var k=curKey(), l=data[k]||[]; for(var i=0;i<l.length;i++) if(l[i].id===id) return l[i]; return null; }
+
+  /* ---------- floating bar ---------- */
+  var barTouchAt=0, KKEY="medora.highlights.kind", kind="h", pendingRange=null, speaking=false, toastT=0;
+  try{ kind=localStorage.getItem(KKEY)==="u"?"u":"h"; }catch(e){}
+  var SPK='<svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14"/></svg>';
+  var STOP='<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+  var COPYI='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
+  var CHECKI='<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+  var noteBox=$("hlNoteBox");
+  function rectsOf(x){ var l=Array.prototype.slice.call(x.getClientRects()).filter(function(r){return r.width>1&&r.height>1;}); return l.length?l:[x.getBoundingClientRect()]; }
+  function anchor(){
+    var src=null;
+    if(mode==="edit"&&anchorEl&&document.contains(anchorEl)) src=anchorEl;
+    else if(pendingRange) src=pendingRange;
+    else { var s=window.getSelection(); if(s&&s.rangeCount&&!s.isCollapsed) src=s.getRangeAt(0); }
+    if(!src) return null;
+    var l=rectsOf(src), tb=document.querySelector(".topbar"), minTop=(tb?tb.getBoundingClientRect().bottom:0), vh=window.innerHeight;
+    // long selections: anchor to the part that is actually on screen
+    var vis=l.filter(function(r){ return r.bottom>minTop+4&&r.top<vh-4; });
+    if(!vis.length) return {first:l[0],last:l[l.length-1],off:true};
+    return {first:vis[0],last:vis[vis.length-1]};
+  }
+  function place(){
+    if(bar.hidden) return;
+    var a=anchor(), vw=window.innerWidth, vh=window.innerHeight, w=bar.offsetWidth, h=bar.offsetHeight, top=80, left=(vw-w)/2, pos="float", cx=vw/2;
+    var tb=document.querySelector(".topbar"), minTop=(tb?tb.getBoundingClientRect().bottom:0)+6, vv=window.visualViewport;
+    var maxBottom=vh-8, gapBelow=touch?36:12;
+    ["bottomBar","miniPlayer"].forEach(function(id){ var el=$(id); if(!el) return; var cs=getComputedStyle(el); if(cs.display==="none"||cs.visibility==="hidden"||(id==="miniPlayer"&&!el.classList.contains("show"))) return; var t=el.getBoundingClientRect().top; if(t>0&&t<maxBottom+8) maxBottom=Math.min(maxBottom,t-8); });
+    if(touch&&document.activeElement===note&&vv){ top=vv.offsetTop+vv.height-h-8; left=vv.offsetLeft+(vv.width-w)/2; }
+    else if(a){
+      if(a.off){ bar.style.visibility="hidden"; return; }
+      var canAbove=a.first.top-h-12>=minTop, belowTop=a.last.bottom+gapBelow, canBelow=belowTop+h<=maxBottom;
+      if(!touch&&canAbove) pos="above"; else if(canBelow) pos="below"; else if(canAbove) pos="above";
+      if(pos==="above"){ top=a.first.top-h-12; cx=(a.first.left+a.first.right)/2; }
+      else if(pos==="below"){ top=belowTop; cx=(a.last.left+a.last.right)/2; }
+      else top=Math.max(minTop,Math.min(maxBottom-h,a.first.top));
+      left=cx-w/2;
+    }
+    left=Math.max(8,Math.min(left,vw-w-8));
+    bar.style.visibility=""; bar.dataset.pos=pos;
+    bar.style.setProperty("--ax",Math.max(20,Math.min(w-20,cx-left))+"px");
+    bar.style.top=Math.round(top)+"px"; bar.style.left=Math.round(left)+"px";
+  }
+  var raf=0; function replace(){ cancelAnimationFrame(raf); raf=requestAnimationFrame(place); }
+  function setSel(c){ bar.querySelectorAll(".hl-dot").forEach(function(d){ d.classList.toggle("sel",parseInt(d.dataset.c,10)===c); }); }
+  function setKindUi(k){ $("hlKind").classList.toggle("on",k==="u"); $("hlKind").setAttribute("aria-pressed",k==="u"); }
+  function grow(){ note.style.height="auto"; note.style.height=Math.max(62,Math.min(note.scrollHeight,140))+"px"; }
+  function setNoteOpen(on,focus){
+    noteBox.hidden=!on; bar.classList.toggle("has-note-open",on); $("hlNoteBtn").classList.toggle("on",on);
+    if(on){ grow(); if(focus!==false) note.focus(); }
+    place();
+  }
+  function setSpeaking(v){ speaking=v; var b=$("hlSpeak"); b.classList.toggle("on",v); b.innerHTML=v?STOP:SPK; b.title=v?"Stop listening":"Listen to this text"; }
+  function stopSpeech(){ if(speaking){ try{ speechSynthesis.cancel(); }catch(e){} setSpeaking(false); } }
+  function curText(){ if(mode==="edit"){ var h=find(editId); return h?h.t:""; } return pending?pending.t:""; }
+  function showPending(r){
+    pendingRange=r||pendingRange;
+    try{ if(pendingRange&&window.CSS&&CSS.highlights&&window.Highlight) CSS.highlights.set("medora-pending",new Highlight(pendingRange)); }catch(e){}
+  }
+  function clearPending(){ pendingRange=null; try{ if(window.CSS&&CSS.highlights) CSS.highlights.delete("medora-pending"); }catch(e){} }
+  function hideBar(){ stopSpeech(); clearPending(); bar.hidden=true; bar.style.visibility=""; mode=null; pending=null; editId=null; anchorEl=null; note.value=""; noteBox.hidden=true; bar.classList.remove("has-note-open"); $("hlNoteBtn").classList.remove("on"); note.blur(); }
+  function openCreate(r){
+    mode="create"; editId=null; anchorEl=null; note.value=""; clearPending(); showPending(r); noteBox.hidden=true; bar.classList.remove("has-note-open"); $("hlNoteBtn").classList.remove("on");
+    $("hlDel").hidden=true; setSel(lastColors[kind]); setKindUi(kind); $("hlCopy").innerHTML=COPYI; setSpeaking(false);
+    $("hlSpeak").hidden=!window.speechSynthesis;
+    bar.hidden=false; bar.style.visibility="hidden"; place();
+  }
+  function openEdit(id,el){
+    var h=find(id); if(!h) return;
+    clearPending(); mode="edit"; editId=id; anchorEl=el; pending=null; note.value=h.n||"";
+    $("hlDel").hidden=false; setSel(h.c); setKindUi(h.k||"h"); $("hlCopy").innerHTML=COPYI; setSpeaking(false); $("hlSpeak").hidden=!window.speechSynthesis;
+    bar.hidden=false; bar.style.visibility="hidden"; setNoteOpen(!!h.n,false);
+  }
+  function applyEdit(patch){
+    var h=find(editId); if(!h) return;
+    for(var k in patch) h[k]=patch[k];
+    save(); render();
+    var el=area.querySelector('span.hl[data-hl="'+editId+'"]'); if(el) anchorEl=el;
+    setSel(h.c); setKindUi(h.k||"h"); place();
+    if(panel.classList.contains("open")) renderPanel();
+  }
+  function commit(color){
+    var text=note.value.trim(), newId=null;
+    if(mode==="create"&&pending){
+      var k=curKey(); if(!k) return hideBar();
+      var c=(color===undefined||color===null)?lastColors[kind]:color;
+      newId=uid();
+      (data[k]=data[k]||[]).push({id:newId,s:pending.s,e:pending.e,t:pending.t,c:c,k:kind,n:text,ts:Date.now()});
+      lastColors[kind]=c; try{ localStorage.setItem(CKEY,JSON.stringify(lastColors)); }catch(e){}
+      var sel=window.getSelection(); if(sel) sel.removeAllRanges();
+    } else if(mode==="edit"){
+      var h=find(editId); if(!h) return hideBar(); h.n=text; if(color!==undefined&&color!==null) h.c=color;
+    }
+    save(); hideBar(); render(); if(panel.classList.contains("open")) renderPanel();
+    if(newId){ area.querySelectorAll('span.hl[data-hl="'+newId+'"]').forEach(function(x){x.classList.add("flash");}); setTimeout(function(){ area.querySelectorAll("span.hl.flash").forEach(function(x){x.classList.remove("flash");}); },1300); }
+  }
+  function toast(msg,undo){
+    var t=$("hlToast"), b=t.querySelector("button"); t.querySelector("span").textContent=msg; b.hidden=!undo;
+    b.onclick=function(){ if(undo) undo(); t.classList.remove("show"); };
+    t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){ t.classList.remove("show"); },5500);
+  }
+  function deleteHl(key,id){
+    var l=data[key]||[], rec=null; l.forEach(function(h){ if(h.id===id) rec=h; }); if(!rec) return;
+    data[key]=l.filter(function(h){return h.id!==id;}); if(!data[key].length) delete data[key];
+    save(); if(String(curKey())===String(key)) render(); if(panel.classList.contains("open")) renderPanel();
+    toast("Highlight deleted",function(){ (data[key]=data[key]||[]).push(rec); save(); if(String(curKey())===String(key)) render(); if(panel.classList.contains("open")) renderPanel(); });
+  }
+  function toggleKind(){
+    if(mode==="edit"){ var h=find(editId); applyEdit({k:(h&&h.k==="u")?"h":"u"}); }
+    else { kind=kind==="u"?"h":"u"; try{ localStorage.setItem(KKEY,kind); }catch(e){} setKindUi(kind); setSel(lastColors[kind]); }
+  }
+
+  /* ---------- selection handling ---------- */
+  var selTimer=0;
+  function checkSelection(){
+    if(document.activeElement===note) return;
+    if(mode==="edit") return;
+    var sel=window.getSelection();
+    if(!sel||!sel.rangeCount||sel.isCollapsed){ if(mode==="create"&&Date.now()-barTouchAt>2500) hideBar(); return; }
+    var r=sel.getRangeAt(0).cloneRange();
+    if(!r.intersectsNode(area)){ if(mode==="create") hideBar(); return; }
+    if(!area.contains(r.startContainer)) r.setStart(area,0);          // selection began above/outside the text
+    if(!area.contains(r.endContainer)) r.setEnd(area,area.childNodes.length); // ...or ended below/outside it
+    var s=offsetOf(r.startContainer,r.startOffset), e=offsetOf(r.endContainer,r.endOffset);
+    if(e<s){ var t=s; s=e; e=t; }
+    var full=area.textContent, txt=full.slice(s,e), lead=txt.length-txt.replace(/^\s+/,"").length, trail=txt.length-txt.replace(/\s+$/,"").length;
+    s+=lead; e-=trail; if(e-s<2){ if(mode==="create") hideBar(); return; }
+    var changed=!pending||pending.s!==s||pending.e!==e;
+    pending={s:s,e:e,t:full.slice(s,e)};
+    if(mode!=="create") openCreate(r);
+    else if(changed){ clearPending(); showPending(r); place(); }
+    else { pendingRange=r; place(); }
+  }
+  function schedule(delay){ clearTimeout(selTimer); selTimer=setTimeout(checkSelection,delay); }
+  document.addEventListener("selectionchange",function(){ if(touch) schedule(380); });
+  document.addEventListener("mouseup",function(e){ if(bar.contains(e.target)) return; schedule(10); });
+  document.addEventListener("dblclick",function(e){ if(!bar.contains(e.target)) schedule(10); });
+  area.addEventListener("keyup",function(e){ if(e.shiftKey||/Arrow|Home|End/.test(e.key)) schedule(120); });
+  area.addEventListener("click",function(e){
+    var el=e.target.closest&&e.target.closest("span.hl"); if(!el) return;
+    var s=window.getSelection(); if(s&&!s.isCollapsed) return;
+    e.preventDefault(); hideBar(); openEdit(el.dataset.hl,el);
+  });
+  document.addEventListener("pointerdown",function(e){
+    if(bar.contains(e.target)){ barTouchAt=Date.now(); return; }
+    barTouchAt=0;
+    if(bar.hidden) return;
+    if(mode==="edit"&&!(e.target.closest&&e.target.closest("span.hl"))) hideBar();
+  });
+  bar.addEventListener("pointerdown",function(e){ barTouchAt=Date.now(); if(e.target!==note) e.preventDefault(); });
+  bar.addEventListener("touchstart",function(){ barTouchAt=Date.now(); },{passive:true});
+  bar.addEventListener("click",function(e){
+    var d=e.target.closest(".hl-dot");
+    if(d){ var c=parseInt(d.dataset.c,10); if(mode==="create") commit(c); else applyEdit({c:c}); return; }
+    if(e.target.closest("#hlKind")){ toggleKind(); return; }
+    if(e.target.closest("#hlNoteBtn")){ setNoteOpen(noteBox.hidden); return; }
+    if(e.target.closest("#hlCopy")){ var b=$("hlCopy"); copyText(curText()).then(function(){ b.innerHTML=CHECKI; b.classList.add("on"); setTimeout(function(){ b.innerHTML=COPYI; b.classList.remove("on"); },1200); },function(){}); return; }
+    if(e.target.closest("#hlSpeak")){
+      if(speaking){ stopSpeech(); return; }
+      try{ if(app.reader&&app.reader.stop) app.reader.stop(); }catch(x){}
+      try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(curText()); u.lang="en-US"; u.rate=.95; u.onend=u.onerror=function(){ setSpeaking(false); }; speechSynthesis.speak(u); setSpeaking(true); }catch(x){}
+      return;
+    }
+    if(e.target.closest("#hlDel")){ var id=editId, key=curKey(); hideBar(); deleteHl(key,id); return; }
+    if(e.target.closest("#hlSave")) commit();
+  });
+  note.addEventListener("keydown",function(e){
+    if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); commit(); }
+    else if(e.key==="Escape"){ e.preventDefault(); hideBar(); }
+  });
+  note.addEventListener("input",function(){ grow(); replace(); });
+  note.addEventListener("focus",function(){ setTimeout(place,250); });
+  note.addEventListener("blur",function(){ setTimeout(place,120); });
+  // keyboard shortcuts while the bar is open: 1-4 color, U underline, N note, Delete
+  document.addEventListener("keydown",function(e){
+    if(bar.hidden||e.ctrlKey||e.metaKey||e.altKey) return;
+    if(/input|textarea|select/i.test((e.target&&e.target.tagName)||"")) return;
+    var k=e.key, handled=true;
+    if(k>="1"&&k<="4"){ var c=parseInt(k,10)-1; if(mode==="create") commit(c); else applyEdit({c:c}); }
+    else if(k==="u"||k==="U") toggleKind();
+    else if(k==="n"||k==="N") setNoteOpen(true);
+    else if(k==="Delete"&&mode==="edit"){ var id=editId, key=curKey(); hideBar(); deleteHl(key,id); }
+    else handled=false;
+    if(handled){ e.preventDefault(); e.stopImmediatePropagation(); }
+  },true);
+  window.addEventListener("scroll",replace,{passive:true});
+  window.addEventListener("resize",replace);
+  if(window.visualViewport){ visualViewport.addEventListener("resize",replace); visualViewport.addEventListener("scroll",replace); }
+
+  /* ---------- notes panel ---------- */
+  function chapters(){ return app.all(); }
+  function chIndex(ch){ return app.books[ch.cls].indexOf(ch); }
+  var COLORS=["Yellow","Green","Blue","Pink"];
+  function renderPanel(){
+    var list=$("hlpList"), html="", shown=0, n=total(), chs=chapters();
+    $("hlpSub").textContent=n?(n+" highlight"+(n===1?"":"s")+" · saved in this browser"):"Saved in this browser";
+    $("hlpCopy").disabled=!n;
+    $("hlpFilter").querySelectorAll(".hlp-fdot").forEach(function(b){ b.classList.toggle("on",filterC===parseInt(b.dataset.c,10)); });
+    chs.forEach(function(ch){
+      var items=(data[ch.key]||[]).slice().sort(function(a,b){return a.s-b.s;}).filter(function(h){return filterC===null||h.c===filterC;});
+      if(!items.length) return;
+      html+='<div class="hlp-ch">'+esc(ch.title)+'<small>Class '+ch.cls+' · '+items.length+'</small></div>';
+      items.forEach(function(h){
+        shown++;
+        html+='<div class="hlp-item" style="--c:var(--hs'+h.c+')" data-key="'+esc(String(ch.key))+'" data-id="'+h.id+'">'+
+          '<button type="button" class="hlp-quote" data-act="open" title="Open in chapter">“'+esc(h.t)+'”</button>'+
+          (h.n?'<div class="hlp-nt">'+esc(h.n)+'</div>':'')+
+          '<div class="hlp-meta"><span>'+COLORS[h.c]+(h.k==='u'?' underline':'')+' · '+new Date(h.ts||Date.now()).toLocaleDateString(undefined,{day:"numeric",month:"short"})+'</span><button type="button" data-act="open">Open</button><button type="button" class="hlp-rm" data-act="del">Delete</button></div></div>';
+      });
+    });
+    if(!shown) html='<div class="hlp-empty">'+(n?'No highlights in this color.':'No highlights yet.<br>Open a chapter, select any text and pick a color. Add a note and press Enter.')+'</div>';
+    list.innerHTML=html;
+  }
+  function openPanel(){ hideBar(); renderPanel(); panel.classList.add("open"); pov.classList.add("show"); document.body.classList.add("hlp-lock"); panel.setAttribute("aria-hidden","false"); }
+  function closePanel(){ panel.classList.remove("open"); pov.classList.remove("show"); document.body.classList.remove("hlp-lock"); panel.setAttribute("aria-hidden","true"); }
+  function scrollToHl(id,edit){
+    var el=area.querySelector('span.hl[data-hl="'+id+'"]'); if(!el) return false;
+    el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("flash");
+    area.querySelectorAll('span.hl[data-hl="'+id+'"]').forEach(function(x){x.classList.add("flash");});
+    setTimeout(function(){ area.querySelectorAll("span.hl.flash").forEach(function(x){x.classList.remove("flash");}); },1800);
+    return true;
+  }
+  function goTo(key,id){
+    var ch=null; chapters().forEach(function(c){ if(String(c.key)===String(key)) ch=c; });
+    if(!ch) return; closePanel(); focusId=id;
+    var home=document.body.classList.contains("is-home")||document.body.classList.contains("is-quiz");
+    if(!home&&String(curKey())===String(key)){ setTimeout(function(){ scrollToHl(id); focusId=null; },300); return; }
+    app.openChapter(ch.cls,chIndex(ch));
+  }
+  $("notesBtn").addEventListener("click",function(){ panel.classList.contains("open")?closePanel():openPanel(); });
+  $("hlpClose").addEventListener("click",closePanel);
+  pov.addEventListener("click",closePanel);
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ if(!bar.hidden) hideBar(); else if(panel.classList.contains("open")) closePanel(); } });
+  $("hlpFilter").addEventListener("click",function(e){ var b=e.target.closest(".hlp-fdot"); if(!b) return; var c=parseInt(b.dataset.c,10); filterC=(filterC===c)?null:c; renderPanel(); });
+  $("hlpList").addEventListener("click",function(e){
+    var b=e.target.closest("[data-act]"), it=e.target.closest(".hlp-item"); if(!b||!it) return;
+    var key=it.dataset.key, id=it.dataset.id;
+    if(b.dataset.act==="open") goTo(key,id);
+    else if(b.dataset.act==="del"){
+      deleteHl(key,id);
+    }
+  });
+  function exportText(){
+    var out=["MEDORA — Highlights & notes",""];
+    chapters().forEach(function(ch){
+      var items=(data[ch.key]||[]).slice().sort(function(a,b){return a.s-b.s;}); if(!items.length) return;
+      out.push("Class "+ch.cls+" · "+ch.title);
+      items.forEach(function(h){ out.push("• “"+h.t.replace(/\s+/g," ")+"”"); if(h.n) out.push("  Note: "+h.n.replace(/\n/g,"\n  ")); });
+      out.push("");
+    });
+    return out.join("\n").trim()+"\n";
+  }
+  function copyText(t){
+    if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(t);
+    return new Promise(function(res,rej){ try{ var ta=document.createElement("textarea"); ta.value=t; ta.style.cssText="position:fixed;top:0;left:0;opacity:0"; document.body.appendChild(ta); ta.focus(); ta.select(); var ok=document.execCommand("copy"); document.body.removeChild(ta); ok?res():rej(); }catch(err){ rej(err); } });
+  }
+  $("hlpCopy").addEventListener("click",function(){
+    var b=this, old="📋 Copy all";
+    copyText(exportText()).then(function(){ b.textContent="✓ Copied"; },function(){ b.textContent="Copy failed"; }).then(function(){ setTimeout(function(){ b.textContent=old; },1600); });
+  });
+
+  /* ---------- hook into chapter loading ---------- */
+  var _lc=app.loadChapter;
+  app.loadChapter=function(idx){
+    hideBar();
+    var r=_lc.apply(this,arguments);
+    try{ render(); }catch(e){ console.warn("highlights",e); }
+    if(focusId){ var id=focusId; focusId=null; setTimeout(function(){ scrollToHl(id); },220); }
+    return r;
+  };
+  // safety net: if something rebuilds the text (e.g. the reader), put highlights back
+  try{
+    var t=0, mo=new MutationObserver(function(){ if(busy) return; clearTimeout(t); t=setTimeout(function(){
+      var want=(data[curKey()]||[]).length; if(want&&!area.querySelector("span.hl")) render();
+    },200); });
+    mo.observe(area,{childList:true,subtree:true});
+  }catch(e){}
+  window.addEventListener("storage",function(e){ if(e.key===KEY){ try{ data=JSON.parse(e.newValue)||{}; }catch(x){ data={}; } updateCount(); render(); if(panel.classList.contains("open")) renderPanel(); } });
+  window.addEventListener("hashchange",function(){ hideBar(); });
+  updateCount();
+  if(area.textContent.trim()) render();
 })();
 </script>
 </body>
