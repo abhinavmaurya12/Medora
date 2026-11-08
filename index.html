@@ -2123,6 +2123,329 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
 }
 @media (min-width: 900px) and (min-height: 560px) and (hover: hover) { .qr-item p { font-size: 14px; } .qr-item p b { font-size: 15px; } }
 </style>
+<style id="mockCss">
+/* --- Mock test card: tidy layout for desktop, tablet and mobile --- */
+#cardMock { text-align: left; width: 100%; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+#cardMock .qc-text h2 { overflow-wrap: anywhere; }
+#cardMock .qc-text .card-progress { height: 6px; border-radius: 99px; overflow: hidden; }
+#cardMock .qc-btn { white-space: nowrap; min-height: 44px; }
+#cardMock .class-chip { white-space: nowrap; }
+#cardMock:focus-visible { outline: 2px solid var(--ac); outline-offset: 3px; }
+@media (min-width: 701px) and (max-width: 900px) {
+  .class-grid #cardMock { gap: 18px; padding: 22px 24px; }
+  #cardMock .qc-main { gap: 16px; }
+  #cardMock .class-icon { width: 56px; height: 56px; font-size: 26px; }
+  #cardMock .qc-btn { padding: 11px 18px; }
+}
+@media (max-width: 700px) {
+  .class-grid #cardMock { gap: 14px; padding: 18px 16px 16px; }
+  /* icon and title share one row; description and progress use the full width */
+  #cardMock .qc-main { display: block; }
+  #cardMock .qc-text { display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 12px; row-gap: 10px; align-items: center; width: 100%; }
+  #cardMock .class-icon { position: absolute; top: 18px; left: 16px; width: 44px; height: 44px; font-size: 22px; border-radius: 12px; }
+  #cardMock .qc-text h2 { grid-column: 2; grid-row: 1; font-size: 20px; line-height: 1.2; min-height: 44px; display: flex; align-items: center; }
+  #cardMock .qc-text .class-sub { grid-column: 1 / -1; grid-row: 2; font-size: 13px; line-height: 1.5; max-width: none; }
+  #cardMock .qc-text .card-progress { grid-column: 1 / -1; grid-row: 3; margin: 0; max-width: none; height: 5px; }
+  #cardMock .qc-side { gap: 12px; }
+  #cardMock .qc-chips { gap: 6px; justify-content: flex-start; }
+  #cardMock .class-chip { font-size: 12px; padding: 5px 10px; }
+  #cardMock .qc-btn { width: 100%; min-height: 48px; padding: 12px; font-size: 15px; }
+}
+@media (max-width: 360px) {
+  .class-grid #cardMock { padding: 16px 14px 14px; }
+  #cardMock .class-icon { top: 16px; left: 14px; width: 40px; height: 40px; font-size: 20px; }
+  #cardMock .qc-text { grid-template-columns: 40px minmax(0, 1fr); }
+  #cardMock .qc-text h2 { font-size: 18px; min-height: 40px; }
+}
+@media (hover: none) { .class-grid #cardMock:hover { transform: none !important; } #cardMock:hover .qc-btn { transform: none; } }
+
+/* ===== NEET FULL-LENGTH MOCK TEST ===== */
+.class-card.is-quiz.quiz-card.is-mock { --ac: #d1456c; }
+
+body.is-mock { overflow: hidden; }
+#mockApp { display: none; position: fixed; inset: 0; z-index: 3000; background: var(--bg-desk); color: var(--text-main); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; overflow: hidden; outline: none;
+  --mk-ok: #10b981; --mk-bad: #ef4444; --mk-mark: #8b5cf6; --mk-warn: #f59e0b; }
+body.is-mock #mockApp { display: flex; flex-direction: column; }
+#mockApp *, #mockApp *::before, #mockApp *::after { box-sizing: border-box; }
+#mockApp button { font-family: inherit; cursor: pointer; }
+:where(#mockApp) :is(h1, h2, h3, h4, p) { margin: 0; }
+
+.mk-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 9px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: border-color .15s, transform .1s; }
+.mk-btn:hover:not([disabled]) { border-color: var(--brand-emerald); }
+.mk-btn:active:not([disabled]) { transform: scale(.97); }
+.mk-btn[disabled] { opacity: .4; cursor: not-allowed; }
+.mk-btn.mk-pri { background: var(--brand-emerald); color: #fff; border-color: transparent; }
+.mk-btn.mk-danger { background: #dc2626; color: #fff; border-color: transparent; }
+.mk-btn.mk-lg { padding: 14px 24px; font-size: 15px; border-radius: 12px; }
+.mk-logo { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; background: linear-gradient(135deg, #e11d48, #f59e0b); flex: 0 0 auto; }
+
+/* top bars */
+.mk-rtop, .mk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background: var(--bg-surface); border-bottom: 1px solid var(--border); }
+.mk-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mk-brand b { display: block; font-size: 15px; line-height: 1.2; }
+.mk-brand small { display: block; color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.mk-tbtns { display: flex; gap: 8px; align-items: center; }
+.mk-timer { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; padding: 6px 14px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.mk-timer.warn { color: var(--mk-warn); border-color: var(--mk-warn); }
+.mk-timer.low { color: #fff; background: var(--mk-bad); border-color: var(--mk-bad); animation: mkPulse 1s infinite; }
+@keyframes mkPulse { 50% { opacity: .72; } }
+
+/* subject tabs */
+.mk-tabs { display: flex; gap: 6px; padding: 8px 16px; overflow-x: auto; background: var(--bg-surface); border-bottom: 1px solid var(--border); scrollbar-width: none; }
+.mk-tabs::-webkit-scrollbar { display: none; }
+.mk-tab { flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.mk-tab small { opacity: .7; font-weight: 600; margin-left: 4px; }
+.mk-tab.on { background: var(--brand-emerald); color: #fff; border-color: transparent; }
+
+/* exam body */
+.mk-exam { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.mk-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 300px; position: relative; }
+.mk-main { overflow: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+.mk-qcard { max-width: 820px; margin: 0 auto; }
+.mk-qh { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.mk-qn { font-weight: 800; font-size: 15px; }
+.mk-qn small { color: var(--text-muted); font-weight: 600; }
+.mk-qs { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--brand-emerald-dim); color: var(--brand-emerald); }
+.mk-marks { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); }
+.mk-flag { margin-left: auto; background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.mk-flag.on { background: var(--mk-mark); border-color: var(--mk-mark); color: #fff; }
+.mk-qt { font-family: 'Crimson Pro', Georgia, serif; font-size: 22px; line-height: 1.5; margin-bottom: 18px; white-space: pre-line; }
+.mk-opt { display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left; padding: 13px 14px; margin: 0 0 10px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 16px; line-height: 1.5; transition: border-color .12s, background .12s; }
+.mk-opt:hover { border-color: var(--brand-emerald); }
+.mk-opt.sel { border-color: var(--brand-emerald); background: var(--brand-emerald-dim); box-shadow: 0 0 0 1px var(--brand-emerald) inset; }
+.mk-let { flex: 0 0 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; border: 1.5px solid var(--border); }
+.mk-opt.sel .mk-let { background: var(--brand-emerald); color: #fff; border-color: transparent; }
+.mk-ot { padding-top: 2px; overflow-wrap: anywhere; }
+.mk-keys { margin-top: 14px; font-size: 12px; color: var(--text-muted); }
+.mk-keys kbd { font-family: 'JetBrains Mono', monospace; font-size: 11px; border: 1px solid var(--border); background: var(--bg-card); padding: 1px 6px; border-radius: 5px; margin: 0 2px; }
+
+.mk-foot { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); background: var(--bg-surface); border-top: 1px solid var(--border); }
+.mk-foot .mk-btn { flex: 0 1 auto; }
+
+/* palette */
+.mk-pal { border-left: 1px solid var(--border); background: var(--bg-surface); overflow: auto; padding: 14px; -webkit-overflow-scrolling: touch; }
+.mk-palh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; }
+.mk-leg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+.mk-leg div { display: flex; align-items: center; gap: 7px; }
+.mk-leg b { color: var(--text-main); }
+.mk-sw { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); flex: 0 0 auto; position: relative; }
+.mk-sw.st-na, .mk-p.st-na { background: var(--mk-bad); border-color: transparent; color: #fff; }
+.mk-sw.st-ans, .mk-p.st-ans { background: var(--mk-ok); border-color: transparent; color: #fff; }
+.mk-sw.st-mrk, .mk-p.st-mrk, .mk-sw.st-amk, .mk-p.st-amk { background: var(--mk-mark); border-color: transparent; color: #fff; border-radius: 50%; }
+.mk-sw.st-amk::after, .mk-p.st-amk::after { content: ""; position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; background: var(--mk-ok); border: 2px solid var(--bg-surface); }
+.mk-pg { margin-bottom: 16px; }
+.mk-pg h4 { font-size: 13px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.mk-pg h4 small { color: var(--text-muted); font-weight: 600; }
+.mk-pgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.mk-p { aspect-ratio: 1; min-height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-weight: 700; font-size: 12px; position: relative; padding: 0; }
+.mk-p.cur { outline: 2px solid var(--brand-gold); outline-offset: 2px; }
+.mk-backdrop { display: none; }
+.mk-m { display: none !important; }
+
+/* intro + result screens */
+.mk-scroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 0 16px calc(36px + env(safe-area-inset-bottom, 0px)); }
+.mk-wrap { max-width: 940px; margin: 0 auto; padding-top: 22px; }
+.mk-hero h1 { font-size: 30px; line-height: 1.15; letter-spacing: -.02em; }
+.mk-hero p { color: var(--text-muted); margin-top: 8px; font-size: 15px; }
+.mk-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+.mk-fact { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; text-align: center; }
+.mk-fact b { display: block; font-size: 24px; font-family: 'JetBrains Mono', monospace; }
+.mk-fact span { font-size: 12px; color: var(--text-muted); }
+.mk-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+.mk-card h3 { font-size: 16px; margin-bottom: 10px; }
+.mk-card ul { margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+.mk-card li b { color: var(--text-main); }
+.mk-resume { border-color: var(--mk-warn); }
+.mk-resume p { color: var(--text-muted); font-size: 14px; margin-bottom: 12px; }
+.mk-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.mk-hist { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mk-hist th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.mk-hist td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
+.mk-hist tr:last-child td { border-bottom: 0; }
+.mk-hist .mk-btn { padding: 5px 10px; font-size: 12px; }
+.mk-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+.mk-scorecard { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(225,29,72,.14), rgba(245,158,11,.12)); border: 1px solid var(--border); border-radius: 18px; padding: 22px; margin-bottom: 16px; }
+.mk-big { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 54px; line-height: 1; }
+.mk-big small { font-size: 22px; color: var(--text-muted); font-weight: 600; }
+.mk-sc-sub { color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+.mk-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.mk-tile { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
+.mk-tile b { display: block; font-size: 22px; font-family: 'JetBrains Mono', monospace; }
+.mk-tile span { font-size: 12px; color: var(--text-muted); }
+.mk-tile.ok b { color: var(--mk-ok); } .mk-tile.bad b { color: var(--mk-bad); }
+.mk-subj { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.mk-sj { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+.mk-sj h4 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.mk-sj h4 span { font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+.mk-sj h4 span.neg { color: var(--mk-bad); }
+.mk-bar { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; margin-bottom: 10px; }
+.mk-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--brand-emerald), var(--brand-teal)); border-radius: 99px; }
+.mk-sj dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 12px; color: var(--text-muted); }
+.mk-sj dd { margin: 0; text-align: right; color: var(--text-main); font-weight: 700; }
+.mk-sj dt { margin: 0; }
+.mk-insight { font-size: 14px; color: var(--text-muted); margin-top: 12px; line-height: 1.6; }
+.mk-insight b { color: var(--text-main); }
+
+.mk-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
+.mk-chip { border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; }
+.mk-chip.on { background: var(--brand-emerald); color: #fff; border-color: transparent; }
+.mk-rv { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.mk-rv.ok { border-left-color: var(--mk-ok); } .mk-rv.bad { border-left-color: var(--mk-bad); } .mk-rv.skip { border-left-color: var(--text-muted); }
+.mk-rvh { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+.mk-rvh em { font-style: normal; margin-left: auto; font-family: 'JetBrains Mono', monospace; }
+.mk-rv.ok .mk-rvh em { color: var(--mk-ok); } .mk-rv.bad .mk-rvh em { color: var(--mk-bad); }
+.mk-rv p { font-family: 'Crimson Pro', Georgia, serif; font-size: 19px; line-height: 1.45; margin-bottom: 10px; white-space: pre-line; }
+.mk-ro { display: flex; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 9px; margin-bottom: 6px; font-size: 14px; align-items: flex-start; }
+.mk-ro.cor { background: rgba(16,185,129,.14); border-color: var(--mk-ok); }
+.mk-ro.wr { background: rgba(239,68,68,.12); border-color: var(--mk-bad); }
+.mk-ro b { flex: 0 0 18px; }
+.mk-ro span.tag { margin-left: auto; font-size: 11px; font-weight: 800; white-space: nowrap; padding-left: 8px; }
+.mk-empty { text-align: center; color: var(--text-muted); padding: 24px; font-size: 14px; }
+
+/* modal, pause, toast */
+.mk-modal, .mk-pause { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; z-index: 20; }
+.mk-modal { background: rgba(0,0,0,.55); }
+.mk-pause { background: var(--bg-desk); z-index: 15; }
+.mk-mbox { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
+.mk-mbox h2 { font-size: 19px; margin-bottom: 8px; }
+.mk-mbox p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+.mk-mgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 13px; margin-bottom: 14px; }
+.mk-mgrid div { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding: 4px 0; }
+.mk-mbtns { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.mk-toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); background: #111827; color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 30; max-width: 90vw; text-align: center; }
+.mk-toast.show { opacity: 1; }
+
+@media (max-width: 899px), (max-height: 520px) {
+  .mk-body { grid-template-columns: 1fr; }
+  .mk-m { display: inline-flex !important; }
+  .mk-pal { position: fixed; left: 0; right: 0; bottom: 0; max-height: 78vh; border: 1px solid var(--border); border-radius: 18px 18px 0 0; transform: translateY(105%); transition: transform .25s ease; z-index: 6; padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -12px 40px rgba(0,0,0,.35); }
+  .mk-pal.open { transform: none; }
+  .mk-backdrop.show { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 5; }
+  .mk-pgrid { grid-template-columns: repeat(7, 1fr); }
+  .mk-main { padding: 16px 14px; }
+  .mk-keys { display: none; }
+}
+@media (max-width: 640px) {
+  .mk-timer { font-size: 17px; padding: 5px 10px; }
+  .mk-top .mk-brand > div, .mk-tbtns .mk-btn span { display: none; }
+  .mk-qt { font-size: 20px; }
+  .mk-facts { grid-template-columns: repeat(2, 1fr); }
+  .mk-subj { grid-template-columns: 1fr; }
+  .mk-hero h1 { font-size: 24px; }
+  .mk-big { font-size: 44px; }
+  .mk-foot .mk-btn { flex: 1 1 calc(50% - 8px); padding: 11px 8px; font-size: 12.5px; }
+  .mk-hist .hide-s { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .mk-timer.low { animation: none; } .mk-pal { transition: none; } }
+
+/* --- Mock test: responsive polish (phones, small phones, landscape) --- */
+#mockApp { height: 100vh; height: 100dvh; max-height: 100%; }
+#mockApp button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.mk-main, .mk-scroll, .mk-pal { overscroll-behavior: contain; }
+.mk-opt { -webkit-user-select: none; user-select: none; }
+.mk-top { padding-left: calc(16px + env(safe-area-inset-left, 0px)); padding-right: calc(16px + env(safe-area-inset-right, 0px)); }
+.mk-foot { padding-left: calc(16px + env(safe-area-inset-left, 0px)); padding-right: calc(16px + env(safe-area-inset-right, 0px)); }
+.mk-foot .mk-btn { min-height: 42px; }
+@media (min-width: 900px) and (min-height: 521px) { .mk-foot { gap: 10px; } .mk-foot .mk-btn { padding: 10px 18px; } }
+@media (max-width: 640px) {
+  /* top bar: timer + actions only, so nothing overflows on 320px phones */
+  .mk-top { gap: 8px; padding-left: calc(12px + env(safe-area-inset-left, 0px)); padding-right: calc(12px + env(safe-area-inset-right, 0px)); }
+  .mk-top .mk-brand { display: none; }
+  .mk-top .mk-timer { margin-right: auto; }
+  .mk-tbtns { gap: 6px; }
+  .mk-tbtns .mk-btn { min-width: 42px; min-height: 40px; padding: 8px 10px; }
+  .mk-tbtns .mk-btn.mk-danger { padding: 8px 14px; }
+  .mk-tabs { padding: 8px 12px; }
+  .mk-tab { padding: 7px 12px; }
+  .mk-main { padding: 14px 12px; }
+  /* one compact footer row */
+  .mk-foot { flex-wrap: nowrap; gap: 6px; justify-content: stretch; padding-top: 8px; padding-left: calc(10px + env(safe-area-inset-left, 0px)); padding-right: calc(10px + env(safe-area-inset-right, 0px)); }
+  .mk-foot .mk-btn { flex: 1 1 0; min-width: 0; min-height: 46px; padding: 10px 4px; font-size: 13px; white-space: nowrap; }
+  .mk-foot .mk-btn[data-act="prev"] { flex: 0 0 48px; }
+  .mk-foot .mk-btn.mk-pri { flex: 1.5 1 0; }
+  .mk-l { display: none; }
+  .mk-opt { padding: 12px; }
+  .mk-toast { bottom: 74px; }
+  .mk-wrap { padding-top: 14px; }
+  .mk-row > .mk-btn.mk-lg { flex: 1 1 100%; }
+  .mk-scorecard { padding: 18px; gap: 14px; }
+  .mk-rtop { padding-left: calc(12px + env(safe-area-inset-left, 0px)); padding-right: calc(12px + env(safe-area-inset-right, 0px)); }
+}
+@media (max-width: 360px) {
+  .mk-top .mk-timer { font-size: 15px; padding: 5px 8px; }
+  .mk-tbtns .mk-btn { min-width: 38px; padding: 8px; }
+  .mk-tbtns .mk-btn.mk-danger { padding: 8px 10px; font-size: 12.5px; }
+  .mk-qt { font-size: 18px; }
+  .mk-opt { font-size: 15px; gap: 10px; }
+  .mk-foot .mk-btn { font-size: 12px; }
+  .mk-pgrid { grid-template-columns: repeat(6, 1fr); }
+}
+/* landscape phones: compact chrome, question and options side by side */
+@media (max-height: 520px) {
+  .mk-rtop, .mk-top { padding-top: calc(4px + env(safe-area-inset-top, 0px)); padding-bottom: 4px; }
+  .mk-logo { width: 28px; height: 28px; font-size: 14px; }
+  .mk-brand small { display: none; }
+  .mk-timer { font-size: 17px; padding: 3px 10px; }
+  .mk-btn { padding: 6px 10px; }
+  .mk-tabs { padding: 4px 12px; }
+  .mk-tab { padding: 4px 10px; font-size: 12px; }
+  .mk-foot { padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .mk-foot .mk-btn { min-height: 36px; padding: 6px 12px; }
+  .mk-main { padding: 10px 14px; }
+}
+@media (max-height: 520px) and (min-width: 600px) {
+  .mk-qcard { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; align-items: start; }
+  .mk-qh { grid-column: 1 / -1; margin-bottom: 8px; }
+  .mk-qt { font-size: 17px; margin-bottom: 0; }
+  .mk-opt { padding: 8px 10px; font-size: 14px; margin-bottom: 6px; }
+  .mk-keys { grid-column: 1 / -1; margin-top: 6px; }
+  .mk-pal { max-height: 94vh; max-height: 94dvh; }
+  .mk-pgrid { grid-template-columns: repeat(10, 1fr); }
+  .mk-p { min-height: 30px; }
+  .mk-facts { grid-template-columns: repeat(4, 1fr); }
+  .mk-hero h1 { font-size: 22px; }
+  .mk-fact { padding: 8px; } .mk-fact b { font-size: 18px; }
+}
+@media (max-height: 520px) and (max-width: 599px) { .mk-keys { display: none; } }
+
+.mk-palbar { display: none; }
+@media (max-width: 899px), (max-height: 520px) {
+  .mk-palbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 9px 14px; background: var(--bg-card); border: 0; border-bottom: 1px solid var(--border); color: var(--text-main); font-size: 13px; font-weight: 700; text-align: left; min-height: 40px; }
+  .mk-pbs { display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .mk-pbs i { width: 10px; height: 10px; border-radius: 3px; margin-left: 6px; border: 1px solid var(--border); }
+  .mk-pbs i:first-child { margin-left: 0; }
+  .mk-pbs .d-ans { background: var(--mk-ok); border-color: transparent; } .mk-pbs .d-na { background: var(--mk-bad); border-color: transparent; }
+  .mk-pbs .d-mrk { background: var(--mk-mark); border-color: transparent; border-radius: 50%; } .mk-pbs .d-un { background: var(--bg-surface); }
+  .mk-pbs b { font-size: 18px; margin-left: 6px; color: var(--text-muted); }
+}
+@media (max-height: 520px) { .mk-palbar { padding: 4px 14px; min-height: 30px; } }
+
+/* --- Mock test hub (Mock Test 1 / Mock Test 2) --- */
+.mk-hub { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0 8px; }
+.mk-tc { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; padding: 18px; border-radius: 18px; border: 1.5px solid var(--border); background: var(--bg-surface); color: var(--text-main); transition: border-color .15s, transform .12s, box-shadow .15s; position: relative; }
+.mk-tc:hover { border-color: #d1456c; transform: translateY(-2px); box-shadow: var(--shadow); }
+.mk-tc:active { transform: scale(.985); }
+.mk-tc:focus-visible { outline: 2px solid #d1456c; outline-offset: 3px; }
+.mk-tc.t2 { --tc: #7c3aed; } .mk-tc.t1 { --tc: #d1456c; }
+.mk-tci { flex: 0 0 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; background: color-mix(in srgb, var(--tc) 16%, transparent); }
+.mk-tcb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.mk-tcb b { font-size: 18px; line-height: 1.2; }
+.mk-tcb small { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; }
+.mk-tst { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+.mk-tst.live { color: var(--mk-warn); }
+.mk-tcc { flex: 0 0 auto; background: var(--tc); color: #fff; font-weight: 800; font-size: 13px; padding: 10px 14px; border-radius: 12px; white-space: nowrap; }
+@media (max-width: 760px) {
+  .mk-hub { grid-template-columns: 1fr; gap: 12px; }
+  .mk-tc { padding: 14px; gap: 12px; }
+  .mk-tci { flex-basis: 46px; height: 46px; font-size: 24px; border-radius: 13px; }
+  .mk-tcb b { font-size: 17px; }
+}
+@media (max-width: 380px) { .mk-tc { flex-wrap: wrap; } .mk-tcc { width: 100%; text-align: center; } }
+@media (max-height: 520px) and (min-width: 600px) { .mk-hub { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 10px 0; } .mk-tc { padding: 10px 12px; } }
+
+@media (max-width: 360px) { .mk-pbt { font-size: 12px; } .mk-pbs { gap: 3px; font-size: 11px; } }
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
@@ -2132,7 +2455,7 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.3.0</span>
+    <span class="badge-tag">vr.1.4.0</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -2155,7 +2478,7 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.3.0">VR.1.3.0</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.4.0">VR.1.4.0</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2236,6 +2559,23 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
           <span class="class-chip" id="cardPyqTotal">1050 questions</span>
         </div>
         <span class="class-cta qc-btn">Start PYQ quiz →</span>
+      </div>
+    </button>
+    <button class="class-card is-quiz quiz-card is-mock" id="cardMock" type="button" aria-label="Open NEET mock tests">
+      <div class="qc-main">
+        <div class="class-icon">🏆</div>
+        <div class="qc-text">
+          <h2>NEET Mock Test</h2>
+          <div class="class-sub">Two full-length NEET mock tests, Mock Test 1 and Mock Test 2. Each has 180 questions, 3 hours, +4 / −1 marking, a question palette and a subject-wise score report.</div>
+          <div class="card-progress"><span id="cardMockBar"></span></div>
+        </div>
+      </div>
+      <div class="qc-side">
+        <div class="qc-chips">
+          <span class="class-chip" id="cardMockCount">2 mock tests</span>
+          <span class="class-chip" id="cardMockBest">180 Q each · 3 hours</span>
+        </div>
+        <span class="class-cta qc-btn" id="cardMockCta">Open mock tests →</span>
       </div>
     </button>
   </div>
@@ -2360,7 +2700,7 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.3.0</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.4.0</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2379,6 +2719,7 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
       <ul>
         <li><a class="sf-link" href="#quiz">📝 Bio Quiz</a></li>
         <li><a class="sf-link" href="#pyq">🎯 NEET UG PYQ Quiz</a></li>
+        <li><a class="sf-link" href="#mock">🏆 NEET Mock Test</a></li>
       </ul>
     </nav>
     <nav class="sf-col" aria-label="Tools">
@@ -2400,7 +2741,7 @@ html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; 
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.3.0</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.4.0</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -12451,6 +12792,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   <div class="mm-label">Practice</div>
   <button class="mm-item" data-mm="quiz" type="button"><span class="mm-ico">📝</span>Bio Quiz</button>
   <button class="mm-item" data-mm="pyq" type="button"><span class="mm-ico">🎯</span>NEET UG PYQ Quiz</button>
+  <button class="mm-item" data-mm="mock" type="button"><span class="mm-ico">🏆</span>NEET Mock Test</button>
 
   <div class="mm-label">Settings</div>
   <button class="mm-item" data-mm="theme" type="button"><span class="mm-ico" id="mmThemeIco">🌓</span>Theme<small id="mmThemeLbl"></small></button>
@@ -12867,6 +13209,460 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   window.addEventListener("hashchange",function(){ hideBar(); });
   updateCount();
   if(area.textContent.trim()) render();
+})();
+</script>
+<script>
+/* ===== NEET FULL-LENGTH MOCK TEST (180 Q · 3 h · +4/−1) ===== */
+(function () {
+  "use strict";
+  if (typeof app === "undefined" || typeof PYQ === "undefined") return;
+
+  const KEYS = { 1: "medora_mock_v1", 2: "medora_mock_v2" }, DUR = 10800, PER = 45, POS = 4, NEG = 1;
+  const SUBS = [
+    { k: "P", n: "Physics", ic: "⚡" }, { k: "C", n: "Chemistry", ic: "🧪" },
+    { k: "B", n: "Botany", ic: "🌿" }, { k: "Z", n: "Zoology", ic: "🫀" }
+  ];
+  let T = 1, KEY = KEYS[1];
+  const TN = t => "NEET Mock Test " + (t || T);
+  const SUBN = {}; SUBS.forEach(s => { SUBN[s.k] = s; });
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const pad = n => (n < 10 ? "0" : "") + n;
+  const hms = s => { s = Math.max(0, Math.round(s)); return pad(Math.floor(s / 3600)) + ":" + pad(Math.floor(s % 3600 / 60)) + ":" + pad(s % 60); };
+  const dur = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + "h " + m + "m" : m + "m " + (s % 60) + "s"; };
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+
+  /* ---------- question pool: valid, de-duplicated PYQ indexes per subject ---------- */
+  const pool = { P: [], C: [], B: [], Z: [] };
+  (function () {
+    const seen = {};
+    PYQ.forEach((x, i) => {
+      const q = x.q;
+      if (!pool[x.sub] || !q || !q[0] || !Array.isArray(q[1]) || q[1].length !== 4 || !(q[2] >= 0 && q[2] < 4)) return;
+      const t = x.sub + "|" + String(q[0]).trim().toLowerCase();
+      if (seen[t]) return; seen[t] = 1; pool[x.sub].push(i);
+    });
+  })();
+
+  /* ---------- storage ---------- */
+  function loadK(k) {
+    try { const d = JSON.parse(localStorage.getItem(k)); if (d && typeof d === "object") return { active: d.active || null, history: Array.isArray(d.history) ? d.history : [] }; } catch (e) {}
+    return { active: null, history: [] };
+  }
+  const load = () => loadK(KEY);
+  let db = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+
+  /* ---------- state ---------- */
+  let A = null, screen = "intro", tmr = 0, qEnter = 0, paused = false, modalFn = null, curRes = null, filt = { r: "all", s: "all" }, toastT = 0;
+  const root = document.createElement("div");
+  root.id = "mockApp"; root.tabIndex = -1; root.setAttribute("role", "dialog"); root.setAttribute("aria-modal", "true"); root.setAttribute("aria-label", "NEET full-length mock test");
+  document.body.appendChild(root);
+
+  const tpool = k => pool[k].filter((v, j) => j % 2 === T - 1);
+  const left = () => A ? (A.endsAt ? Math.max(0, Math.round((A.endsAt - Date.now()) / 1000)) : Math.round((A.pausedLeft || 0) / 1000)) : 0;
+  const nAns = () => A.ans.filter(x => x >= 0).length;
+  const firstOf = k => A.ids.findIndex(id => PYQ[id].sub === k);
+
+  function buildTest() {
+    const seen = {};
+    db.history.forEach(h => (h.ids || []).forEach(i => { seen[i] = 1; }));
+    let ids = [];
+    SUBS.forEach(s => {
+      const p = tpool(s.k);
+      ids = ids.concat(shuffle(p.filter(i => !seen[i])).concat(shuffle(p.filter(i => seen[i]))).slice(0, PER));
+    });
+    return ids;
+  }
+
+  function grade(ids, ans, t) {
+    const r = { score: 0, c: 0, w: 0, u: 0, subj: {} };
+    SUBS.forEach(s => { r.subj[s.k] = { n: 0, c: 0, w: 0, u: 0, sc: 0, t: 0 }; });
+    ids.forEach((id, i) => {
+      const q = PYQ[id], S = r.subj[q.sub]; S.n++; S.t += (t && t[i]) || 0;
+      if (ans[i] < 0) { S.u++; r.u++; } else if (ans[i] === q.q[2]) { S.c++; r.c++; } else { S.w++; r.w++; }
+    });
+    SUBS.forEach(s => { const S = r.subj[s.k]; S.sc = S.c * POS - S.w * NEG; S.t = Math.round(S.t); r.score += S.sc; });
+    return r;
+  }
+
+  /* ---------- open / close / routing ---------- */
+  function openMock() {
+    try { app.reader && app.reader.stop && app.reader.stop(); } catch (e) {}
+    try { quiz.stopTimer(); qmusic.stop(); qsound.stop(); } catch (e) {}
+    document.body.classList.add("is-mock");
+    document.title = "NEET Mock Tests | MEDORA";
+    showHub();
+    try { root.focus({ preventScroll: true }); } catch (e) {}
+  }
+  function closeMock() {
+    if (screen === "exam" && A && !paused) pauseCore();
+    stopTick(); closeModal();
+    document.body.classList.remove("is-mock");
+    screen = "hub";
+  }
+  const _route = app.route;
+  app.route = function () {
+    if (location.hash === "#mock") { openMock(); return; }
+    if (document.body.classList.contains("is-mock")) closeMock();
+    return _route.apply(this, arguments);
+  };
+
+  /* ---------- home card ---------- */
+  function paintCard() {
+    const card = $("cardMock"); if (!card) return;
+    const d1 = loadK(KEYS[1]), d2 = loadK(KEYS[2]), hist = d1.history.concat(d2.history), act = d1.active || d2.active;
+    const best = hist.reduce((m, h) => Math.max(m, h.score), -Infinity);
+    $("cardMockCount").textContent = act ? "Test in progress" : hist.length ? hist.length + " attempt" + (hist.length === 1 ? "" : "s") : "2 mock tests";
+    $("cardMockBest").textContent = hist.length ? "Best " + best + " / " + hist[0].max : "180 Q each · 3 hours";
+    $("cardMockCta").textContent = act ? "Resume a test →" : "Open mock tests →";
+    $("cardMockBar").style.width = hist.length ? Math.max(0, best) / hist[0].max * 100 + "%" : "0%";
+  }
+  const _rh = app.renderHome;
+  app.renderHome = function () { const r = _rh.apply(this, arguments); try { paintCard(); } catch (e) {} return r; };
+  const cardEl = $("cardMock"); if (cardEl) cardEl.addEventListener("click", () => { location.hash = "#mock"; });
+  document.addEventListener("click", e => { const t = e.target.closest && e.target.closest('[data-mm="mock"]'); if (t) location.hash = "#mock"; });
+
+  /* ---------- hub: choose Mock Test 1 or 2 ---------- */
+  function showHub() {
+    screen = "hub"; stopTick(); curRes = null; closeModal(); A = null; paused = false;
+    let h = '<div class="mk-rtop"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>NEET Mock Tests</b><small>Choose a full-length test</small></div></div><button type="button" class="mk-btn" data-act="exit">✕ Close</button></div>' +
+      '<div class="mk-scroll"><div class="mk-wrap"><div class="mk-hero"><h1>NEET Mock Tests</h1><p>Two separate full-length papers with different questions. Each one has its own clock, progress and score history.</p></div><div class="mk-hub">';
+    [1, 2].forEach(t => {
+      const d = loadK(KEYS[t]), hist = d.history, act = d.active, best = hist.reduce((m, r) => Math.max(m, r.score), -Infinity);
+      let st;
+      if (act) st = '<span class="mk-tst live">⏱ In progress · ' + act.ans.filter(x => x >= 0).length + ' / ' + act.ids.length + ' answered</span>';
+      else if (hist.length) st = '<span class="mk-tst">' + hist.length + ' attempt' + (hist.length === 1 ? '' : 's') + ' · Best ' + best + ' / ' + hist[0].max + '</span>';
+      else st = '<span class="mk-tst">Not attempted yet</span>';
+      h += '<button type="button" class="mk-tc t' + t + '" data-act="pick" data-t="' + t + '"><span class="mk-tci">' + (t === 1 ? '🏆' : '🥇') + '</span><span class="mk-tcb"><b>NEET Mock Test ' + t + '</b>' +
+        '<small>180 questions · 3 hours · 720 marks</small>' + st + '</span><span class="mk-tcc">' + (act ? 'Resume' : hist.length ? 'Open' : 'Start') + ' →</span></button>';
+    });
+    h += '</div><p class="mk-note">Questions come from the app\'s NEET UG PYQ bank. Mock Test 1 and Mock Test 2 never share a question. This is practice material, not an official NTA paper.</p></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
+    root.innerHTML = h;
+  }
+  function selectTest(t) {
+    T = t; KEY = KEYS[t]; db = load(); A = db.active; paused = !!(A && A.endsAt == null);
+    if (A && A.endsAt && Date.now() >= A.endsAt) { submit(true); return; }
+    showIntro();
+  }
+
+  /* ---------- intro ---------- */
+  function showIntro() {
+    screen = "intro"; stopTick(); curRes = null; closeModal();
+    const act = db.active, hist = db.history;
+    let h = '<div class="mk-rtop"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>' + TN() + '</b><small>Full-length exam simulation</small></div></div><button type="button" class="mk-btn" data-act="hub">◀ All tests</button></div>' +
+      '<div class="mk-scroll"><div class="mk-wrap">' +
+      '<div class="mk-hero"><h1>' + TN() + '</h1><p>One sitting, one clock and the real marking scheme. Practice the way you will write the exam.</p></div>' +
+      '<div class="mk-facts"><div class="mk-fact"><b>180</b><span>Questions</span></div><div class="mk-fact"><b>3 h</b><span>Duration</span></div><div class="mk-fact"><b>720</b><span>Maximum marks</span></div><div class="mk-fact"><b>+4 / −1</b><span>Correct / wrong</span></div></div>';
+    if (act) {
+      A = act; paused = act.endsAt == null;
+      h += '<div class="mk-card mk-resume"><h3>⏱ Test in progress</h3><p>' + nAns() + ' of ' + act.ids.length + ' answered · ' + hms(left()) + ' left' + (paused ? ' (paused)' : ' · the clock is still running') + '</p>' +
+        '<div class="mk-row"><button type="button" class="mk-btn mk-pri mk-lg" data-act="resume">▶ Resume test</button><button type="button" class="mk-btn" data-act="discard">Discard</button></div></div>';
+    } else {
+      h += '<div class="mk-row" style="margin-bottom:16px"><button type="button" class="mk-btn mk-pri mk-lg" data-act="start">▶ Start mock test</button></div>';
+    }
+    h += '<div class="mk-card"><h3>Before you begin</h3><ul>' +
+      '<li><b>4 sections of 45 questions</b>: Physics, Chemistry, Botany, Zoology. All are compulsory.</li>' +
+      '<li><b>+4</b> for a correct answer, <b>−1</b> for a wrong one, <b>0</b> if you leave it unattempted.</li>' +
+      '<li>Your answer is saved the moment you tap an option. Use <b>Clear Response</b> to remove it.</li>' +
+      '<li>The palette shows each question as <b>not visited</b>, <b>not answered</b>, <b>answered</b>, <b>marked for review</b> or <b>answered &amp; marked</b>. Answered &amp; marked questions are still graded.</li>' +
+      '<li>The clock uses real time. <b>Pause</b> stops it, and leaving this page pauses it too. Closing the browser or losing power does not.</li>' +
+      '<li>Questions come from the app\'s NEET UG PYQ bank, favouring ones you have not seen in earlier mocks. This is practice material, not an official NTA paper.</li>' +
+      '</ul></div>';
+    if (hist.length) {
+      h += '<div class="mk-card"><h3>Your attempts</h3><div style="overflow-x:auto"><table class="mk-hist"><thead><tr><th>Date</th><th>Score</th><th class="hide-s">Correct / Wrong</th><th class="hide-s">Time</th><th></th></tr></thead><tbody>';
+      hist.slice(0, 8).forEach((r, i) => {
+        h += '<tr><td>' + new Date(r.ts).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) + '</td><td><b>' + r.score + '</b> / ' + r.max + '</td><td class="hide-s">' + r.c + ' / ' + r.w + '</td><td class="hide-s">' + dur(r.tu) + '</td><td style="text-align:right">' +
+          '<button type="button" class="mk-btn" data-act="rhist" data-h="' + i + '">Report</button></td></tr>';
+      });
+      h += '</tbody></table></div><div class="mk-row" style="margin-top:10px"><button type="button" class="mk-btn" data-act="clearhist">Clear history</button></div></div>';
+    }
+    h += '</div></div><div class="mk-toast" id="mkToast" role="status"></div>';
+    root.innerHTML = h;
+  }
+
+  /* ---------- starting / resuming ---------- */
+  function startNew() {
+    const ids = buildTest();
+    if (!ids.length) return;
+    const n = ids.length, now = Date.now();
+    A = { id: now, ids: ids, ans: new Array(n).fill(-1), f: new Array(n).fill(0), t: new Array(n).fill(0), cur: 0, startedAt: now, endsAt: now + DUR * 1000, pausedLeft: null, w10: 0 };
+    db.active = A; paused = false; save(); enterExam();
+  }
+  function resume() {
+    A = db.active; if (!A) return;
+    if (A.endsAt == null) { A.endsAt = Date.now() + (A.pausedLeft || 0); A.pausedLeft = null; save(); }
+    paused = false;
+    if (Date.now() >= A.endsAt) { submit(true); return; }
+    enterExam();
+  }
+
+  /* ---------- exam screen ---------- */
+  function enterExam() {
+    screen = "exam";
+    root.innerHTML =
+      '<div class="mk-exam">' +
+      '<div class="mk-top"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>' + TN() + '</b><small id="mkProg"></small></div></div>' +
+      '<div class="mk-timer" id="mkTimer" role="timer" aria-label="Time remaining">--:--:--</div>' +
+      '<div class="mk-tbtns"><button type="button" class="mk-btn" data-act="pause" aria-label="Pause">❚❚<span> Pause</span></button>' +
+      '<button type="button" class="mk-btn mk-m" data-act="palopen" aria-label="Open question palette">▦<span> Palette</span></button>' +
+      '<button type="button" class="mk-btn mk-danger" data-act="submit">Submit</button></div></div>' +
+      '<div class="mk-tabs" id="mkTabs" role="tablist" aria-label="Subjects"></div>' +
+      '<button type="button" class="mk-palbar" id="mkPalBar" data-act="palopen" aria-label="Open question palette"></button>' +
+      '<div class="mk-body"><div class="mk-main" id="mkMain"><div class="mk-qcard" id="mkQ"></div></div>' +
+      '<div class="mk-backdrop" id="mkBack" data-act="palclose"></div><div class="mk-pal" id="mkPal" role="navigation" aria-label="Question palette"></div></div>' +
+      '<div class="mk-foot"><button type="button" class="mk-btn" data-act="prev" id="mkPrev" aria-label="Previous question">◀<span class="mk-l"> Previous</span></button>' +
+      '<button type="button" class="mk-btn" data-act="clear">Clear<span class="mk-l"> Response</span></button>' +
+      '<button type="button" class="mk-btn" data-act="marknext">🚩 Mark<span class="mk-l"> &amp; Next</span></button>' +
+      '<button type="button" class="mk-btn mk-pri" data-act="next">Save &amp; Next ▶</button></div>' +
+      '<div class="mk-toast" id="mkToast" role="status"></div></div>';
+    A.f[A.cur] |= 1; qEnter = Date.now(); save();
+    paintQ(); refresh(); startTick();
+    if (paused) showPause();
+  }
+  function paintQ() {
+    const i = A.cur, x = PYQ[A.ids[i]], s = SUBN[x.sub], q = x.q;
+    let h = '<div class="mk-qh"><span class="mk-qn">Question ' + (i + 1) + '<small> of ' + A.ids.length + '</small></span><span class="mk-qs">' + s.ic + ' ' + s.n + '</span><span class="mk-marks">+4 / −1</span>' +
+      '<button type="button" class="mk-flag" id="mkFlag" data-act="flag">🚩 Mark</button></div>' +
+      '<p class="mk-qt">' + esc(q[0]) + '</p><div class="mk-opts" role="radiogroup" aria-label="Answer options">';
+    q[1].forEach((o, k) => {
+      h += '<button type="button" class="mk-opt" role="radio" aria-checked="false" data-act="opt" data-o="' + k + '"><span class="mk-let">' + "ABCD"[k] + '</span><span class="mk-ot">' + esc(String(o).trim()) + '</span></button>';
+    });
+    h += '</div><p class="mk-keys">Keys: <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>←</kbd><kbd>→</kbd> move · <kbd>M</kbd> mark · <kbd>C</kbd> clear</p>';
+    $("mkQ").innerHTML = h;
+    const m = $("mkMain"); if (m) m.scrollTop = 0;
+  }
+  function stOf(i) {
+    const a = A.ans[i] >= 0, m = A.f[i] & 2, v = A.f[i] & 1;
+    return a && m ? "amk" : m ? "mrk" : a ? "ans" : v ? "na" : "un";
+  }
+  const ST_LBL = { un: "not visited", na: "not answered", ans: "answered", mrk: "marked for review", amk: "answered and marked for review" };
+  function refresh() {
+    const a = A.ans[A.cur], mk = A.f[A.cur] & 2;
+    root.querySelectorAll(".mk-opt").forEach(b => { const on = +b.dataset.o === a; b.classList.toggle("sel", on); b.setAttribute("aria-checked", on ? "true" : "false"); });
+    const fl = $("mkFlag"); if (fl) { fl.classList.toggle("on", !!mk); fl.setAttribute("aria-pressed", mk ? "true" : "false"); fl.textContent = mk ? "🚩 Marked" : "🚩 Mark"; }
+    const pv = $("mkPrev"); if (pv) pv.disabled = A.cur === 0;
+    const pr = $("mkProg"); if (pr) pr.textContent = nAns() + " / " + A.ids.length + " answered";
+    // tabs
+    const cs = PYQ[A.ids[A.cur]].sub; let th = "";
+    SUBS.forEach(s => {
+      let t = 0, d = 0; A.ids.forEach((id, i) => { if (PYQ[id].sub === s.k) { t++; if (A.ans[i] >= 0) d++; } });
+      th += '<button type="button" class="mk-tab' + (s.k === cs ? " on" : "") + '" role="tab" aria-selected="' + (s.k === cs) + '" data-act="tab" data-s="' + s.k + '">' + s.ic + " " + s.n + "<small>" + d + "/" + t + "</small></button>";
+    });
+    $("mkTabs").innerHTML = th;
+    // palette
+    const cnt = { un: 0, na: 0, ans: 0, mrk: 0, amk: 0 };
+    A.ids.forEach((id, i) => { cnt[stOf(i)]++; });
+    const pb = $("mkPalBar"); if (pb) pb.innerHTML = '<span class="mk-pbt">▦ Question palette</span><span class="mk-pbs"><i class="d-ans"></i>' + (cnt.ans + cnt.amk) + '<i class="d-na"></i>' + cnt.na + '<i class="d-mrk"></i>' + (cnt.mrk + cnt.amk) + '<i class="d-un"></i>' + cnt.un + '<b>›</b></span>';
+    let p = '<div class="mk-palh"><b>Question palette</b><button type="button" class="mk-btn mk-m" data-act="palclose" aria-label="Close palette">✕</button></div>' +
+      '<div class="mk-leg"><div><span class="mk-sw"></span>Not visited <b>' + cnt.un + '</b></div><div><span class="mk-sw st-na"></span>Not answered <b>' + cnt.na + '</b></div>' +
+      '<div><span class="mk-sw st-ans"></span>Answered <b>' + cnt.ans + '</b></div><div><span class="mk-sw st-mrk"></span>Marked <b>' + cnt.mrk + '</b></div>' +
+      '<div style="grid-column:1/-1"><span class="mk-sw st-amk"></span>Answered &amp; marked <b>' + cnt.amk + '</b></div></div>';
+    SUBS.forEach(s => {
+      let b = "", t = 0, d = 0;
+      A.ids.forEach((id, i) => {
+        if (PYQ[id].sub !== s.k) return; t++; if (A.ans[i] >= 0) d++;
+        const st = stOf(i);
+        b += '<button type="button" class="mk-p st-' + st + (i === A.cur ? " cur" : "") + '" data-act="goq" data-i="' + i + '" aria-label="Question ' + (i + 1) + ", " + ST_LBL[st] + '">' + (i + 1) + "</button>";
+      });
+      p += '<div class="mk-pg"><h4>' + s.ic + " " + s.n + "<small>" + d + "/" + t + " answered</small></h4><div class=\"mk-pgrid\">" + b + "</div></div>";
+    });
+    $("mkPal").innerHTML = p;
+    const c = root.querySelector(".mk-p.cur"); if (c && c.scrollIntoView) { try { c.scrollIntoView({ block: "nearest" }); } catch (e) {} }
+  }
+
+  /* ---------- navigation & answers ---------- */
+  function commitTime() {
+    if (!A || !qEnter || paused) return;
+    const now = Date.now(); A.t[A.cur] = (A.t[A.cur] || 0) + (now - qEnter) / 1000; qEnter = now;
+  }
+  function go(i) {
+    if (!A || i < 0 || i >= A.ids.length) return;
+    commitTime(); A.cur = i; A.f[i] |= 1; qEnter = Date.now(); save(); paintQ(); refresh();
+  }
+  function choose(k) { A.ans[A.cur] = k; A.f[A.cur] |= 1; save(); refresh(); }
+  function clearAns() { A.ans[A.cur] = -1; save(); refresh(); }
+  function toggleMark() { A.f[A.cur] = (A.f[A.cur] & 2) ? (A.f[A.cur] & ~2) : (A.f[A.cur] | 2); save(); refresh(); }
+  function nextQ() { if (A.cur < A.ids.length - 1) go(A.cur + 1); else tip("That was the last question. Use the palette to revisit any question, then Submit."); }
+  function markNext() { A.f[A.cur] |= 2; save(); if (A.cur < A.ids.length - 1) go(A.cur + 1); else { refresh(); tip("Marked. That was the last question."); } }
+  function palToggle(on) { const p = $("mkPal"), b = $("mkBack"); if (!p) return; p.classList.toggle("open", on); b.classList.toggle("show", on); }
+  function tip(msg) { const t = $("mkToast"); if (!t) return; t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); }
+
+  /* ---------- timer / pause ---------- */
+  function startTick() { stopTick(); tick(); tmr = setInterval(tick, 500); }
+  function stopTick() { if (tmr) { clearInterval(tmr); tmr = 0; } }
+  function tick() {
+    if (!A || screen !== "exam") return;
+    const l = left(), el = $("mkTimer");
+    if (el) { el.textContent = hms(l); el.classList.toggle("warn", l <= 1800 && l > 600); el.classList.toggle("low", l <= 600); }
+    if (paused) return;
+    if (l <= 600 && l > 0 && !A.w10) { A.w10 = 1; save(); tip("⏰ 10 minutes left"); }
+    if (l <= 0) { stopTick(); submit(true); }
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
+  function pauseCore() {
+    commitTime(); A.pausedLeft = Math.max(0, A.endsAt - Date.now()); A.endsAt = null; paused = true; qEnter = 0; save();
+  }
+  function showPause() {
+    closeModal();
+    const old = $("mkPauseLay"); if (old) old.remove();
+    root.insertAdjacentHTML("beforeend", '<div class="mk-pause" id="mkPauseLay"><div class="mk-mbox"><h2>⏸ Test paused</h2><p>The timer is stopped with <b>' + hms(left()) + '</b> left. Your questions are hidden until you resume.</p>' +
+      '<div class="mk-mbtns"><button type="button" class="mk-btn" data-act="exit">Save &amp; exit</button><button type="button" class="mk-btn mk-pri" data-act="unpause">▶ Resume test</button></div></div></div>');
+  }
+  function doPause() { if (!A || paused) return; pauseCore(); const el = $("mkTimer"); if (el) el.textContent = hms(left()); showPause(); }
+  function unpause() {
+    if (!A || !paused) return;
+    A.endsAt = Date.now() + (A.pausedLeft || 0); A.pausedLeft = null; paused = false; qEnter = Date.now(); save();
+    const l = $("mkPauseLay"); if (l) l.remove(); tick();
+  }
+
+  /* ---------- modal ---------- */
+  function modal(o) {
+    closeModal(); modalFn = o.fn || null;
+    root.insertAdjacentHTML("beforeend", '<div class="mk-modal" id="mkModal"><div class="mk-mbox" role="alertdialog" aria-modal="true"><h2>' + o.t + '</h2>' + (o.m ? '<div class="mk-mtext">' + o.m + '</div>' : '') +
+      '<div class="mk-mbtns"><button type="button" class="mk-btn" data-act="mcancel">' + (o.cancel || "Cancel") + '</button><button type="button" class="mk-btn ' + (o.danger ? "mk-danger" : "mk-pri") + '" data-act="mok">' + o.ok + '</button></div></div></div>');
+  }
+  function closeModal() { const m = $("mkModal"); if (m) m.remove(); modalFn = null; }
+
+  /* ---------- submit ---------- */
+  function confirmSubmit() {
+    const n = A.ids.length, c = { un: 0, na: 0, ans: 0, mrk: 0, amk: 0 };
+    A.ids.forEach((id, i) => { c[stOf(i)]++; });
+    modal({
+      t: "Submit the test?",
+      m: '<p>You cannot change your answers after submitting.</p><div class="mk-mgrid"><div><span>Answered</span><b>' + (c.ans + c.amk) + '</b></div><div><span>Not answered</span><b>' + c.na + '</b></div>' +
+        '<div><span>Marked for review</span><b>' + (c.mrk + c.amk) + '</b></div><div><span>Not visited</span><b>' + c.un + '</b></div></div><p>Time left: <b>' + hms(left()) + '</b></p>',
+      ok: "Submit now", cancel: "Keep going", fn: () => submit(false)
+    });
+  }
+  function submit(auto) {
+    if (!A) { showIntro(); return; }
+    commitTime(); stopTick();
+    const used = auto ? DUR : Math.min(DUR, DUR - left());
+    const g = grade(A.ids, A.ans, A.t);
+    const rec = { ts: Date.now(), ids: A.ids, ans: A.ans, score: g.score, c: g.c, w: g.w, u: g.u, tu: used, max: A.ids.length * POS, nq: PYQ.length, subj: g.subj, auto: !!auto };
+    db.history.unshift(rec); db.history = db.history.slice(0, 20);
+    db.active = null; A = null; paused = false; save(); closeModal();
+    showResult(rec);
+  }
+
+  /* ---------- result ---------- */
+  function showResult(h) {
+    screen = "result"; curRes = h; filt = { r: "all", s: "all" }; stopTick(); closeModal();
+    const att = h.c + h.w, acc = att ? Math.round(h.c / att * 100) : 0, pct = Math.round(Math.max(0, h.score) / h.max * 100);
+    const when = new Date(h.ts).toLocaleString(undefined, { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    let x = '<div class="mk-rtop"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>' + TN() + ' report</b><small>' + when + (h.auto ? " · time ran out" : "") + '</small></div></div><button type="button" class="mk-btn" data-act="hub">◀ All tests</button></div>' +
+      '<div class="mk-scroll"><div class="mk-wrap">' +
+      '<div class="mk-scorecard"><div><div class="mk-big">' + h.score + ' <small>/ ' + h.max + '</small></div><div class="mk-sc-sub">' + pct + '% of maximum marks</div></div>' +
+      '<div class="mk-sc-sub" style="margin:0;flex:1;min-width:220px"><b>+' + h.c * POS + '</b> from ' + h.c + ' correct answers<br><b style="color:var(--mk-bad)">−' + h.w * NEG + '</b> lost to ' + h.w + ' wrong answers<br>' + h.u + ' left unattempted</div></div>' +
+      '<div class="mk-tiles">' +
+      '<div class="mk-tile ok"><b>' + h.c + '</b><span>Correct</span></div><div class="mk-tile bad"><b>' + h.w + '</b><span>Wrong</span></div><div class="mk-tile"><b>' + h.u + '</b><span>Unattempted</span></div>' +
+      '<div class="mk-tile"><b>' + acc + '%</b><span>Accuracy (of attempted)</span></div>' +
+      '<div class="mk-tile"><b>' + dur(h.tu) + '</b><span>Time used</span></div><div class="mk-tile"><b>' + (att ? Math.round(h.tu / att) + "s" : "–") + '</b><span>Per attempted question</span></div></div>' +
+      '<div class="mk-card"><h3>Subject-wise breakdown</h3><div class="mk-subj">';
+    let best = null, worst = null;
+    SUBS.forEach(s => {
+      const S = h.subj[s.k]; if (!S || !S.n) return;
+      const mx = S.n * POS, p = Math.max(0, S.sc) / mx, a = S.c + S.w ? Math.round(S.c / (S.c + S.w) * 100) : 0;
+      if (!best || p > best.p) best = { n: s.n, p: p }; if (!worst || p < worst.p) worst = { n: s.n, p: p };
+      x += '<div class="mk-sj"><h4>' + s.ic + " " + s.n + '<span class="' + (S.sc < 0 ? "neg" : "") + '">' + S.sc + " / " + mx + '</span></h4><div class="mk-bar"><i style="width:' + (p * 100).toFixed(1) + '%"></i></div>' +
+        '<dl><dt>Correct</dt><dd>' + S.c + '</dd><dt>Wrong</dt><dd>' + S.w + '</dd><dt>Unattempted</dt><dd>' + S.u + '</dd><dt>Accuracy</dt><dd>' + a + '%</dd><dt>Time spent</dt><dd>' + dur(S.t) + '</dd></dl></div>';
+    });
+    x += '</div>';
+    const B = h.subj.B, Z = h.subj.Z;
+    if (B && Z && B.n + Z.n) x += '<p class="mk-insight"><b>Biology (Botany + Zoology):</b> ' + (B.sc + Z.sc) + ' / ' + (B.n + Z.n) * POS + '</p>';
+    if (best && worst && best.n !== worst.n) x += '<p class="mk-insight">Strongest section: <b>' + best.n + '</b> (' + Math.round(best.p * 100) + '% of its marks). Weakest: <b>' + worst.n + '</b> (' + Math.round(worst.p * 100) + '%).</p>';
+    x += '</div>';
+    const canReview = h.nq === PYQ.length;
+    x += '<div class="mk-row" style="margin-bottom:16px">' + (canReview ? '<button type="button" class="mk-btn mk-pri" data-act="rvtoggle" id="mkRvBtn">Review all answers ▾</button>' : '') +
+      '<button type="button" class="mk-btn" data-act="again">Take another mock</button><button type="button" class="mk-btn" data-act="intro">All attempts</button></div>' +
+      '<div id="mkRvWrap" hidden></div></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
+    root.innerHTML = x;
+    const sc = root.querySelector(".mk-scroll"); if (sc) sc.scrollTop = 0;
+  }
+  const rvSt = (h, i) => h.ans[i] < 0 ? "skip" : (h.ans[i] === PYQ[h.ids[i]].q[2] ? "ok" : "bad");
+  function renderReview() {
+    const h = curRes, n = h.ids.length, cnt = { all: n, ok: 0, bad: 0, skip: 0 };
+    for (let i = 0; i < n; i++) cnt[rvSt(h, i)]++;
+    const chip = (a, v, l, c, on) => '<button type="button" class="mk-chip' + (on ? " on" : "") + '" data-act="' + a + '" data-v="' + v + '">' + l + (c !== undefined ? " (" + c + ")" : "") + "</button>";
+    let o = '<div class="mk-chips">' + chip("rvr", "all", "All", cnt.all, filt.r === "all") + chip("rvr", "ok", "Correct", cnt.ok, filt.r === "ok") + chip("rvr", "bad", "Wrong", cnt.bad, filt.r === "bad") + chip("rvr", "skip", "Unattempted", cnt.skip, filt.r === "skip") + '</div>' +
+      '<div class="mk-chips">' + chip("rvs", "all", "All subjects", undefined, filt.s === "all") + SUBS.map(s => chip("rvs", s.k, s.ic + " " + s.n, undefined, filt.s === s.k)).join("") + '</div>';
+    let shown = 0;
+    for (let i = 0; i < n; i++) {
+      const st = rvSt(h, i), x = PYQ[h.ids[i]], q = x.q, a = h.ans[i];
+      if (filt.r !== "all" && filt.r !== st) continue; if (filt.s !== "all" && filt.s !== x.sub) continue; shown++;
+      o += '<div class="mk-rv ' + st + '"><div class="mk-rvh"><span>Q' + (i + 1) + "</span><span>" + SUBN[x.sub].ic + " " + SUBN[x.sub].n + "</span><em>" + (st === "ok" ? "+" + POS : st === "bad" ? "−" + NEG : "0") + "</em></div><p>" + esc(q[0]) + "</p>";
+      q[1].forEach((t, k) => {
+        const cor = k === q[2], wr = k === a && !cor;
+        o += '<div class="mk-ro' + (cor ? " cor" : wr ? " wr" : "") + '"><b>' + "ABCD"[k] + "</b><span>" + esc(String(t).trim()) + "</span>" + (cor ? '<span class="tag" style="color:var(--mk-ok)">' + (k === a ? "Your answer ✓" : "Correct answer") + "</span>" : wr ? '<span class="tag" style="color:var(--mk-bad)">Your answer</span>' : "") + "</div>";
+      });
+      o += "</div>";
+    }
+    if (!shown) o += '<div class="mk-empty">No questions match this filter.</div>';
+    $("mkRvWrap").innerHTML = o;
+  }
+
+  /* ---------- events ---------- */
+  const EXAM_ACTS = { pause: 1, submit: 1, palopen: 1, palclose: 1, tab: 1, goq: 1, opt: 1, flag: 1, prev: 1, clear: 1, marknext: 1, next: 1 };
+  function act(a, t) {
+    if (EXAM_ACTS[a] && (!A || screen !== "exam" || paused)) return;
+    switch (a) {
+      case "start": startNew(); break;
+      case "resume": resume(); break;
+      case "discard": modal({ t: "Discard this test?", m: "<p>Your answers and remaining time will be lost.</p>", ok: "Discard", danger: 1, fn: () => { db.active = null; A = null; paused = false; save(); showIntro(); } }); break;
+      case "exit": location.hash = "#home"; break;
+      case "hub": showHub(); break;
+      case "pick": selectTest(+t.dataset.t); break;
+      case "pause": doPause(); break;
+      case "unpause": unpause(); break;
+      case "submit": confirmSubmit(); break;
+      case "palopen": palToggle(true); break;
+      case "palclose": palToggle(false); break;
+      case "tab": go(firstOf(t.dataset.s)); break;
+      case "goq": go(+t.dataset.i); palToggle(false); break;
+      case "opt": choose(+t.dataset.o); break;
+      case "flag": toggleMark(); break;
+      case "prev": go(A.cur - 1); break;
+      case "clear": clearAns(); break;
+      case "marknext": markNext(); break;
+      case "next": nextQ(); break;
+      case "rvtoggle": { const w = $("mkRvWrap"), b = $("mkRvBtn"); if (w.hidden) { renderReview(); w.hidden = false; b.textContent = "Hide review ▴"; w.scrollIntoView({ block: "start" }); } else { w.hidden = true; b.textContent = "Review all answers ▾"; } break; }
+      case "rvr": filt.r = t.dataset.v; renderReview(); break;
+      case "rvs": filt.s = t.dataset.v; renderReview(); break;
+      case "rhist": { const r = db.history[+t.dataset.h]; if (r) showResult(r); break; }
+      case "again": startNew(); break;
+      case "intro": showIntro(); break;
+      case "clearhist": modal({ t: "Clear all attempts?", m: "<p>This removes your mock test history and score reports from this browser.</p>", ok: "Clear history", danger: 1, fn: () => { db.history = []; save(); showIntro(); } }); break;
+      case "mok": { const f = modalFn; closeModal(); if (f) f(); break; }
+      case "mcancel": closeModal(); break;
+    }
+  }
+  root.addEventListener("click", e => { const t = e.target.closest("[data-act]"); if (t && root.contains(t)) act(t.dataset.act, t); });
+
+  // keyboard: while the mock is open, keep the app's own shortcuts (theme, chapter arrows, search…) from firing
+  window.addEventListener("keydown", e => {
+    if (!document.body.classList.contains("is-mock")) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    e.stopImmediatePropagation();
+    const k = e.key;
+    if ($("mkModal")) { if (k === "Escape") { e.preventDefault(); closeModal(); } return; }
+    if (screen !== "exam") { if (k === "Escape") { e.preventDefault(); if (screen === "hub") location.hash = "#home"; else showHub(); } return; }
+    if (!A || paused) return;
+    let used = true;
+    if (k >= "1" && k <= "4") choose(+k - 1);
+    else if (/^[a-dA-D]$/.test(k)) choose("abcd".indexOf(k.toLowerCase()));
+    else if (k === "ArrowRight" || k === "n" || k === "N") nextQ();
+    else if (k === "ArrowLeft" || k === "p" || k === "P") go(A.cur - 1);
+    else if (k === "m" || k === "M") toggleMark();
+    else if (k === "c" || k === "C" || k === "Delete" || k === "Backspace") clearAns();
+    else if (k === "Escape") palToggle(false);
+    else used = false;
+    if (used) e.preventDefault();
+  }, true);
+
+  window.addEventListener("beforeunload", e => { if (screen === "exam" && A && !paused && document.body.classList.contains("is-mock")) { commitTime(); save(); e.preventDefault(); e.returnValue = ""; } });
+
+  if (location.hash === "#mock" && document.readyState !== "loading") app.route();
 })();
 </script>
 </body>
