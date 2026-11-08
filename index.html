@@ -2421,13 +2421,13 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 }
 @media (max-height: 520px) { .mk-palbar { padding: 4px 14px; min-height: 30px; } }
 
-/* --- Mock test hub (Mock Tests 1 to 5) --- */
+/* --- Mock test hub (Mock Tests 1 to 7) --- */
 .mk-hub { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 20px 0 8px; }
 .mk-tc { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; padding: 18px; border-radius: 18px; border: 1.5px solid var(--border); background: var(--bg-surface); color: var(--text-main); transition: border-color .15s, transform .12s, box-shadow .15s; position: relative; }
 .mk-tc:hover { border-color: #d1456c; transform: translateY(-2px); box-shadow: var(--shadow); }
 .mk-tc:active { transform: scale(.985); }
 .mk-tc:focus-visible { outline: 2px solid #d1456c; outline-offset: 3px; }
-.mk-tc.t2 { --tc: #7c3aed; } .mk-tc.t1 { --tc: #d1456c; } .mk-tc.t3 { --tc: #0d9488; } .mk-tc.t4 { --tc: #ea580c; } .mk-tc.t5 { --tc: #2563eb; }
+.mk-tc.t2 { --tc: #7c3aed; } .mk-tc.t1 { --tc: #d1456c; } .mk-tc.t3 { --tc: #0d9488; } .mk-tc.t4 { --tc: #ea580c; } .mk-tc.t5 { --tc: #2563eb; } .mk-tc.t6 { --tc: #ca8a04; } .mk-tc.t7 { --tc: #dc2626; }
 .mk-tci { flex: 0 0 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; background: color-mix(in srgb, var(--tc) 16%, transparent); }
 .mk-tcb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
 .mk-tcb b { font-size: 18px; line-height: 1.2; }
@@ -2448,6 +2448,77 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 
 @media (max-width: 360px) { .mk-pbt { font-size: 12px; } .mk-pbs { gap: 3px; font-size: 11px; } }
 </style>
+<style id="perf-fix-2">
+.topbar,.toast{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+#contentArea table,#contentArea figure,#contentArea img{content-visibility:auto;contain-intrinsic-size:auto 240px}
+.table-wrap{contain:layout paint}
+</style>
+<style id="home-final">
+/* ===== MEDORA home — one consistent system, works in dark + parchment ===== */
+#homeView{--a:#34a37f;max-width:1140px;margin:0 auto;padding:0 20px 56px}
+#homeView .home-hero{position:relative;text-align:center;padding:68px 12px 28px;background:radial-gradient(60% 70% at 50% 0,color-mix(in srgb,var(--brand-emerald) 14%,transparent),transparent 70%)}
+#homeView .hero-wordmark{display:inline-flex;align-items:flex-start;gap:10px;font-size:clamp(46px,8.5vw,88px);font-weight:800;letter-spacing:-.045em;line-height:1}
+#homeView .hero-wordmark span{background:linear-gradient(120deg,var(--brand-emerald),var(--brand-teal));-webkit-background-clip:text;background-clip:text;color:transparent;animation:none}
+#homeView .wm-vr{font-size:11px;letter-spacing:.08em;padding:4px 9px;margin-top:8px;border-radius:99px;border:1px solid var(--border);color:var(--text-muted);background:var(--bg-card)}
+#homeView .hero-tag{margin-top:18px;font-size:11.5px;letter-spacing:.22em;color:var(--text-muted)}
+#homeView .hero-sub{max-width:600px;margin:14px auto 0;font-size:clamp(15px,2vw,18px);line-height:1.65;color:var(--text-muted)}
+#homeView .home-search{max-width:680px;margin:28px auto 0}
+#homeView .home-search input{width:100%;height:58px;border-radius:16px;font-size:16px;padding:0 54px 0 50px;color:var(--text-main);background:var(--bg-card)!important;border:1px solid var(--border);box-shadow:var(--shadow);outline:0}
+#homeView .home-search input:focus{border-color:var(--brand-emerald);box-shadow:0 0 0 4px var(--brand-emerald-dim),var(--shadow)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px}
+.hero-cta button{font:700 14px 'Plus Jakarta Sans',system-ui,sans-serif;padding:12px 22px;border-radius:12px;cursor:pointer;color:var(--text-main);background:var(--bg-card);border:1px solid var(--border);transition:border-color .15s,transform .15s}
+.hero-cta button.pri{background:var(--brand-emerald);border-color:transparent;color:#fff}
+[data-theme="parchment"] .hero-cta button.pri{background:#1b6851}
+.hero-cta button:hover{border-color:var(--brand-emerald);transform:translateY(-1px)}
+.hp-trust{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin-top:24px;font-size:12.5px;font-weight:600;color:var(--text-muted)}
+#homeView .stats{display:grid;grid-template-columns:repeat(4,1fr);margin:30px 0 6px;border:1px solid var(--border);border-radius:18px;background:var(--bg-card);overflow:hidden}
+#homeView .stat{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:20px 10px;text-align:center}
+#homeView .stat+.stat{border-left:1px solid var(--border)!important}
+#homeView .stat b{display:block;font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.03em;color:var(--text-main)}
+#homeView .stat span{font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--text-muted)}
+#homeView .home-section-title{display:flex;align-items:center;gap:14px;margin:40px 0 16px;font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted)}
+#homeView .home-section-title::after{content:"";flex:1;height:1px;background:var(--border)}
+#homeView .continue-box{border-radius:16px;border:1px solid var(--border-focus);background:var(--brand-emerald-dim)!important}
+/* cards */
+#homeView .hp-grid{display:grid;gap:16px}
+#homeView .hp-g2{grid-template-columns:repeat(2,1fr)}
+#homeView .hp-g3{grid-template-columns:repeat(3,1fr)}
+.hp-card{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;padding:22px;border-radius:18px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-main);font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:transform .18s,border-color .18s,box-shadow .18s}
+.hp-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--a) 55%,var(--border));box-shadow:var(--shadow)}
+.hp-card:focus-visible{outline:2px solid var(--a);outline-offset:3px}
+.hp-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hp-ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,var(--a) 16%,transparent);border:1px solid color-mix(in srgb,var(--a) 28%,transparent)}
+.hp-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.hp-chip{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;color:var(--text-muted);background:var(--bg-surface);border:1px solid var(--border)}
+.hp-card h2{margin:16px 0 6px;font-size:19px;font-weight:800;letter-spacing:-.02em}
+.hp-card p{margin:0;font-size:13.5px;line-height:1.6;color:var(--text-muted);flex:1}
+.hp-prog{height:5px;border-radius:99px;background:var(--border);margin:18px 0 14px;overflow:hidden}
+.hp-prog span{display:block;height:100%;width:0;border-radius:inherit;background:var(--a)}
+.hp-foot{display:flex}
+.hp-go{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:8px 14px;border-radius:10px;color:var(--text-main);background:var(--bg-surface);border:1px solid var(--border);transition:background .18s,border-color .18s}
+.hp-go i{font-style:normal;transition:transform .18s}
+.hp-card:hover .hp-go{background:color-mix(in srgb,var(--a) 16%,var(--bg-surface));border-color:color-mix(in srgb,var(--a) 50%,transparent)}
+.hp-card:hover .hp-go i{transform:translateX(3px)}
+@media(max-width:860px){#homeView .hp-g3{grid-template-columns:1fr}}
+@media(max-width:640px){#homeView .home-hero{padding:42px 4px 20px}#homeView .hp-g2{grid-template-columns:1fr}#homeView .stats{grid-template-columns:repeat(2,1fr)}#homeView .stat:nth-child(3){border-left:0!important}#homeView .stat:nth-child(n+3){border-top:1px solid var(--border)}}
+</style>
+<style id="home-after-practice">
+#homeView .home-dash{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin:40px 0 16px}
+#homeView .feat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 24px;max-width:none}
+#homeView .dash-card,#homeView .feat{background:var(--bg-card)!important;border:1px solid var(--border)!important;border-radius:18px;box-shadow:none!important}
+#homeView .feat{padding:18px}
+@media(max-width:860px){#homeView .home-dash{grid-template-columns:1fr}#homeView .feat-strip{grid-template-columns:repeat(2,1fr)}}
+</style>
+<style id="wordmark-space">
+#homeView .hero-wordmark{letter-spacing:.04em!important;gap:16px!important;line-height:1.1!important;margin:0 0 6px}
+#homeView .hero-wordmark span{letter-spacing:.04em!important;padding:0 .04em;display:inline-block}
+#homeView .wm-vr{margin-top:12px!important;letter-spacing:.1em!important}
+#homeView .hero-tag{margin-top:26px!important;gap:14px!important}
+#homeView .hero-sub{margin-top:18px!important}
+#homeView .home-search{margin-top:34px!important}
+#homeView .hero-cta{margin-top:26px!important}
+@media(max-width:640px){#homeView .hero-wordmark{letter-spacing:.03em!important;gap:10px!important}}
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
@@ -2457,7 +2528,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.4.0</span>
+    <span class="badge-tag">vr.1.4.2</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -2480,7 +2551,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.4.0">VR.1.4.0</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.4.2">VR.1.4.2</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2489,6 +2560,12 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
       <span class="kbd">/</span>
       <div class="results" id="homeResults"></div>
     </div>
+    <div class="hero-cta">
+      <button class="pri" type="button" onclick="document.getElementById('card11').click()">Start reading</button>
+      <button type="button" onclick="document.getElementById('cardPyq').click()">Practice NEET PYQ</button>
+      <button type="button" onclick="document.getElementById('cardQuiz').click()">Take a quiz</button>
+    </div>
+    <div class="hp-trust"><span>📚 NCERT aligned</span><span>🎧 Listen-along reader</span><span>📴 Works offline</span><span>🎯 NEET practice</span></div>
   </div>
 
   <div class="continue-box" id="continueBox">
@@ -2508,77 +2585,44 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
   </div>
 
   <div class="home-section-title">Choose your class</div>
-  <div class="class-grid">
-    <button class="class-card" id="card11" type="button">
-      <div class="class-icon">🧬</div>
-      <h2>Bio Class 11th</h2>
-      <div class="class-sub">Complete NCERT Biology with all chapters, listen-along reader, bookmarks and progress tracking.</div>
-      <div class="card-progress"><span id="card11Bar"></span></div>
-      <div class="class-meta">
-        <span class="class-chip" id="card11Count">19 chapters</span>
-        <span class="class-cta">Start reading →</span>
-      </div>
+  <div class="class-grid hp-grid hp-g2">
+    <button class="hp-card" id="card11" type="button" style="--a:#34a37f">
+      <div class="hp-top"><span class="hp-ico">🧬</span><span class="hp-chips"><span class="hp-chip" id="card11Count">19 chapters</span></span></div>
+      <h2>Biology · Class 11th</h2>
+      <p>Complete NCERT Biology with every chapter, a listen-along reader, bookmarks and progress tracking.</p>
+      <div class="hp-prog"><span id="card11Bar"></span></div>
+      <div class="hp-foot"><span class="hp-go">Start reading<i>→</i></span></div>
     </button>
-    <button class="class-card is-12" id="card12" type="button">
-      <div class="class-icon">🧫</div>
-      <h2>Bio Class 12th</h2>
-      <div class="class-sub">Complete NCERT Class 12th Biology with all chapters, listen-along reader, bookmarks and progress tracking.</div>
-      <div class="card-progress"><span id="card12Bar"></span></div>
-      <div class="class-meta">
-        <span class="class-chip" id="card12Count">1 chapter</span>
-        <span class="class-cta">Start reading →</span>
-      </div>
+    <button class="hp-card" id="card12" type="button" style="--a:#d19a3a">
+      <div class="hp-top"><span class="hp-ico">🧫</span><span class="hp-chips"><span class="hp-chip" id="card12Count">1 chapter</span></span></div>
+      <h2>Biology · Class 12th</h2>
+      <p>Complete NCERT Class 12th Biology with the listen-along reader, bookmarks and progress tracking.</p>
+      <div class="hp-prog"><span id="card12Bar"></span></div>
+      <div class="hp-foot"><span class="hp-go">Start reading<i>→</i></span></div>
     </button>
-    <button class="class-card is-quiz quiz-card" id="cardQuiz" type="button" aria-label="Open quizzes">
-      <div class="qc-main">
-        <div class="class-icon">📝</div>
-        <div class="qc-text">
-          <h2>Bio Quiz</h2>
-          <div class="class-sub">Chapter-wise MCQs for every chapter of Class 11th and 12th, plus mixed practice quizzes.</div>
-          <div class="card-progress"><span id="cardQuizBar"></span></div>
-        </div>
-      </div>
-      <div class="qc-side">
-        <div class="qc-chips">
-          <span class="class-chip" id="cardQuizCount">32 chapter quizzes</span>
-          <span class="class-chip" id="cardQuizTotal">1344 questions</span>
-        </div>
-        <span class="class-cta qc-btn">Start quiz →</span>
-      </div>
+  </div>
+  <div class="home-section-title hp-st">Practice &amp; tests</div>
+  <div class="hp-grid hp-g3" id="practiceGrid">
+    <button class="hp-card" id="cardQuiz" type="button" style="--a:#7c6fd6">
+      <div class="hp-top"><span class="hp-ico">📝</span><span class="hp-chips"><span class="hp-chip" id="cardQuizCount">32 chapter quizzes</span><span class="hp-chip" id="cardQuizTotal">1344 questions</span></span></div>
+      <h2>Bio Quiz</h2>
+      <p>Chapter-wise MCQs for Class 11th and 12th, plus mixed practice quizzes.</p>
+      <div class="hp-prog"><span id="cardQuizBar"></span></div>
+      <div class="hp-foot"><span class="hp-go">Start quiz<i>→</i></span></div>
     </button>
-    <button class="class-card is-quiz quiz-card is-pyq" id="cardPyq" type="button" aria-label="Open NEET UG PYQ Quiz">
-      <div class="qc-main">
-        <div class="class-icon">🎯</div>
-        <div class="qc-text">
-          <h2>NEET UG PYQ Quiz</h2>
-          <div class="class-sub">NEET UG practice MCQs in Botany, Zoology, Physics and Chemistry. Take a full test, a subject-wise set or a batch-wise set.</div>
-          <div class="card-progress"><span id="cardPyqBar"></span></div>
-        </div>
-      </div>
-      <div class="qc-side">
-        <div class="qc-chips">
-          <span class="class-chip" id="cardPyqCount">21 batch sets</span>
-          <span class="class-chip" id="cardPyqTotal">1050 questions</span>
-        </div>
-        <span class="class-cta qc-btn">Start PYQ quiz →</span>
-      </div>
+    <button class="hp-card" id="cardPyq" type="button" style="--a:#e0873a">
+      <div class="hp-top"><span class="hp-ico">🎯</span><span class="hp-chips"><span class="hp-chip" id="cardPyqCount">21 batch sets</span><span class="hp-chip" id="cardPyqTotal">1050 questions</span></span></div>
+      <h2>NEET UG PYQ Quiz</h2>
+      <p>Botany, Zoology, Physics and Chemistry. Full test, subject-wise or batch-wise sets.</p>
+      <div class="hp-prog"><span id="cardPyqBar"></span></div>
+      <div class="hp-foot"><span class="hp-go">Start PYQ quiz<i>→</i></span></div>
     </button>
-    <button class="class-card is-quiz quiz-card is-mock" id="cardMock" type="button" aria-label="Open NEET mock tests">
-      <div class="qc-main">
-        <div class="class-icon">🏆</div>
-        <div class="qc-text">
-          <h2>NEET Mock Test</h2>
-          <div class="class-sub">Five full-length NEET mock tests, Mock Test 1 to Mock Test 5. Each has 180 questions, 3 hours, +4 / −1 marking, a question palette and a subject-wise score report.</div>
-          <div class="card-progress"><span id="cardMockBar"></span></div>
-        </div>
-      </div>
-      <div class="qc-side">
-        <div class="qc-chips">
-          <span class="class-chip" id="cardMockCount">5 mock tests</span>
-          <span class="class-chip" id="cardMockBest">180 Q each · 3 hours</span>
-        </div>
-        <span class="class-cta qc-btn" id="cardMockCta">Open mock tests →</span>
-      </div>
+    <button class="hp-card" id="cardMock" type="button" style="--a:#d6567c">
+      <div class="hp-top"><span class="hp-ico">🏆</span><span class="hp-chips"><span class="hp-chip" id="cardMockCount">7 mock tests</span><span class="hp-chip" id="cardMockBest">180 Q each · 3 hours</span></span></div>
+      <h2>NEET Mock Test</h2>
+      <p>Seven full-length tests: 180 questions, 3 hours, +4 / −1 marking and a subject-wise report.</p>
+      <div class="hp-prog"><span id="cardMockBar"></span></div>
+      <div class="hp-foot"><span class="hp-go" id="cardMockCta">Open mock tests<i>→</i></span></div>
     </button>
   </div>
   <div class="home-tip">Shortcuts: <span class="kbd">/</span> search · <span class="kbd">←</span> <span class="kbd">→</span> chapters · <span class="kbd">T</span> theme</div>
@@ -2702,7 +2746,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.4.0</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.4.2</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2743,7 +2787,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.4.0</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.4.2</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -11324,7 +11368,122 @@ C|Which of the following compounds undergoes nucleophilic substitution most read
 C|Which of the following is the correct order of acidity?|Phenol > Ethanol|Ethanol > Phenol|Ethane > Phenol|Ethane > Ethanol > Phenol|A
 C|Which of the following compounds gives a positive carbylamine test?|Primary amines|Secondary amines|Tertiary amines|Amides only|A
 C|Which of the following is the correct IUPAC name of CH₃COCH₃?|Propanal|Propanone|Propanol|Propanoic acid|B
-C|Which of the following is the main ore of aluminium?|Haematite|Bauxite|Galena|Cinnabar|B`;
+C|Which of the following is the main ore of aluminium?|Haematite|Bauxite|Galena|Cinnabar|B
+P|SI unit of electric flux is:|V m|V/m|N/C|C/m²|A
+P|Dimensional formula of force is:|MLT⁻²|ML²T⁻²|MLT⁻¹|ML⁻¹T⁻²|A
+P|The speed of light in vacuum is approximately:|3×10⁶ m/s|3×10⁸ m/s|3×10¹⁰ m/s|3×10⁵ m/s|B
+P|The SI unit of magnetic flux density is:|Weber|Tesla|Henry|Farad|B
+P|Which law gives the direction of induced current?|Ampere's law|Lenz's law|Gauss's law|Ohm's law|B
+P|The SI unit of capacitance is:|Henry|Farad|Ohm|Tesla|B
+P|A body thrown vertically upward has, at its highest point, velocity:|Maximum|Zero|Equal to g|Infinite|B
+P|The focal length of a plane mirror is:|Zero|Infinity|1 m|Equal to its radius|B
+P|Which colour of visible light has the longest wavelength?|Violet|Green|Red|Blue|C
+P|The SI unit of power is:|Joule|Watt|Newton|Pascal|B
+P|Which of the following is a scalar quantity?|Velocity|Displacement|Speed|Acceleration|C
+P|The rest mass of a photon is:|Zero|9.1×10⁻³¹ kg|1.67×10⁻²⁷ kg|Infinite|A
+P|The energy of a photon of frequency ν is:|hν|h/ν|ν/h|hν²|A
+P|The core of a transformer is laminated to reduce:|Hysteresis loss|Eddy current loss|Copper loss|Flux leakage|B
+P|The SI unit of resistivity is:|Ohm|Ohm metre|Ohm per metre|Mho|B
+P|The power of a convex lens of focal length 20 cm is:|+5 D|+2 D|+0.5 D|+20 D|A
+P|When the angle of incidence equals the critical angle, the angle of refraction is:|0°|45°|90°|180°|C
+P|Work done by the centripetal force in uniform circular motion is:|Positive|Negative|Zero|Infinite|C
+P|The SI unit of Planck's constant is:|J s|J/s|N m|kg m|A
+P|Which of the following has the highest frequency?|Radio waves|Microwaves|X-rays|Infrared waves|C
+C|The atomic number of carbon is:|4|6|8|12|B
+C|The chemical formula of common salt is:|KCl|NaCl|CaCl₂|NaOH|B
+C|The pH of pure water at 25°C is:|0|7|14|1|B
+C|Which gas is evolved when zinc reacts with dilute HCl?|Oxygen|Hydrogen|Chlorine|Carbon dioxide|B
+C|The hybridisation of carbon in methane is:|sp|sp²|sp³|dsp²|C
+C|Which of the following is a noble gas?|Nitrogen|Argon|Oxygen|Chlorine|B
+C|The chemical formula of baking soda is:|Na₂CO₃|NaHCO₃|NaOH|CaCO₃|B
+C|The most electronegative element is:|Oxygen|Chlorine|Fluorine|Nitrogen|C
+C|The number of sigma bonds in ethene is:|3|4|5|6|C
+C|The value of Avogadro number is:|6.022×10²³|6.022×10²²|6.022×10²⁴|3.011×10²³|A
+C|Which metal is liquid at room temperature?|Sodium|Mercury|Iron|Zinc|B
+C|The functional group of alcohols is:|-CHO|-OH|-COOH|-NH₂|B
+C|The shape of the NH₃ molecule is:|Linear|Trigonal pyramidal|Tetrahedral|Planar|B
+C|The IUPAC name of CH₃CHO is:|Methanal|Ethanal|Ethanol|Propanal|B
+C|Which of the following is a strong acid?|CH₃COOH|HCl|H₂CO₃|HCN|B
+C|The bond angle in a water molecule is approximately:|90°|104.5°|109.5°|120°|B
+C|Which element has the highest first ionisation enthalpy?|Helium|Hydrogen|Lithium|Sodium|A
+C|Rusting of iron is an example of:|Reduction|Oxidation|Neutralisation|Decomposition|B
+C|The number of electrons in a chloride ion is:|17|18|16|19|B
+C|Which of the following is an alkyne?|C₂H₆|C₂H₄|C₂H₂|C₆H₆|C
+C|The catalyst used in the Haber process is:|Nickel|Iron|Platinum|Vanadium pentoxide|B
+C|The catalyst used in the contact process is:|V₂O₅|Fe|Ni|MnO₂|A
+C|The unit of rate constant for a first order reaction is:|s⁻¹|mol L⁻¹ s⁻¹|L mol⁻¹ s⁻¹|mol s|A
+C|Which of the following is an amphoteric oxide?|Na₂O|Al₂O₃|CO₂|SO₃|B
+C|The hybridisation of boron in BF₃ is:|sp|sp²|sp³|sp³d|B
+C|Which of the following mainly causes ozone depletion?|CO₂|CFCs|CH₄|N₂|B
+C|Molarity is the number of moles of solute per:|kg of solvent|litre of solution|litre of solvent|100 g of solution|B
+C|Which of the following is not a colligative property?|Osmotic pressure|Elevation of boiling point|Optical activity|Lowering of vapour pressure|C
+C|The oxidation state of oxygen in H₂O₂ is:|-2|-1|0|+1|B
+C|Which d-block metal has the highest melting point?|Tungsten|Iron|Copper|Zinc|A
+C|Which of the following is a polysaccharide?|Glucose|Sucrose|Starch|Fructose|C
+C|The number of valence electrons in nitrogen is:|3|5|7|2|B
+C|Laughing gas is chemically:|N₂O|NO|NO₂|N₂O₅|A
+C|Which of the following is a Lewis acid?|NH₃|BF₃|OH⁻|H₂O|B
+C|Chlorophyll contains which metal?|Iron|Magnesium|Calcium|Zinc|B
+C|Which of the following vitamins is water soluble?|A|D|C|K|C
+C|Benzene is an example of:|Aliphatic compound|Aromatic compound|Alicyclic compound|Saturated hydrocarbon|B
+C|Nylon-6,6 is a:|Polyamide|Polyester|Polyalkene|Polysaccharide|A
+C|Teflon is a polymer of:|Ethene|Tetrafluoroethene|Propene|Styrene|B
+C|Which of the following is a reducing sugar?|Sucrose|Glucose|Starch|Cellulose|B
+C|Hardness of water is mainly due to salts of:|Na and K|Ca and Mg|Fe and Zn|Cu and Ag|B
+C|Which of the following has the highest boiling point?|HCl|HBr|HF|HI|C
+C|Which orbital is dumb-bell shaped?|s|p|d|f|B
+C|The number of orbitals in a p subshell is:|1|3|5|7|B
+C|The maximum number of electrons in the shell with n = 3 is:|8|18|32|2|B
+C|Which quantum number determines the shape of an orbital?|Principal|Azimuthal|Magnetic|Spin|B
+C|Which gas law relates pressure and volume at constant temperature?|Charles's law|Boyle's law|Gay-Lussac's law|Avogadro's law|B
+C|Which of the following is an intensive property?|Mass|Volume|Density|Enthalpy|C
+C|The value of the Faraday constant is approximately:|96500 C mol⁻¹|9650 C mol⁻¹|965 C mol⁻¹|6.02×10²³ C mol⁻¹|A
+C|At which electrode does oxidation occur in a cell?|Cathode|Anode|Salt bridge|Both electrodes|B
+C|Which alkali metal is the strongest reducing agent in aqueous solution?|Li|Na|K|Cs|A
+C|Which silver salt is used in photographic films?|AgBr|AgNO₃|Ag₂O|Ag₂S|A
+C|Which of the following is an ore of iron?|Bauxite|Haematite|Cinnabar|Galena|B
+C|Zinc blende is an ore of:|Zinc|Copper|Aluminium|Lead|A
+C|Aspirin is chemically:|Acetylsalicylic acid|Salicylic acid|Paracetamol|Ibuprofen|A
+C|Sodium reacts with water to give:|NaOH and H₂|Na₂O and H₂|NaH and O₂|NaOH and O₂|A
+C|Which compound shows geometrical isomerism?|But-2-ene|Propene|Ethene|Ethane|A
+C|The number of chiral carbon atoms in lactic acid is:|0|1|2|3|B
+C|Which is the lightest gas?|Helium|Hydrogen|Nitrogen|Neon|B
+C|Dry ice is solid:|CO₂|H₂O|NH₃|SO₂|A
+C|Which acid is present in vinegar?|Formic acid|Acetic acid|Citric acid|Lactic acid|B
+Z|Which is the largest organ of the human body?|Liver|Skin|Lung|Brain|B
+Z|The number of bones in an adult human body is:|206|208|300|201|A
+Z|Which hormone lowers blood glucose level?|Glucagon|Insulin|Thyroxine|Cortisol|B
+Z|The functional unit of the kidney is:|Neuron|Nephron|Alveolus|Villus|B
+Z|Which blood group is the universal donor?|A|B|AB|O|D
+Z|The natural pacemaker of the heart is:|AV node|SA node|Purkinje fibres|Bundle of His|B
+Z|Deficiency of which vitamin causes night blindness?|A|B|C|D|A
+Z|Fertilisation in humans normally occurs in the:|Uterus|Ampulla of fallopian tube|Vagina|Ovary|B
+Z|The largest part of the human brain is the:|Cerebellum|Cerebrum|Medulla|Pons|B
+Z|Which cells produce antibodies?|T cells|B lymphocytes|Platelets|RBCs|B
+Z|The number of chromosomes in a human somatic cell is:|23|46|44|48|B
+Z|Which enzyme in saliva digests starch?|Pepsin|Salivary amylase|Lipase|Trypsin|B
+Z|Maximum reabsorption of filtrate occurs in the:|PCT|DCT|Loop of Henle|Collecting duct|A
+Z|The oxygen carrying pigment of blood is:|Haemoglobin|Myoglobin|Chlorophyll|Melanin|A
+Z|Which hormone is called the stress hormone?|Insulin|Cortisol|Oxytocin|Prolactin|B
+Z|Which vitamin is synthesised in the skin in sunlight?|A|C|D|K|C
+Z|Which of the following is a cartilaginous fish?|Rohu|Shark|Catla|Seahorse|B
+Z|Frog belongs to the class:|Reptilia|Amphibia|Aves|Pisces|B
+Z|The respiratory organs of a cockroach are:|Gills|Tracheae|Lungs|Book lungs|B
+Z|Starfish belongs to the phylum:|Mollusca|Echinodermata|Annelida|Arthropoda|B
+Z|The human heart has how many chambers?|2|3|4|5|C
+Z|Parathyroid hormone is secreted by the:|Thyroid|Parathyroid gland|Adrenal|Pituitary|B
+Z|The longest bone in the human body is the:|Humerus|Femur|Tibia|Radius|B
+Z|The master gland of the body is the:|Thyroid|Pituitary|Adrenal|Pancreas|B
+Z|The study of tissues is called:|Cytology|Histology|Ecology|Embryology|B
+Z|Malaria is caused by:|Plasmodium|Amoeba|Trypanosoma|Leishmania|A
+Z|The vector of malaria is the:|Culex|Female Anopheles|Aedes|Tsetse fly|B
+Z|Gaseous exchange in the lungs occurs in the:|Bronchi|Alveoli|Trachea|Larynx|B
+Z|Tadpole larvae of frog respire by:|Gills|Lungs|Skin only|Tracheae|A
+Z|Sperms are produced in the:|Seminiferous tubules|Epididymis|Vas deferens|Prostate|A
+C|The SI unit of molar mass is:|g mol⁻¹|kg mol⁻¹|mol g⁻¹|g L⁻¹|B
+C|Which gas turns lime water milky?|Oxygen|Carbon dioxide|Hydrogen|Nitrogen|B
+C|The general formula of alkanes is:|CₙH₂ₙ₊₂|CₙH₂ₙ|CₙH₂ₙ₋₂|CₙHₙ|A
+C|The element with atomic number 11 is:|Magnesium|Sodium|Neon|Potassium|B`;
 const PYQ = PYQ_RAW.split("\n").map((ln, n) => {
   const p = ln.split("|");
   return { sub: p[0], batch: Math.floor(n / 50) + 1, q: [p[1], p.slice(2, 6), "ABCD".indexOf(p[6].trim())] };
@@ -11651,12 +11810,14 @@ const app = {
   },
 
   buildIndex() {
-    const tmp = document.createElement("div");
+    const ENT = { nbsp: " ", amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
     [[11, textbookData11], [12, textbookData12]].forEach(([cls, arr]) => arr.forEach(ch => {
       ch.cls = cls;
       ch.key = cls === 12 ? "12-" + ch.id : ch.id;
-      tmp.innerHTML = ch.body;
-      ch.text = (tmp.textContent || "").replace(/\s+/g, " ").trim();
+      ch.text = ch.body.replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ").replace(/<[^>]*>/g, " ")
+        .replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e) => { if (e[0] === "#") { const c = e[1].toLowerCase() === "x" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10); return c ? String.fromCodePoint(c) : " "; } return ENT[e.toLowerCase()] || m; })
+        .replace(/\s+/g, " ").trim();
+      ch.tl = ch.text.toLowerCase();
       ch.minutes = Math.max(1, Math.round(ch.text.split(" ").length / 200));
       const m = ch.unit.match(/Unit\s+(\d+)/i);
       ch.unitNo = m ? parseInt(m[1], 10) : 1;
@@ -11780,7 +11941,7 @@ const app = {
     const out = [];
     this.all().forEach((ch) => {
       const titleHit = ch.title.toLowerCase().includes(ql);
-      const pos = ch.text.toLowerCase().indexOf(ql);
+      const pos = (ch.tl || ch.text.toLowerCase()).indexOf(ql);
       if (!titleHit && pos < 0) return;
       let snip = "";
       if (pos >= 0) {
@@ -12051,7 +12212,7 @@ const app = {
     });
     $("quizView").addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("q-sechead")) { e.preventDefault(); quiz.handle(e); } });
     const hs = $("homeSearch");
-    hs.addEventListener("input", (e) => this.renderHomeResults(e.target.value));
+    let _hst = 0; hs.addEventListener("input", (e) => { const v = e.target.value; clearTimeout(_hst); _hst = setTimeout(() => this.renderHomeResults(v), 150); });
     hs.addEventListener("keydown", (e) => { if (e.key === "Escape") { hs.value = ""; this.renderHomeResults(""); hs.blur(); } });
 
     // Drawer
@@ -12378,10 +12539,9 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     const feats = document.createElement("div"); feats.className = "feat-strip";
     feats.innerHTML = [["🎧", "Listen along", "Read-aloud with word highlighting"], ["⭐", "Save chapters", "Bookmark and revisit anytime"], ["📴", "Works offline", "Install it and study without internet"], ["🌗", "Day & night", "Comfortable reading in any light"]]
       .map((f) => '<div class="feat"><span>' + f[0] + "</span><b>" + f[1] + "</b><small>" + f[2] + "</small></div>").join("");
-    grid.insertAdjacentElement("afterend", feats);
-    grid.insertAdjacentElement("afterend", dash);
-    const statsRow = document.getElementById("homeStats");
-    if (statsRow) { statsRow.classList.add("stats-moved"); dash.insertAdjacentElement("afterend", statsRow); }
+    const anchor = document.getElementById("practiceGrid") || grid;
+    anchor.insertAdjacentElement("afterend", feats);
+    anchor.insertAdjacentElement("afterend", dash);
 
     const facts = [
       "Your body contains roughly 37 trillion cells, and a typical red blood cell lives about 120 days.",
@@ -12658,7 +12818,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     if (pt) return; pt = true;
     requestAnimationFrame(() => {
       pt = false;
-      document.body.style.setProperty("--mx", e.clientX + "px"); document.body.style.setProperty("--my", e.clientY + "px");
+      
       const c = e.target.closest && e.target.closest(".dash-card,.feat,.class-card,.stat");
       if (c) { const r = c.getBoundingClientRect(); c.style.setProperty("--cx", e.clientX - r.left + "px"); c.style.setProperty("--cy", e.clientY - r.top + "px"); }
     });
@@ -12696,7 +12856,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   }
   showAll();
   window.addEventListener("load", function () { showAll(); setTimeout(showAll, 400); setTimeout(showAll, 1500); });
-  new MutationObserver(function () { showAll(); }).observe(document.body, { childList: true, subtree: true });
+  var _sa = 0; new MutationObserver(function () { if (_sa) return; _sa = setTimeout(function () { _sa = 0; showAll(); }, 300); }).observe(document.body, { childList: true, subtree: true });
   /* smooth-scroll in code uses behavior:"smooth" which stalls on long pages; make jumps instant for reliability */
   var orig = window.scrollTo;
   window.scrollTo = function (a, b) {
@@ -12771,7 +12931,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
         was = now;
       });
       mo.observe(el,{attributes:true,attributeFilter:['style','hidden']});
-      mo.observe(document.body,{attributes:true,attributeFilter:['class']});
+      
     });
   }catch(err){ console.warn('UI upgrade skipped', err); }
 })();
@@ -13219,7 +13379,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   "use strict";
   if (typeof app === "undefined" || typeof PYQ === "undefined") return;
 
-  const KEYS = { 1: "medora_mock_v1", 2: "medora_mock_v2", 3: "medora_mock_v3", 4: "medora_mock_v4", 5: "medora_mock_v5" }, NT = 5, DUR = 10800, PER = 45, POS = 4, NEG = 1;
+  const KEYS = { 1: "medora_mock_v1", 2: "medora_mock_v2", 3: "medora_mock_v3", 4: "medora_mock_v4", 5: "medora_mock_v5", 6: "medora_mock_v6", 7: "medora_mock_v7" }, NT = 7, DUR = 10800, PER = 45, POS = 4, NEG = 1;
   const SUBS = [
     { k: "P", n: "Physics", ic: "⚡" }, { k: "C", n: "Chemistry", ic: "🧪" },
     { k: "B", n: "Botany", ic: "🌿" }, { k: "Z", n: "Zoology", ic: "🫀" }
@@ -13313,9 +13473,9 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   /* ---------- home card ---------- */
   function paintCard() {
     const card = $("cardMock"); if (!card) return;
-    const ds = [1, 2, 3, 4, 5].map(t => loadK(KEYS[t])), hist = ds.reduce((a, d) => a.concat(d.history), []), act = ds.some(d => d.active);
+    const ds = [1, 2, 3, 4, 5, 6, 7].map(t => loadK(KEYS[t])), hist = ds.reduce((a, d) => a.concat(d.history), []), act = ds.some(d => d.active);
     const best = hist.reduce((m, h) => Math.max(m, h.score), -Infinity);
-    $("cardMockCount").textContent = act ? "Test in progress" : hist.length ? hist.length + " attempt" + (hist.length === 1 ? "" : "s") : "5 mock tests";
+    $("cardMockCount").textContent = act ? "Test in progress" : hist.length ? hist.length + " attempt" + (hist.length === 1 ? "" : "s") : "7 mock tests";
     $("cardMockBest").textContent = hist.length ? "Best " + best + " / " + hist[0].max : "180 Q each · 3 hours";
     $("cardMockCta").textContent = act ? "Resume a test →" : "Open mock tests →";
     $("cardMockBar").style.width = hist.length ? Math.max(0, best) / hist[0].max * 100 + "%" : "0%";
@@ -13329,17 +13489,17 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   function showHub() {
     screen = "hub"; stopTick(); curRes = null; closeModal(); A = null; paused = false;
     let h = '<div class="mk-rtop"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>NEET Mock Tests</b><small>Choose a full-length test</small></div></div><button type="button" class="mk-btn" data-act="exit">✕ Close</button></div>' +
-      '<div class="mk-scroll"><div class="mk-wrap"><div class="mk-hero"><h1>NEET Mock Tests</h1><p>Five separate full-length papers with different questions. Each one has its own clock, progress and score history.</p></div><div class="mk-hub">';
-    [1, 2, 3, 4, 5].forEach(t => {
+      '<div class="mk-scroll"><div class="mk-wrap"><div class="mk-hero"><h1>NEET Mock Tests</h1><p>Seven separate full-length papers with different questions. Each one has its own clock, progress and score history.</p></div><div class="mk-hub">';
+    [1, 2, 3, 4, 5, 6, 7].forEach(t => {
       const d = loadK(KEYS[t]), hist = d.history, act = d.active, best = hist.reduce((m, r) => Math.max(m, r.score), -Infinity);
       let st;
       if (act) st = '<span class="mk-tst live">⏱ In progress · ' + act.ans.filter(x => x >= 0).length + ' / ' + act.ids.length + ' answered</span>';
       else if (hist.length) st = '<span class="mk-tst">' + hist.length + ' attempt' + (hist.length === 1 ? '' : 's') + ' · Best ' + best + ' / ' + hist[0].max + '</span>';
       else st = '<span class="mk-tst">Not attempted yet</span>';
-      h += '<button type="button" class="mk-tc t' + t + '" data-act="pick" data-t="' + t + '"><span class="mk-tci">' + ['🏆', '🥇', '🎯', '🚀', '💎'][t - 1] + '</span><span class="mk-tcb"><b>NEET Mock Test ' + t + '</b>' +
+      h += '<button type="button" class="mk-tc t' + t + '" data-act="pick" data-t="' + t + '"><span class="mk-tci">' + ['🏆', '🥇', '🎯', '🚀', '💎', '⭐', '🔥'][t - 1] + '</span><span class="mk-tcb"><b>NEET Mock Test ' + t + '</b>' +
         '<small>180 questions · 3 hours · 720 marks</small>' + st + '</span><span class="mk-tcc">' + (act ? 'Resume' : hist.length ? 'Open' : 'Start') + ' →</span></button>';
     });
-    h += '</div><p class="mk-note">Questions come from the app\'s NEET UG PYQ bank. All five mock tests have different questions. This is practice material, not an official NTA paper.</p></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
+    h += '</div><p class="mk-note">All seven mock tests have different questions. This is practice material, not an official NTA paper.</p></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
     root.innerHTML = h;
   }
   function selectTest(t) {
