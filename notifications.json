@@ -1,9 +1,9 @@
 {
   "notifications": [
     {
-      "id": "HD2",
-      "title": "HAPPY DIWALI",
-      "message": "Future Doctor It's Your time do it.",
+      "id": "ST",
+      "title": "New Update Vr.1.5.5",
+      "message": "Now Set a timer whenever you want to study..",
       "type": "success",
       "date": "2026-11-08"
     }
