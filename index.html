@@ -2529,7 +2529,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 <script>
 /* MEDORA welcome gate: decide before first paint so the site never flashes */
 (function(){try{var n=null;try{n=JSON.parse(localStorage.getItem('medora.profile')||'null');}catch(e){}
-var done=false;try{done=sessionStorage.getItem('medora.entered')==='1';}catch(e){}
+var done=false;try{done=localStorage.getItem('medora.entered')==='1';}catch(e){}
 if(!(n&&n.name&&done)) document.documentElement.classList.add('mw-pending');}catch(e){}})();
 </script>
 <style id="medoraWelcomeCss">
@@ -2628,6 +2628,131 @@ html.mw-pending body{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.mw-card{animation:none}.mw.leaving{transition:none}}
 @media print{.mw,.mp-ov,.btn-profile,.mm-profile{display:none !important}}
 </style>
+<style id="medoraProCss">
+/* MEDORA PRO LAYER: visual polish + study tools */
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--brand-emerald);color:#fff}
+*{scrollbar-width:thin;scrollbar-color:var(--border-focus) transparent}
+:focus-visible{outline:2px solid var(--brand-emerald);outline-offset:2px;border-radius:6px}
+.topbar{transition:box-shadow .25s ease,background .3s ease}
+.topbar.is-scrolled{box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.btn-ui,.btn-speech,.btn-type,.hp-card,.nav-item,.info-pill{transition:transform .18s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease,color .2s ease}
+.btn-ui:active,.btn-speech:active,.btn-type:active{transform:scale(.96)}
+.btn-ui:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.hp-card{position:relative;overflow:hidden}
+.hp-card::after{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),var(--brand-emerald-dim),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.hp-card:hover::after{opacity:1}
+.hp-card:hover{transform:translateY(-4px);box-shadow:0 22px 48px rgba(0,0,0,.2)}
+.sidebar{backdrop-filter:blur(10px)}
+.nav-item:hover{transform:translateX(3px)}
+.editorial-sheet{box-shadow:var(--shadow);border-radius:18px}
+.prose h2{position:relative;padding-left:16px;scroll-margin-top:90px}
+.prose h2::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:4px;border-radius:4px;background:linear-gradient(var(--brand-emerald),var(--brand-gold))}
+.prose h3{scroll-margin-top:90px}
+.prose table{border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.prose img{border-radius:12px;box-shadow:var(--shadow)}
+.prose blockquote{border-left:4px solid var(--brand-gold);background:var(--brand-emerald-dim);padding:12px 18px;border-radius:0 12px 12px 0}
+.toc-list a{transition:all .2s}
+.toc-list a.spy-on{background:var(--brand-emerald);border-color:var(--brand-emerald);color:#fff;transform:translateY(-1px)}
+.progress-fill{box-shadow:0 0 12px var(--brand-emerald)}
+/* study timer */
+.pomo{position:fixed;left:16px;bottom:16px;z-index:90;font-family:'Plus Jakarta Sans',system-ui,sans-serif;display:none;flex-direction:column;align-items:flex-start;gap:10px}
+.pomo.open,.pomo.show{display:flex}
+.pomo:not(.open) .pomo-panel{display:none}
+.pomo.open .pomo-panel{display:block}
+.pomo:not(.show) .pomo-pill{display:none}
+.pomo-panel{position:relative;width:250px;background:var(--bg-surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+
+.pomo-time{font-size:40px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pomo-mode{text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:800}
+.pomo-bar{height:5px;background:var(--bg-card);border-radius:5px;margin:12px 0;overflow:hidden}
+.pomo-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand-emerald),var(--brand-gold));transition:width .5s linear}
+.pomo-row{display:flex;gap:8px}
+.pomo-row button{flex:1;padding:8px;border-radius:9px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer}
+.pomo-row button.main{background:var(--brand-emerald);border-color:var(--brand-emerald);color:#fff}
+.pomo-count{text-align:center;font-size:12px;color:var(--text-muted);margin-top:10px}
+body.is-home .pomo{bottom:16px}
+@media(max-width:900px){.pomo{bottom:78px}body.is-home .pomo{bottom:16px}}
+/* shortcuts overlay */
+.kb-ov{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.kb-ov.show{display:flex}
+.kb-box{background:var(--bg-surface);color:var(--text-main);border:1px solid var(--border);border-radius:18px;padding:22px 24px;width:min(420px,100%);box-shadow:var(--shadow);font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.kb-box h4{font-size:16px;margin-bottom:14px}
+.kb-box li{list-style:none;display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;font-weight:600}
+.kb-box kbd{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font:600 12px 'JetBrains Mono',monospace}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+@media print{.pomo,.kb-ov{display:none!important}}
+
+.btn-timer b{font-variant-numeric:tabular-nums;color:var(--brand-emerald);font-weight:800}
+.btn-timer.run{border-color:var(--brand-emerald);background:var(--brand-emerald-dim)}
+.btn-timer.brk b{color:var(--brand-gold)}
+@media(max-width:960px){.btn-timer{display:none!important}}
+.mm-item small.pm-mm{font-variant-numeric:tabular-nums;font-weight:800;color:var(--brand-emerald)}
+
+.pomo-pill{display:flex;align-items:center;gap:8px;background:var(--bg-surface);color:var(--text-main);border:1px solid var(--border);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+.pomo-pill:hover{border-color:var(--brand-emerald)}
+.pomo-pill b{font-variant-numeric:tabular-nums;color:var(--brand-emerald)}
+.pomo.run .pomo-pill{border-color:var(--brand-emerald)}
+.pomo.brk .pomo-pill b{color:var(--brand-gold)}
+
+.pomo-close{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);font-size:12px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.pomo-close:hover,.pomo-x:hover{background:var(--brand-emerald);border-color:var(--brand-emerald);color:#fff}
+.pomo-x{width:20px;height:20px;border-radius:50%;margin-left:2px;margin-right:-6px;display:grid;place-items:center;font-size:10px;color:var(--text-muted);background:var(--bg-card)}
+
+.btn-timer b:empty{display:none}
+
+.pomo-panel{width:280px}
+.pomo-add{display:flex;align-items:center;gap:6px;margin-top:10px}
+.pomo-add span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-right:auto}
+.pomo-add button,.pomo-presets button{padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer}
+.pomo-add button:hover,.pomo-presets button:hover{border-color:var(--brand-emerald);color:var(--brand-emerald)}
+.pomo-set{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.pomo-set summary{cursor:pointer;font-size:12px;font-weight:800;color:var(--brand-emerald);list-style:none;display:flex;justify-content:space-between;align-items:center}
+.pomo-set summary::-webkit-details-marker{display:none}
+.pomo-set summary::after{content:"\25BE";transition:transform .2s}
+.pomo-set[open] summary::after{transform:rotate(180deg)}
+.pomo-presets{display:flex;gap:6px;margin:10px 0}
+.pomo-presets button{flex:1}
+.pomo-fields{display:flex;gap:10px}
+.pomo-fields label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.pomo-fields label span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;text-transform:none;letter-spacing:0}
+.pomo-fields input{width:100%;min-width:0;padding:7px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font:700 14px 'Plus Jakarta Sans',system-ui,sans-serif}
+.pomo-fields input:focus{outline:none;border-color:var(--brand-emerald)}
+.pomo-hint{font-size:11px;line-height:1.4;color:var(--brand-gold);margin-top:8px;font-weight:600}
+.pomo-hint:empty{display:none}
+
+.pomo-panel{width:310px;max-height:calc(100vh - 110px);overflow-y:auto;padding:14px 16px 16px}
+.pomo-tabs{display:flex;gap:4px;background:var(--bg-card);border-radius:10px;padding:3px;margin-bottom:12px}
+.pomo-tabs button{flex:1;padding:6px 4px;border:0;border-radius:8px;background:transparent;color:var(--text-muted);font-family:inherit;font-weight:700;font-size:11.5px;cursor:pointer}
+.pomo-tabs button.on{background:var(--brand-emerald);color:#fff}
+.pomo-ringwrap{position:relative;width:170px;height:170px;margin:0 auto 10px}
+.pomo-ring{width:100%;height:100%}
+.pomo-ring circle{fill:none;stroke-width:7}
+.pomo-ring .rb{stroke:var(--bg-card)}
+.pomo-ring .rf{stroke:var(--brand-emerald);stroke-linecap:round;transition:stroke-dashoffset .9s linear}
+.pomo.brk .pomo-ring .rf{stroke:var(--brand-gold)}
+.pomo-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px}
+.pomo-center .pomo-time{font-size:34px;line-height:1.1}
+.pomo-center .pomo-mode{margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pomo-task{width:100%;padding:8px 10px;margin-bottom:10px;border-radius:9px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font:600 12.5px 'Plus Jakarta Sans',system-ui,sans-serif}
+.pomo-task:focus{outline:none;border-color:var(--brand-emerald)}
+.pomo-goal{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.pg-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;gap:8px}
+.pg-top b{color:var(--text-main)} .pg-top span{color:var(--text-muted);font-size:11px}
+.pomo-goal .pomo-bar{margin:8px 0}
+.pomo-week{display:flex;gap:6px;height:46px;align-items:flex-end}
+.wk{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+.wk i{display:block;width:100%;border-radius:4px;background:var(--brand-emerald-dim);border:1px solid var(--border-focus)}
+.wk.now i{background:var(--brand-emerald);border-color:var(--brand-emerald)}
+.wk em{font-style:normal;font-size:9.5px;font-weight:700;color:var(--text-muted)}
+.pomo-tg{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;margin-top:10px;cursor:pointer}
+.pomo-tg input{accent-color:var(--brand-emerald);width:16px;height:16px}
+.pomo-fields{margin-top:8px}
+@media(max-width:380px){.pomo-panel{width:calc(100vw - 32px)}}
+
+/* download-app button only on home */
+body:not(.is-home) .btn-install-top,body:not(.is-home) .btn-dl-mobile,body.is-quiz .btn-install-top,body.is-quiz .btn-dl-mobile,body.is-mock .btn-install-top,body.is-mock .btn-dl-mobile{display:none!important}
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
@@ -2635,7 +2760,7 @@ html.mw-pending body{overflow:hidden}
   <div class="mw-card">
     <div class="mw-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="mw-step" id="mwAsk" hidden>
-      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.2</span></div>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.5</span></div>
       <h1 id="mwTitle">What should we call you?</h1>
       <p class="mw-sub">Tell us your name so MEDORA can greet you every time you study.</p>
       <input class="mw-input" id="mwInput" type="text" maxlength="24" autocomplete="given-name" placeholder="Your name" aria-label="Your name">
@@ -2643,7 +2768,7 @@ html.mw-pending body{overflow:hidden}
       <button class="mw-btn" id="mwContinue" type="button">Continue</button>
     </div>
     <div class="mw-step" id="mwHello" hidden>
-      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.2</span></div>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.5</span></div>
       <h1><span id="mwGreetIco" aria-hidden="true"></span> <span id="mwGreet">Good morning</span>, <em>Future Doctor</em></h1>
       <div class="mw-name" id="mwName"></div>
       <div class="mw-chips"><span class="mw-chip" id="mwStreak"></span><span class="mw-chip" id="mwExam" hidden></span></div>
@@ -2682,7 +2807,7 @@ html.mw-pending body{overflow:hidden}
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.5.2</span>
+    <span class="badge-tag">vr.1.5.5</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -2706,7 +2831,7 @@ html.mw-pending body{overflow:hidden}
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.5.2">VR.1.5.2</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.5.5">VR.1.5.5</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2901,7 +3026,7 @@ html.mw-pending body{overflow:hidden}
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.5.2</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.5.5</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2942,7 +3067,7 @@ html.mw-pending body{overflow:hidden}
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.5.2</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.5.5</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -13096,7 +13221,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 <div class="mm-overlay" id="mmOverlay"></div>
 <aside class="mm-panel" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
   <div class="mm-head">
-    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA <span class="badge-tag mm-vr">vr.1.5.2</span></div>
+    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA <span class="badge-tag mm-vr">vr.1.5.5</span></div>
     <button class="mm-close" id="mmClose" type="button" aria-label="Close menu">✕</button>
   </div>
   <button class="mm-item" data-mm="home" type="button"><span class="mm-ico">🏠</span>Home</button>
@@ -14084,7 +14209,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     var d=snapshot();
     if(!Object.keys(d).length){ msg('Nothing to back up yet — read a chapter or take a quiz first.'); return; }
     var now=new Date();
-    var payload={app:'MEDORA',format:1,version:'vr.1.5.2',exportedAt:now.toISOString(),data:d};
+    var payload={app:'MEDORA',format:1,version:'vr.1.5.5',exportedAt:now.toISOString(),data:d};
     var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
     var a=document.createElement('a'), p=function(x){return String(x).padStart(2,'0');};
     a.href=URL.createObjectURL(blob);
@@ -14348,7 +14473,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     name=v; save(); showHello();
   }
   function enter(after){
-    try{ sessionStorage.setItem('medora.entered','1'); }catch(e){}
+    try{ localStorage.setItem('medora.entered','1'); }catch(e){}
     gate.classList.add('leaving');
     setTimeout(function(){ document.documentElement.classList.remove('mw-pending'); gate.classList.remove('leaving'); if(after) after(); },400);
   }
@@ -14442,7 +14567,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   });
   $('mpWelcome').addEventListener('click',function(){
     closeProfile();
-    try{ sessionStorage.removeItem('medora.entered'); }catch(e){}
+    try{ localStorage.removeItem('medora.entered'); }catch(e){}
     firstTime=false; gate.classList.remove('leaving');
     document.documentElement.classList.add('mw-pending');
     if(name) showHello(); else showAsk();
@@ -14471,6 +14596,146 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   ['hashchange','pageshow','visibilitychange','resize','orientationchange','focus'].forEach(function(ev){ window.addEventListener(ev,unstick); });
   document.addEventListener('visibilitychange',unstick);
   setInterval(unstick,2500);
+})();
+</script>
+<script id="medoraProJs">
+/* MEDORA PRO LAYER: scripts */
+(function(){
+  function $(i){return document.getElementById(i);}
+  /* topbar elevation on scroll */
+  var tb=document.querySelector('.topbar');
+  function sc(){ if(tb) tb.classList.toggle('is-scrolled',window.scrollY>8); }
+  window.addEventListener('scroll',sc,{passive:true}); sc();
+  /* card spotlight follows pointer */
+  document.addEventListener('pointermove',function(e){
+    var c=e.target.closest&&e.target.closest('.hp-card'); if(!c) return;
+    var r=c.getBoundingClientRect(); c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px');
+  },{passive:true});
+  /* scroll-spy: highlight current section in "In this chapter" */
+  var io=null;
+  function spy(){
+    var area=$('contentArea'), list=$('tocList'); if(!area||!list) return;
+    if(io) io.disconnect();
+    io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(!en.isIntersecting) return;
+        list.querySelectorAll('a').forEach(function(a){ a.classList.toggle('spy-on',a.getAttribute('href')==='#'+en.target.id); });
+      });
+    },{rootMargin:'-80px 0px -70% 0px'});
+    area.querySelectorAll('h2[id]').forEach(function(h){ io.observe(h); });
+  }
+  var ca=$('contentArea'); if(ca) new MutationObserver(function(){ setTimeout(spy,60); }).observe(ca,{childList:true});
+  spy();
+  /* study timer v3: modes, ring, cycles, goals, history */
+  var KEY='medora.pomo', shown=false, C=2*Math.PI*52;
+  var st={mode:'work',end:0,left:1500,t:1500,cyc:0,w:1500,b:300,lb:900,n:4,auto:false,snd:true,not:false,goal:120,task:'',hist:{}};
+  function dk(d){ return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function today(){ return dk(new Date()); }
+  try{ var sv=JSON.parse(localStorage.getItem(KEY)||'null'); if(sv) for(var k in sv) st[k]=sv[k]; }catch(e){}
+  if(!st.hist||typeof st.hist!=='object') st.hist={};
+  function put(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
+  function base(){ return st.mode==='work'?st.w:st.mode==='short'?st.b:st.lb; }
+  if(!st.t) st.t=base();
+  function mins(k){ return st.hist[k||today()]||0; }
+  function sessions(){ return st.hist['s'+today()]||0; }
+  shown=!!st.end; var p=document.createElement('div'); p.className='pomo'; p.id='pomo';
+  p.innerHTML='<div class="pomo-panel">'+
+   '<div class="pomo-tabs" id="pmTabs"><button type="button" data-m="work">Focus</button><button type="button" data-m="short">Short break</button><button type="button" data-m="long">Long break</button></div>'+
+   '<div class="pomo-ringwrap"><svg viewBox="0 0 120 120" class="pomo-ring"><circle cx="60" cy="60" r="52" class="rb"/><circle cx="60" cy="60" r="52" class="rf" id="pmRing" transform="rotate(-90 60 60)"/></svg><div class="pomo-center"><div class="pomo-time" id="pmTime"></div><div class="pomo-mode" id="pmMode"></div></div></div>'+
+   '<input class="pomo-task" id="pmTask" type="text" maxlength="60" placeholder="What are you studying? (optional)" aria-label="Current task">'+
+   '<div class="pomo-row"><button class="main" id="pmGo" type="button"></button><button id="pmReset" type="button">Reset</button><button id="pmSkip" type="button">Skip</button></div>'+
+   '<div class="pomo-add"><span>Add time</span><button type="button" data-add="5">+5</button><button type="button" data-add="10">+10</button><button type="button" data-add="15">+15</button></div>'+
+   '<div class="pomo-goal"><div class="pg-top"><b id="pgTxt"></b><span id="pgSess"></span></div><div class="pomo-bar"><i id="pgBar"></i></div><div class="pomo-week" id="pgWeek"></div></div>'+
+   '<details class="pomo-set" id="pmSet"><summary>Settings</summary>'+
+   '<div class="pomo-presets"><button type="button" data-p="25,5,15">25 / 5</button><button type="button" data-p="50,10,20">50 / 10</button><button type="button" data-p="90,15,30">90 / 15</button></div>'+
+   '<div class="pomo-fields"><label>Focus<span><input type="number" id="pmW" min="1" max="240"> min</span></label><label>Short break<span><input type="number" id="pmB" min="1" max="60"> min</span></label></div>'+
+   '<div class="pomo-fields"><label>Long break<span><input type="number" id="pmL" min="1" max="120"> min</span></label><label>Long break after<span><input type="number" id="pmN" min="2" max="10"> sessions</span></label></div>'+
+   '<div class="pomo-fields"><label>Daily goal<span><input type="number" id="pmG" min="10" max="720"> min</span></label></div>'+
+   '<label class="pomo-tg"><input type="checkbox" id="pmAuto"> Auto-start next session</label><label class="pomo-tg"><input type="checkbox" id="pmSnd"> Sound when time is up</label><label class="pomo-tg"><input type="checkbox" id="pmNot"> Desktop notification</label>'+
+   '<div class="pomo-hint" id="pmHint"></div></details></div>'+
+   '<button class="pomo-pill" id="pmPill" type="button" aria-label="Study timer"><span>\u23F1</span><b id="pmPillT"></b><span class="pomo-x" id="pmPillX" role="button" aria-label="Hide timer">\u2715</span></button>';
+  document.body.appendChild(p);
+  var tbtn=document.createElement('button'); tbtn.type='button'; tbtn.id='timerBtn'; tbtn.className='btn-ui btn-timer';
+  tbtn.setAttribute('aria-label','Study timer (T)'); tbtn.title='Study timer (T)';
+  tbtn.innerHTML='<span aria-hidden="true">\u23F1</span><span class="tm-name">Timer</span><b id="pmMini"></b>';
+  var th=$('themeToggle'); if(th&&th.parentNode) th.parentNode.insertBefore(tbtn,th); else if(tb) tb.appendChild(tbtn);
+  var mmN=document.querySelector('#mobileMenu [data-mm="notes"]'), mmT=document.createElement('button');
+  mmT.type='button'; mmT.className='mm-item'; mmT.setAttribute('data-mm','timer');
+  mmT.innerHTML='<span class="mm-ico">\u23F1</span>Study timer<small class="pm-mm" id="pmMiniMm"></small>';
+  if(mmN&&mmN.parentNode) mmN.parentNode.insertBefore(mmT,mmN.nextSibling);
+  function fmt(t){ t=Math.max(0,Math.round(t)); var h=Math.floor(t/3600), m=Math.floor(t%3600/60), s=t%60, z=function(n){return n<10?'0'+n:''+n}; return h?h+':'+z(m)+':'+z(s):z(m)+':'+z(s); }
+  function left(){ return st.end?Math.max(0,(st.end-Date.now())/1000):st.left; }
+  function inProgress(){ return !!st.end||st.left<st.t-0.5; }
+  function beep(){ if(!st.snd) return; try{ var a=new (window.AudioContext||window.webkitAudioContext)(); [880,1100].forEach(function(f,i){ var o=a.createOscillator(), g=a.createGain(), t0=a.currentTime+i*.28; o.connect(g); g.connect(a.destination); o.frequency.value=f; g.gain.setValueAtTime(.15,t0); g.gain.exponentialRampToValueAtTime(.001,t0+.6); o.start(t0); o.stop(t0+.6); }); }catch(e){} }
+  function notify(msg){ try{ if(st.not&&window.Notification&&Notification.permission==='granted') new Notification('MEDORA Timer',{body:msg,icon:'icon-192.png'}); }catch(e){} }
+  function fresh(){ st.t=base(); st.left=st.t; st.end=0; }
+  function swap(){
+    var wasWork=st.mode==='work', k=today();
+    if(wasWork){ st.hist[k]=mins(k)+Math.round(st.t/60); st.hist['s'+k]=sessions()+1; st.cyc++; if(st.cyc>=st.n){ st.cyc=0; st.mode='long'; } else st.mode='short'; }
+    else st.mode='work';
+    fresh(); if(st.auto) st.end=Date.now()+st.left*1000;
+    put(); beep(); notify(wasWork?'Focus session complete. Time for a '+(st.mode==='long'?'long ':'')+'break.':'Break over. Ready to focus?');
+  }
+  var lastStat='';
+  function draw(){
+    var l=left(), run=!!st.end;
+    if(run&&l<=0){ swap(); l=left(); run=!!st.end; }
+    var tot=st.t, work=st.mode==='work', lbl=work?'Focus session':st.mode==='short'?'Short break':'Long break';
+    $('pmTime').textContent=fmt(l); $('pmPillT').textContent=fmt(l); $('pmMini').textContent=(run||l<tot-0.5)?fmt(l):'';
+    var mm=$('pmMiniMm'); if(mm) mm.textContent=run?fmt(l)+' \u00B7 running':fmt(l);
+    $('pmMode').textContent=st.task&&work?st.task:lbl;
+    var r=$('pmRing'); r.style.strokeDasharray=C.toFixed(1); r.style.strokeDashoffset=(C*(1-Math.min(1,Math.max(0,l/tot)))).toFixed(1);
+    $('pmGo').textContent=run?'Pause':(inProgress()?'Resume':'Start');
+    p.querySelectorAll('#pmTabs button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-m')===st.mode); });
+    [['pmW',st.w/60],['pmB',st.b/60],['pmL',st.lb/60],['pmN',st.n],['pmG',st.goal]].forEach(function(a){ var e=$(a[0]); if(document.activeElement!==e) e.value=Math.round(a[1]); });
+    if(document.activeElement!==$('pmTask')) $('pmTask').value=st.task;
+    $('pmAuto').checked=!!st.auto; $('pmSnd').checked=!!st.snd; $('pmNot').checked=!!st.not;
+    $('pmHint').textContent=inProgress()?'A session is in progress, so new times apply from the next one.':'';
+    var td=mins(), sig=td+'|'+st.goal+'|'+sessions()+'|'+st.cyc+'|'+st.n+'|'+today();
+    if(sig!==lastStat){ lastStat=sig;
+      var pct=Math.min(100,100*td/st.goal), mx=Math.max(st.goal,1), w='', i, d, v, nm=['S','M','T','W','T','F','S'];
+      for(i=6;i>=0;i--){ d=new Date(); d.setDate(d.getDate()-i); v=mins(dk(d)); w+='<span class="wk'+(i===0?' now':'')+'"><i style="height:'+Math.max(3,Math.min(100,100*v/mx))+'%" title="'+v+' min"></i><em>'+nm[d.getDay()]+'</em></span>'; }
+      $('pgTxt').textContent=td+' / '+st.goal+' min today'+(td>=st.goal?' \u2713':''); $('pgBar').style.width=pct+'%';
+      $('pgSess').textContent=sessions()+' session'+(sessions()===1?'':'s')+' \u00B7 '+st.cyc+'/'+st.n+' to long break'; $('pgWeek').innerHTML=w; }
+    p.classList.toggle('show',shown); p.classList.toggle('run',run); p.classList.toggle('brk',!work); tbtn.classList.toggle('run',run); tbtn.classList.toggle('brk',!work);
+    document.title=document.title.replace(/^\[[0-9:]+\]\s/,''); if(run) document.title='['+fmt(l)+'] '+document.title;
+  }
+  function num(id,def,lo,hi){ var v=Math.round(+$(id).value); if(!(v>=lo)) v=def; return Math.min(hi,v); }
+  function applyTimes(w,b,lb){
+    st.w=(w||num('pmW',st.w/60,1,240))*60; st.b=(b||num('pmB',st.b/60,1,60))*60; st.lb=(lb||num('pmL',st.lb/60,1,120))*60;
+    st.n=num('pmN',st.n,2,10); st.goal=num('pmG',st.goal,10,720);
+    if(!inProgress()) fresh(); put(); draw();
+  }
+  tbtn.addEventListener('click',function(){ shown=true; p.classList.toggle('open'); draw(); });
+  mmT.addEventListener('click',function(){ shown=true; setTimeout(function(){ p.classList.add('open'); draw(); },120); });
+  $('pmGo').addEventListener('click',function(){ if(st.end){ st.left=left(); st.end=0; } else { st.end=Date.now()+st.left*1000; shown=true; p.classList.remove('open'); try{ if(st.not&&window.Notification&&Notification.permission==='default') Notification.requestPermission(); }catch(e){} } put(); draw(); });
+  $('pmPill').addEventListener('click',function(){ p.classList.toggle('open'); });
+  $('pmPillX').addEventListener('click',function(e){ e.stopPropagation(); fresh(); shown=false; p.classList.remove('open'); put(); draw(); });
+  $('pmReset').addEventListener('click',function(){ fresh(); put(); draw(); });
+  $('pmSkip').addEventListener('click',function(){ st.mode=st.mode==='work'?'short':'work'; fresh(); put(); draw(); });
+  p.querySelectorAll('#pmTabs button').forEach(function(b){ b.addEventListener('click',function(){ st.mode=b.getAttribute('data-m'); fresh(); put(); draw(); }); });
+  p.querySelectorAll('[data-add]').forEach(function(b){ b.addEventListener('click',function(){ var m=+b.getAttribute('data-add'); st.t+=m*60; if(st.end) st.end+=m*60000; else st.left+=m*60; put(); draw(); }); });
+  p.querySelectorAll('[data-p]').forEach(function(b){ b.addEventListener('click',function(){ var v=b.getAttribute('data-p').split(','); applyTimes(+v[0],+v[1],+v[2]); }); });
+  ['pmW','pmB','pmL','pmN','pmG'].forEach(function(id){ var e=$(id); e.addEventListener('change',function(){ applyTimes(); }); e.addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); e.blur(); } ev.stopPropagation(); }); });
+  $('pmTask').addEventListener('input',function(){ st.task=this.value.trim().slice(0,60); put(); draw(); });
+  $('pmTask').addEventListener('keydown',function(ev){ if(ev.key==='Enter') this.blur(); ev.stopPropagation(); });
+  $('pmAuto').addEventListener('change',function(){ st.auto=this.checked; put(); });
+  $('pmSnd').addEventListener('change',function(){ st.snd=this.checked; put(); if(st.snd) beep(); });
+  $('pmNot').addEventListener('change',function(){ st.not=this.checked; put(); try{ if(st.not&&window.Notification&&Notification.permission==='default') Notification.requestPermission(); }catch(e){} });
+  document.addEventListener('keydown',function(e){ var t=e.target; if(e.key===' '&&p.classList.contains('open')&&!(t&&(/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(t.tagName)||t.isContentEditable))){ e.preventDefault(); $('pmGo').click(); } });
+  document.addEventListener('click',function(e){ if(p.contains(e.target)||(e.target.closest&&(e.target.closest('#timerBtn')||e.target.closest('[data-mm="timer"]')))) return; p.classList.remove('open'); });
+  setInterval(draw,1000); draw();
+  /* shortcuts overlay */
+  var ov=document.createElement('div'); ov.className='kb-ov'; ov.id='kbOv';
+  ov.innerHTML='<div class="kb-box" role="dialog" aria-label="Keyboard shortcuts"><h4>⌨️ Keyboard shortcuts</h4><ul><li>Search and commands<kbd>Ctrl K</kbd></li><li>Focus reading mode<kbd>F</kbd></li><li>Study timer<kbd>T</kbd></li><li>Start / pause (timer open)<kbd>Space</kbd></li><li>This panel<kbd>?</kbd></li><li>Close any panel<kbd>Esc</kbd></li></ul></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){ if(e.target===ov) ov.classList.remove('show'); });
+  document.addEventListener('keydown',function(e){
+    var t=e.target, typing=t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable);
+    if(e.key==='Escape'){ ov.classList.remove('show'); p.classList.remove('open'); return; }
+    if(typing||e.ctrlKey||e.metaKey||e.altKey) return;
+    if(e.key==='?'){ ov.classList.toggle('show'); }
+    else if(e.key==='t'||e.key==='T'){ p.classList.toggle('open'); }
+  });
 })();
 </script>
 </body>
