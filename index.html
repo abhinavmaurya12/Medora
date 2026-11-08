@@ -2421,13 +2421,13 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 }
 @media (max-height: 520px) { .mk-palbar { padding: 4px 14px; min-height: 30px; } }
 
-/* --- Mock test hub (Mock Test 1 / Mock Test 2) --- */
-.mk-hub { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0 8px; }
+/* --- Mock test hub (Mock Tests 1 to 5) --- */
+.mk-hub { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 20px 0 8px; }
 .mk-tc { display: flex; align-items: center; gap: 14px; text-align: left; width: 100%; padding: 18px; border-radius: 18px; border: 1.5px solid var(--border); background: var(--bg-surface); color: var(--text-main); transition: border-color .15s, transform .12s, box-shadow .15s; position: relative; }
 .mk-tc:hover { border-color: #d1456c; transform: translateY(-2px); box-shadow: var(--shadow); }
 .mk-tc:active { transform: scale(.985); }
 .mk-tc:focus-visible { outline: 2px solid #d1456c; outline-offset: 3px; }
-.mk-tc.t2 { --tc: #7c3aed; } .mk-tc.t1 { --tc: #d1456c; }
+.mk-tc.t2 { --tc: #7c3aed; } .mk-tc.t1 { --tc: #d1456c; } .mk-tc.t3 { --tc: #0d9488; } .mk-tc.t4 { --tc: #ea580c; } .mk-tc.t5 { --tc: #2563eb; }
 .mk-tci { flex: 0 0 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 28px; background: color-mix(in srgb, var(--tc) 16%, transparent); }
 .mk-tcb { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
 .mk-tcb b { font-size: 18px; line-height: 1.2; }
@@ -2435,6 +2435,8 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 .mk-tst { font-size: 12px; font-weight: 700; color: var(--text-muted); }
 .mk-tst.live { color: var(--mk-warn); }
 .mk-tcc { flex: 0 0 auto; background: var(--tc); color: #fff; font-weight: 800; font-size: 13px; padding: 10px 14px; border-radius: 12px; white-space: nowrap; }
+.mk-tc { flex-wrap: wrap; } .mk-tcb { flex: 1 1 140px; } .mk-tcc { width: 100%; text-align: center; }
+@media (max-width: 1000px) { .mk-hub { grid-template-columns: 1fr; } .mk-tc { flex-wrap: nowrap; } .mk-tcb { flex: 1; } .mk-tcc { width: auto; } }
 @media (max-width: 760px) {
   .mk-hub { grid-template-columns: 1fr; gap: 12px; }
   .mk-tc { padding: 14px; gap: 12px; }
@@ -2442,7 +2444,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
   .mk-tcb b { font-size: 17px; }
 }
 @media (max-width: 380px) { .mk-tc { flex-wrap: wrap; } .mk-tcc { width: 100%; text-align: center; } }
-@media (max-height: 520px) and (min-width: 600px) { .mk-hub { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 10px 0; } .mk-tc { padding: 10px 12px; } }
+@media (max-height: 520px) and (min-width: 600px) { .mk-hub { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 10px 0; } .mk-tc { padding: 10px 12px; } }
 
 @media (max-width: 360px) { .mk-pbt { font-size: 12px; } .mk-pbs { gap: 3px; font-size: 11px; } }
 </style>
@@ -2566,13 +2568,13 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
         <div class="class-icon">🏆</div>
         <div class="qc-text">
           <h2>NEET Mock Test</h2>
-          <div class="class-sub">Two full-length NEET mock tests, Mock Test 1 and Mock Test 2. Each has 180 questions, 3 hours, +4 / −1 marking, a question palette and a subject-wise score report.</div>
+          <div class="class-sub">Five full-length NEET mock tests, Mock Test 1 to Mock Test 5. Each has 180 questions, 3 hours, +4 / −1 marking, a question palette and a subject-wise score report.</div>
           <div class="card-progress"><span id="cardMockBar"></span></div>
         </div>
       </div>
       <div class="qc-side">
         <div class="qc-chips">
-          <span class="class-chip" id="cardMockCount">2 mock tests</span>
+          <span class="class-chip" id="cardMockCount">5 mock tests</span>
           <span class="class-chip" id="cardMockBest">180 Q each · 3 hours</span>
         </div>
         <span class="class-cta qc-btn" id="cardMockCta">Open mock tests →</span>
@@ -13217,7 +13219,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   "use strict";
   if (typeof app === "undefined" || typeof PYQ === "undefined") return;
 
-  const KEYS = { 1: "medora_mock_v1", 2: "medora_mock_v2" }, DUR = 10800, PER = 45, POS = 4, NEG = 1;
+  const KEYS = { 1: "medora_mock_v1", 2: "medora_mock_v2", 3: "medora_mock_v3", 4: "medora_mock_v4", 5: "medora_mock_v5" }, NT = 5, DUR = 10800, PER = 45, POS = 4, NEG = 1;
   const SUBS = [
     { k: "P", n: "Physics", ic: "⚡" }, { k: "C", n: "Chemistry", ic: "🧪" },
     { k: "B", n: "Botany", ic: "🌿" }, { k: "Z", n: "Zoology", ic: "🫀" }
@@ -13259,7 +13261,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   root.id = "mockApp"; root.tabIndex = -1; root.setAttribute("role", "dialog"); root.setAttribute("aria-modal", "true"); root.setAttribute("aria-label", "NEET full-length mock test");
   document.body.appendChild(root);
 
-  const tpool = k => pool[k].filter((v, j) => j % 2 === T - 1);
+  const tpool = k => pool[k].filter((v, j) => j % NT === T - 1);
   const left = () => A ? (A.endsAt ? Math.max(0, Math.round((A.endsAt - Date.now()) / 1000)) : Math.round((A.pausedLeft || 0) / 1000)) : 0;
   const nAns = () => A.ans.filter(x => x >= 0).length;
   const firstOf = k => A.ids.findIndex(id => PYQ[id].sub === k);
@@ -13311,9 +13313,9 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   /* ---------- home card ---------- */
   function paintCard() {
     const card = $("cardMock"); if (!card) return;
-    const d1 = loadK(KEYS[1]), d2 = loadK(KEYS[2]), hist = d1.history.concat(d2.history), act = d1.active || d2.active;
+    const ds = [1, 2, 3, 4, 5].map(t => loadK(KEYS[t])), hist = ds.reduce((a, d) => a.concat(d.history), []), act = ds.some(d => d.active);
     const best = hist.reduce((m, h) => Math.max(m, h.score), -Infinity);
-    $("cardMockCount").textContent = act ? "Test in progress" : hist.length ? hist.length + " attempt" + (hist.length === 1 ? "" : "s") : "2 mock tests";
+    $("cardMockCount").textContent = act ? "Test in progress" : hist.length ? hist.length + " attempt" + (hist.length === 1 ? "" : "s") : "5 mock tests";
     $("cardMockBest").textContent = hist.length ? "Best " + best + " / " + hist[0].max : "180 Q each · 3 hours";
     $("cardMockCta").textContent = act ? "Resume a test →" : "Open mock tests →";
     $("cardMockBar").style.width = hist.length ? Math.max(0, best) / hist[0].max * 100 + "%" : "0%";
@@ -13327,17 +13329,17 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   function showHub() {
     screen = "hub"; stopTick(); curRes = null; closeModal(); A = null; paused = false;
     let h = '<div class="mk-rtop"><div class="mk-brand"><span class="mk-logo">🏆</span><div><b>NEET Mock Tests</b><small>Choose a full-length test</small></div></div><button type="button" class="mk-btn" data-act="exit">✕ Close</button></div>' +
-      '<div class="mk-scroll"><div class="mk-wrap"><div class="mk-hero"><h1>NEET Mock Tests</h1><p>Two separate full-length papers with different questions. Each one has its own clock, progress and score history.</p></div><div class="mk-hub">';
-    [1, 2].forEach(t => {
+      '<div class="mk-scroll"><div class="mk-wrap"><div class="mk-hero"><h1>NEET Mock Tests</h1><p>Five separate full-length papers with different questions. Each one has its own clock, progress and score history.</p></div><div class="mk-hub">';
+    [1, 2, 3, 4, 5].forEach(t => {
       const d = loadK(KEYS[t]), hist = d.history, act = d.active, best = hist.reduce((m, r) => Math.max(m, r.score), -Infinity);
       let st;
       if (act) st = '<span class="mk-tst live">⏱ In progress · ' + act.ans.filter(x => x >= 0).length + ' / ' + act.ids.length + ' answered</span>';
       else if (hist.length) st = '<span class="mk-tst">' + hist.length + ' attempt' + (hist.length === 1 ? '' : 's') + ' · Best ' + best + ' / ' + hist[0].max + '</span>';
       else st = '<span class="mk-tst">Not attempted yet</span>';
-      h += '<button type="button" class="mk-tc t' + t + '" data-act="pick" data-t="' + t + '"><span class="mk-tci">' + (t === 1 ? '🏆' : '🥇') + '</span><span class="mk-tcb"><b>NEET Mock Test ' + t + '</b>' +
+      h += '<button type="button" class="mk-tc t' + t + '" data-act="pick" data-t="' + t + '"><span class="mk-tci">' + ['🏆', '🥇', '🎯', '🚀', '💎'][t - 1] + '</span><span class="mk-tcb"><b>NEET Mock Test ' + t + '</b>' +
         '<small>180 questions · 3 hours · 720 marks</small>' + st + '</span><span class="mk-tcc">' + (act ? 'Resume' : hist.length ? 'Open' : 'Start') + ' →</span></button>';
     });
-    h += '</div><p class="mk-note">Questions come from the app\'s NEET UG PYQ bank. Mock Test 1 and Mock Test 2 never share a question. This is practice material, not an official NTA paper.</p></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
+    h += '</div><p class="mk-note">Questions come from the app\'s NEET UG PYQ bank. All five mock tests have different questions. This is practice material, not an official NTA paper.</p></div></div><div class="mk-toast" id="mkToast" role="status"></div>';
     root.innerHTML = h;
   }
   function selectTest(t) {
