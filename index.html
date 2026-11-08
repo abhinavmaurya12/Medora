@@ -1966,7 +1966,7 @@ body.hlp-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .hlbar, .hl.flash { animation: none; } }
 
 /* ===== QUIZ QUESTION CARD v2: fixed to screen, zero scrollbars, desktop + mobile ===== */
-html:has(.quiz.qa-mode), body:has(.quiz.qa-mode) { overflow: hidden !important; height: 100dvh; }
+html:has(body.is-quiz .quiz.qa-mode), body.is-quiz:has(.quiz.qa-mode) { overflow: hidden !important; height: 100dvh; }
 .quiz.qa-mode { --qa-top: 67px; --fs: 1; box-sizing: border-box; width: 100%; max-width: 1040px; height: calc(100dvh - var(--qa-top)); padding: 16px 24px 18px; margin: 0 auto; display: flex; flex-direction: column; justify-content: stretch; overflow: hidden; }
 .quiz.qa-mode .qa { flex: 1 1 auto; min-height: 0; height: auto; max-height: none; max-width: none; margin: 0; display: grid; grid-template-rows: auto auto auto minmax(0,1fr) auto; row-gap: 12px; padding: 18px 22px 16px; border-radius: 24px; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--brand-emerald) 5%, var(--bg-surface)), var(--bg-surface) 45%); }
 .quiz.qa-mode .qa-top, .quiz.qa-mode .qa-meta, .quiz.qa-mode .qa-prog { margin: 0; }
@@ -2547,7 +2547,7 @@ html.mw-pending body{overflow:hidden}
 .mw-eyebrow{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-emerald);margin-bottom:10px}
 .mw h1{font-size:26px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
 .mw h1 em{font-style:normal;color:var(--brand-emerald)}
-.mw-name{font-family:'Crimson Pro',Georgia,serif;font-size:34px;font-weight:700;margin:10px 0 4px;overflow-wrap:anywhere}
+.mw-name{font-family:'Crimson Pro',Georgia,serif;font-size:28px;font-weight:700;margin:8px 0 14px;overflow-wrap:anywhere}
 .mw-sub{font-size:14px;color:var(--text-muted);line-height:1.55;margin:8px 0 20px}
 .mw-input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font:600 16px 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s}
 .mw-input:focus{border-color:var(--brand-emerald);box-shadow:0 0 0 3px var(--brand-emerald-dim)}
@@ -2585,6 +2585,36 @@ html.mw-pending body{overflow:hidden}
 .mm-profile .mp-edit{flex:none}
 .mm-profile small{white-space:nowrap}
 
+
+/* welcome: chips + daily goal ring */
+.mw-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 14px}
+.mw-chip{padding:6px 12px;border-radius:999px;font:700 12.5px 'Plus Jakarta Sans',system-ui,sans-serif;background:var(--brand-emerald-dim);color:var(--text-main);border:1px solid var(--border-focus)}
+.mw-chip[hidden]{display:none}
+.mw-goal{display:flex;align-items:center;gap:14px;text-align:left;margin:0 0 16px;padding:12px 14px;border:1px solid var(--border);border-radius:16px;background:var(--bg-card)}
+.mw-ringwrap{position:relative;width:56px;height:56px;flex:none}
+.mw-ringwrap svg{width:56px;height:56px;transform:rotate(-90deg)}
+.mw-ringwrap circle{fill:none;stroke-width:7}
+.mw-ringwrap .rt{stroke:rgba(128,128,128,.25)}
+.mw-ringwrap .rf{stroke:var(--brand-emerald);stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.mw-ringtxt{position:absolute;inset:0;display:grid;place-items:center;font:800 12.5px 'Plus Jakarta Sans',system-ui,sans-serif}
+.mw-goaltxt b{display:block;font-size:14px;font-weight:800}
+.mw-goaltxt span{display:block;font-size:12.5px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.mw-cont{display:block;font-size:13.5px;padding:12px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mw-cont[hidden]{display:none}
+/* profile modal: stats + settings */
+.mp-box{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+.mp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.mp-st{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:10px 4px;min-width:0}
+.mp-st i{display:block;font-style:normal;font-size:16px;line-height:1}
+.mp-st b{display:block;font-size:14px;font-weight:800;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-st small{display:block;font-size:10.5px;color:var(--text-muted);margin-top:2px;line-height:1.25}
+.mp-set{text-align:left}
+.mp-set label{display:block;font-size:12px;font-weight:700;color:var(--text-muted);margin:12px 0 5px}
+.mp-sel{text-align:left;font-size:15px;padding:11px 12px;margin-bottom:0}
+.mp-set [hidden]{display:none}
+#mpDateRow{margin-top:8px}
+.mp-note{font-size:11.5px;color:var(--text-muted);margin-top:5px;line-height:1.4;min-height:0}
+
 /* profile modal */
 .mp-ov{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
 .mp-ov.show{display:flex}
@@ -2605,7 +2635,7 @@ html.mw-pending body{overflow:hidden}
   <div class="mw-card">
     <div class="mw-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="mw-step" id="mwAsk" hidden>
-      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.0</span></div>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.2</span></div>
       <h1 id="mwTitle">What should we call you?</h1>
       <p class="mw-sub">Tell us your name so MEDORA can greet you every time you study.</p>
       <input class="mw-input" id="mwInput" type="text" maxlength="24" autocomplete="given-name" placeholder="Your name" aria-label="Your name">
@@ -2613,11 +2643,13 @@ html.mw-pending body{overflow:hidden}
       <button class="mw-btn" id="mwContinue" type="button">Continue</button>
     </div>
     <div class="mw-step" id="mwHello" hidden>
-      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.0</span></div>
-      <h1><span id="mwWelcome">Welcome back</span>, <em>Future Doctor</em></h1>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.2</span></div>
+      <h1><span id="mwGreetIco" aria-hidden="true"></span> <span id="mwGreet">Good morning</span>, <em>Future Doctor</em></h1>
       <div class="mw-name" id="mwName"></div>
-      <p class="mw-sub">Your chapters, notes and progress are ready. Let's make today count.</p>
+      <div class="mw-chips"><span class="mw-chip" id="mwStreak"></span><span class="mw-chip" id="mwExam" hidden></span></div>
+      <div class="mw-goal"><div class="mw-ringwrap"><svg viewBox="0 0 64 64" aria-hidden="true"><circle class="rt" cx="32" cy="32" r="26"/><circle class="rf" id="mwRing" cx="32" cy="32" r="26"/></svg><span class="mw-ringtxt" id="mwRingTxt"></span></div><div class="mw-goaltxt"><b>Daily goal</b><span id="mwGoalTxt"></span></div></div>
       <button class="mw-btn" id="mwEnter" type="button">Enter MEDORA &rarr;</button>
+      <button class="mw-btn alt mw-cont" id="mwContinue2" type="button" hidden></button>
       <button class="mw-link" id="mwChange" type="button">Not you? Change name</button>
     </div>
   </div>
@@ -2630,6 +2662,14 @@ html.mw-pending body{overflow:hidden}
     <h2>Your profile</h2>
     <p>Future Doctor &middot; saved on this device</p>
     <input class="mw-input" id="mpInput" type="text" maxlength="24" placeholder="Your name" aria-label="Your name">
+    <div class="mp-stats" id="mpStats"></div>
+    <div class="mp-set">
+      <label for="mpTarget">Target exam</label>
+      <select class="mw-input mp-sel" id="mpTarget"><option value="none">No target set</option><option value="neet2027">NEET 2027</option><option value="neet2028">NEET 2028</option><option value="custom">Custom exam date</option></select>
+      <div id="mpDateRow" hidden><input class="mw-input mp-sel" id="mpDate" type="date" aria-label="Exam date"><div class="mp-note" id="mpNote"></div></div>
+      <label for="mpGoal">Daily goal</label>
+      <select class="mw-input mp-sel" id="mpGoal"><option value="q10">10 questions a day</option><option value="q20">20 questions a day</option><option value="q50">50 questions a day</option><option value="c1">1 chapter a day</option><option value="c2">2 chapters a day</option></select>
+    </div>
     <div class="mw-err" id="mpErr" role="alert"></div>
     <div class="mp-row"><button class="mw-btn alt" id="mpCancel" type="button">Cancel</button><button class="mw-btn" id="mpSave" type="button">Save</button></div>
     <button class="mw-btn alt mp-welcome" id="mpWelcome" type="button">&#8962; Back to Welcome Page</button>
@@ -2642,7 +2682,7 @@ html.mw-pending body{overflow:hidden}
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.5.0</span>
+    <span class="badge-tag">vr.1.5.2</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -2666,7 +2706,7 @@ html.mw-pending body{overflow:hidden}
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.5.0">VR.1.5.0</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.5.2">VR.1.5.2</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2861,7 +2901,7 @@ html.mw-pending body{overflow:hidden}
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.5.0</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.5.2</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2902,7 +2942,7 @@ html.mw-pending body{overflow:hidden}
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.5.0</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.5.2</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -13056,7 +13096,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 <div class="mm-overlay" id="mmOverlay"></div>
 <aside class="mm-panel" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
   <div class="mm-head">
-    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA <span class="badge-tag mm-vr">vr.1.5.0</span></div>
+    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA <span class="badge-tag mm-vr">vr.1.5.2</span></div>
     <button class="mm-close" id="mmClose" type="button" aria-label="Close menu">✕</button>
   </div>
   <button class="mm-item" data-mm="home" type="button"><span class="mm-ico">🏠</span>Home</button>
@@ -14044,7 +14084,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     var d=snapshot();
     if(!Object.keys(d).length){ msg('Nothing to back up yet — read a chapter or take a quiz first.'); return; }
     var now=new Date();
-    var payload={app:'MEDORA',format:1,version:'vr.1.5.0',exportedAt:now.toISOString(),data:d};
+    var payload={app:'MEDORA',format:1,version:'vr.1.5.2',exportedAt:now.toISOString(),data:d};
     var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
     var a=document.createElement('a'), p=function(x){return String(x).padStart(2,'0');};
     a.href=URL.createObjectURL(blob);
@@ -14164,73 +14204,220 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 </style>
 <script>
 (function(){
-  var KEY='medora.profile', $=function(id){return document.getElementById(id);};
+  var KEY='medora.profile', AKEY='medora.activity', $=function(id){return document.getElementById(id);};
+  var PRESETS={neet2027:{label:'NEET 2027',date:'2027-05-02'},neet2028:{label:'NEET 2028',date:'2028-05-07'}};
+  var GOALS={q10:{t:'q',n:10},q20:{t:'q',n:20},q50:{t:'q',n:50},c1:{t:'c',n:1},c2:{t:'c',n:2}};
+
+  /* ---------- profile data ---------- */
   function raw(){ try{ return JSON.parse(localStorage.getItem(KEY)||'null')||{}; }catch(e){ return {}; } }
-  function load(){ var o=raw(); return (typeof o.name==='string'&&o.name.trim())?o.name.trim():''; }
-  function loadPhoto(){ var o=raw(); return (typeof o.photo==='string'&&o.photo.indexOf('data:image/')===0)?o.photo:''; }
-  var photo=loadPhoto(), draft='';
-  function save(n){ try{ localStorage.setItem(KEY,JSON.stringify({name:n,photo:photo})); return true; }catch(e){ return false; } }
+  var P=raw();
+  var name=(typeof P.name==='string'&&P.name.trim())?P.name.trim():'';
+  var photo=(typeof P.photo==='string'&&P.photo.indexOf('data:image/')===0)?P.photo:'';
+  var target=(PRESETS[P.target]||P.target==='custom')?P.target:'none';
+  var tdate=/^\d{4}-\d{2}-\d{2}$/.test(P.tdate||'')?P.tdate:'';
+  var goal=GOALS[P.goal]?P.goal:'q20';
+  if(PRESETS[target]&&!tdate) tdate=PRESETS[target].date;
+  var draft='', firstTime=!name;
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify({name:name,photo:photo,target:target,tdate:tdate,goal:goal})); return true; }catch(e){ return false; } }
   function clean(v){ return String(v||'').replace(/\s+/g,' ').trim().slice(0,24); }
   function initial(n){ return (n.charAt(0)||'?'); }
-  var name=load(), firstTime=!name;
+
+  /* ---------- activity log (streak, daily goal, quiz accuracy) ---------- */
+  function pad(n){ return n<10?'0'+n:''+n; }
+  function dkey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function readAct(){ try{ var a=JSON.parse(localStorage.getItem(AKEY)||'null'); if(a&&typeof a==='object'){ a.d=a.d||{}; a.tot=a.tot||{q:0,c:0}; return a; } }catch(e){} return {d:{},tot:{q:0,c:0}}; }
+  function writeAct(a){ try{ var ks=Object.keys(a.d).sort(); while(ks.length>400) delete a.d[ks.shift()]; localStorage.setItem(AKEY,JSON.stringify(a)); }catch(e){} }
+  function bump(fn){
+    if(document.documentElement.classList.contains('mw-pending')) return;
+    var a=readAct(), k=dkey(new Date()), d=a.d[k]||(a.d[k]={q:0,c:0,ch:0,o:0});
+    fn(a,d); writeAct(a);
+  }
+  function mocks(){
+    var out=[];
+    for(var k=1;k<=7;k++){ try{ var o=JSON.parse(localStorage.getItem('medora_mock_v'+k)||'null'); if(o&&Array.isArray(o.history)) o.history.forEach(function(h){ if(h&&typeof h.ts==='number') out.push(h); }); }catch(e){} }
+    return out;
+  }
+  function summary(){
+    var a=readAct(), ms=mocks(), days={}, mq={}, today=dkey(new Date());
+    Object.keys(a.d).forEach(function(k){ var d=a.d[k]; if(d&&(d.q>0||d.ch>0||d.o>0)) days[k]=1; });
+    ms.forEach(function(h){ var k=dkey(new Date(h.ts)); days[k]=1; mq[k]=(mq[k]||0)+((h.c||0)+(h.w||0)); });
+    var t=a.d[today]||{q:0,ch:0};
+    var c=new Date(); c.setHours(12,0,0,0);
+    var streak=0; if(!days[dkey(c)]) c.setDate(c.getDate()-1);
+    while(days[dkey(c)]){ streak++; c.setDate(c.getDate()-1); }
+    var best=null; ms.forEach(function(h){ if(!best||h.score>best.score) best=h; });
+    var total=0, done=0; try{ total=app.all().length; }catch(e){} try{ done=store.data.done.length; }catch(e){}
+    return { streak:streak, qToday:(t.q||0)+(mq[today]||0), chToday:t.ch||0, chapters:done, total:total,
+      acc:a.tot.q>0?Math.round(a.tot.c/a.tot.q*100):null, answered:a.tot.q||0, mocks:ms.length,
+      best:best?(best.score+'/'+(best.max||720)):null };
+  }
+
+  /* ---------- hooks into the existing app (only count real study actions) ---------- */
+  try{
+    if(typeof quiz!=='undefined'&&quiz.handle){
+      var oh=quiz.handle;
+      quiz.handle=function(){
+        var r=this.run, i=r?r.i:-1, was=!!(r&&!r.done&&r.picked&&r.picked[i]===undefined);
+        var res=oh.apply(this,arguments);
+        try{ if(was&&r.picked[i]!==undefined&&r.picked[i]>=0){ var ok=r.picked[i]===r.qs[i].ans; bump(function(a,d){ d.q++; a.tot.q++; if(ok){ d.c++; a.tot.c++; } }); } }catch(e){}
+        return res;
+      };
+    }
+    if(typeof app!=='undefined'&&app.markDone){
+      var om=app.markDone;
+      app.markDone=function(id){
+        var had=false; try{ had=store.data.done.includes(id); }catch(e){}
+        var res=om.apply(this,arguments);
+        try{ if(!had&&store.data.done.includes(id)) bump(function(a,d){ d.ch++; }); }catch(e){}
+        return res;
+      };
+    }
+    if(typeof app!=='undefined'&&app.loadChapter){
+      var ol=app.loadChapter;
+      app.loadChapter=function(){ var res=ol.apply(this,arguments); try{ bump(function(a,d){ d.o++; }); }catch(e){} return res; };
+    }
+  }catch(e){ console.warn('MEDORA activity hooks skipped',e); }
+
+  /* ---------- greeting + exam countdown ---------- */
+  function greet(){ var h=new Date().getHours(); if(h>=5&&h<12) return ['Good morning','\u2600\uFE0F']; if(h>=12&&h<17) return ['Good afternoon','\uD83C\uDF24\uFE0F']; return ['Good evening','\uD83C\uDF19']; }
+  function daysLeft(){
+    if(target==='none'||!tdate) return null;
+    var p=tdate.split('-'), e=new Date(+p[0],+p[1]-1,+p[2]), n=new Date(); n=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+    return Math.round((e-n)/864e5);
+  }
+  function targetLabel(){ return PRESETS[target]?PRESETS[target].label:'Your exam'; }
+  function examText(){
+    var d=daysLeft(); if(d===null) return '';
+    if(d>1) return '\uD83C\uDFAF '+targetLabel()+' \u00B7 '+d+' days to go';
+    if(d===1) return '\uD83C\uDFAF '+targetLabel()+' is tomorrow';
+    if(d===0) return '\uD83C\uDFAF '+targetLabel()+' is today. All the best!';
+    return '\uD83C\uDFAF '+targetLabel()+' date has passed';
+  }
 
   var gate=$('mwGate'), ask=$('mwAsk'), hello=$('mwHello'), inp=$('mwInput'), err=$('mwErr');
 
-  /* ---- header chip (desktop) ---- */
+  /* ---------- header chip (desktop) ---------- */
   var chip=document.createElement('button');
   chip.type='button'; chip.id='profileBtn'; chip.className='btn-ui btn-profile'; chip.setAttribute('aria-label','Your profile'); chip.title='Your profile';
   chip.innerHTML='<span class="mp-av" id="mpAvTop"></span><span class="mp-nm" id="mpNmTop"></span>';
   var menuBtn=$('menuBtn'); if(menuBtn&&menuBtn.parentNode) menuBtn.parentNode.insertBefore(chip,menuBtn);
 
-  /* ---- mobile menu card ---- */
+  /* ---------- mobile menu card ---------- */
   var mmHead=document.querySelector('#mobileMenu .mm-head'), card=document.createElement('button');
   card.type='button'; card.className='mm-profile'; card.id='mmProfile';
-  card.innerHTML='<span class="mp-av" id="mpAvMm"></span><span><b id="mpNmMm"></b><small>Future Doctor</small></span><span class="mp-edit">Edit</span>';
+  card.innerHTML='<span class="mp-av" id="mpAvMm"></span><span><b id="mpNmMm"></b><small id="mpSubMm">Future Doctor</small></span><span class="mp-edit">Edit</span>';
   if(mmHead&&mmHead.parentNode) mmHead.parentNode.insertBefore(card,mmHead.nextSibling);
 
+  function setAv(e,img){
+    if(!e) return;
+    if(img){ e.style.backgroundImage='url("'+img+'")'; e.classList.add('has-img'); e.textContent=''; }
+    else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=initial(name); }
+  }
   function paint(){
-    var a=initial(name);
-    function setAv(e,img){ if(!e) return; if(img){ e.style.backgroundImage='url("'+img+'")'; e.classList.add('has-img'); e.textContent=''; } else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=a; } }
     setAv($('mpAvTop'),photo); setAv($('mpAvMm'),photo);
     ['mpNmTop','mpNmMm'].forEach(function(i){ var e=$(i); if(e) e.textContent=name||'Guest'; });
-    $('mwName').textContent=name;
+    var s=summary();
+    $('mpSubMm').textContent=(s.streak>0?'\uD83D\uDD25 '+s.streak+'-day streak \u00B7 ':'')+'Future Doctor';
     chip.title='Your profile: '+name;
   }
 
-  /* ---- welcome gate ---- */
+  /* ---------- welcome gate ---------- */
+  var CIRC=2*Math.PI*26;
+  function renderHello(){
+    var g=greet(); $('mwGreetIco').textContent=g[0]===''?'':g[1]; $('mwGreet').textContent=g[0];
+    $('mwName').textContent=(firstTime?'Welcome, ':'Welcome back, ')+name;
+    var s=summary();
+    $('mwStreak').textContent=s.streak>0?'\uD83D\uDD25 '+s.streak+'-day streak':'\uD83D\uDD25 Start your streak today';
+    var ex=$('mwExam'), et=examText(); ex.hidden=!et; ex.textContent=et;
+    var G=GOALS[goal], cur=G.t==='q'?s.qToday:s.chToday, pct=Math.min(1,cur/G.n), unit=G.t==='q'?'questions':(G.n===1?'chapter':'chapters');
+    var ring=$('mwRing'); ring.style.strokeDasharray=CIRC.toFixed(2); ring.style.strokeDashoffset=(CIRC*(1-pct)).toFixed(2);
+    $('mwRingTxt').textContent=pct>=1?'\u2713':Math.round(pct*100)+'%';
+    $('mwGoalTxt').textContent=pct>=1?'Goal complete \uD83C\uDF89 ('+G.n+' '+unit+')':Math.min(cur,G.n)+' / '+G.n+' '+unit+' today';
+    var cb=$('mwContinue2'), show=false, label='';
+    try{
+      var cls=store.data.lastCls===12?12:11, idx=cls===12?store.data.last12:store.data.last, ch=app.books[cls][idx];
+      if((store.data.last||store.data.last12||store.data.done.length)&&ch){ show=true; label=ch.title; }
+    }catch(e){}
+    cb.hidden=!show; cb.textContent=show?'Continue: '+label+' \u2192':'';
+  }
   function showAsk(){ ask.hidden=false; hello.hidden=true; inp.value=name; err.textContent=''; setTimeout(function(){ try{inp.focus();}catch(e){} },50); }
-  function showHello(){ ask.hidden=true; hello.hidden=false; $('mwWelcome').textContent=firstTime?'Welcome':'Welcome back'; paint(); setTimeout(function(){ try{$('mwEnter').focus();}catch(e){} },50); }
+  function showHello(){ ask.hidden=true; hello.hidden=false; paint(); renderHello(); setTimeout(function(){ try{$('mwEnter').focus({preventScroll:true});}catch(e){} },50); }
   function submitName(){
     var v=clean(inp.value);
     if(v.length<2){ err.textContent='Please enter at least 2 characters.'; return; }
-    name=v; save(name); showHello();
+    name=v; save(); showHello();
   }
-  function enter(){
+  function enter(after){
     try{ sessionStorage.setItem('medora.entered','1'); }catch(e){}
     gate.classList.add('leaving');
-    setTimeout(function(){ document.documentElement.classList.remove('mw-pending'); gate.classList.remove('leaving'); },400);
+    setTimeout(function(){ document.documentElement.classList.remove('mw-pending'); gate.classList.remove('leaving'); if(after) after(); },400);
   }
   $('mwContinue').addEventListener('click',submitName);
   inp.addEventListener('keydown',function(e){ if(e.key==='Enter') submitName(); });
-  $('mwEnter').addEventListener('click',enter);
+  $('mwEnter').addEventListener('click',function(){ enter(); });
+  $('mwContinue2').addEventListener('click',function(){
+    enter(function(){ try{ app.openClass(store.data.lastCls===12?12:11); }catch(e){ var b=$('continueBtn'); if(b) b.click(); } });
+  });
   $('mwChange').addEventListener('click',function(){ firstTime=true; showAsk(); });
 
   paint();
   if(document.documentElement.classList.contains('mw-pending')){ name?showHello():showAsk(); }
+  if(menuBtn) menuBtn.addEventListener('click',paint);
+  /* the app loads saved progress on DOMContentLoaded (after this script first runs), so refresh once it has */
+  function refreshAfterLoad(){ paint(); if(!hello.hidden) renderHello(); }
+  if(document.readyState==='complete') refreshAfterLoad(); else { document.addEventListener('DOMContentLoaded',refreshAfterLoad); window.addEventListener('load',refreshAfterLoad); }
 
-  /* ---- profile modal ---- */
-  var ov=$('mpOv'), pin=$('mpInput'), perr=$('mpErr');
-  function modalAv(){ var e=$('mpAvLg'); if(draft){ e.style.backgroundImage='url("'+draft+'")'; e.classList.add('has-img'); e.textContent=''; } else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=initial(clean(pin.value)||name); } $('mpRemovePhoto').hidden=!draft; $('mpUpload').innerHTML=draft?'&#128247; Change photo':'&#128247; Set photo'; }
-  function openProfile(){ pin.value=name; perr.textContent=''; draft=photo; paint(); modalAv(); ov.classList.add('show'); setTimeout(function(){ try{pin.focus();pin.select();}catch(e){} },50); }
+  /* ---------- profile modal ---------- */
+  var ov=$('mpOv'), pin=$('mpInput'), perr=$('mpErr'), selT=$('mpTarget'), dIn=$('mpDate'), selG=$('mpGoal');
+  function modalAv(){
+    var e=$('mpAvLg');
+    if(draft){ e.style.backgroundImage='url("'+draft+'")'; e.classList.add('has-img'); e.textContent=''; }
+    else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=initial(clean(pin.value)||name); }
+    $('mpRemovePhoto').hidden=!draft;
+    $('mpUpload').innerHTML=draft?'&#128247; Change photo':'&#128247; Set photo';
+  }
+  function statsHtml(){
+    var s=summary();
+    function cell(i,v,l){ return '<div class="mp-st"><i>'+i+'</i><b>'+v+'</b><small>'+l+'</small></div>'; }
+    return cell('\uD83D\uDD25',s.streak+(s.streak===1?' day':' days'),'Streak')+
+      cell('\uD83D\uDCD6',s.chapters+(s.total?' / '+s.total:''),'Chapters read')+
+      cell('\uD83C\uDFAF',s.acc===null?'\u2014':s.acc+'%','Quiz accuracy')+
+      cell('\u270D\uFE0F',s.answered,'Quiz answers')+
+      cell('\uD83D\uDCDD',s.mocks,'Mock tests')+
+      cell('\uD83C\uDFC6',s.best||'\u2014','Best mock score');
+  }
+  function syncTargetUi(){
+    var v=selT.value, row=$('mpDateRow'), note=$('mpNote');
+    row.hidden=(v==='none');
+    if(PRESETS[v]&&dIn.value===PRESETS[v].date) note.textContent='Expected date. NTA has not confirmed it yet, so you can edit it.';
+    else if(v==='custom') note.textContent='Pick your own exam date.';
+    else note.textContent='';
+  }
+  function openProfile(){
+    pin.value=name; perr.textContent=''; draft=photo;
+    selT.value=target; dIn.value=tdate||(PRESETS[target]?PRESETS[target].date:''); selG.value=goal;
+    $('mpStats').innerHTML=statsHtml(); syncTargetUi(); paint(); modalAv();
+    ov.classList.add('show'); setTimeout(function(){ try{pin.focus({preventScroll:true});}catch(e){} },50);
+  }
   function closeProfile(){ ov.classList.remove('show'); }
+  selT.addEventListener('change',function(){
+    var v=selT.value; if(PRESETS[v]) dIn.value=PRESETS[v].date; else if(v==='custom'&&!dIn.value){ var d=new Date(); d.setMonth(d.getMonth()+6); dIn.value=dkey(d); }
+    syncTargetUi();
+  });
+  dIn.addEventListener('change',function(){
+    var v=selT.value; if(PRESETS[v]&&dIn.value&&dIn.value!==PRESETS[v].date) selT.value='custom';
+    syncTargetUi();
+  });
   function saveProfile(){
     var v=clean(pin.value);
     if(v.length<2){ perr.textContent='Please enter at least 2 characters.'; return; }
-    var prev=photo; name=v; photo=draft;
-    if(!save(name)){ photo=prev; perr.textContent='Could not save the photo (browser storage is full). Try a smaller image.'; return; }
+    var nt=selT.value, nd=dIn.value;
+    if(nt!=='none'&&!/^\d{4}-\d{2}-\d{2}$/.test(nd)){ perr.textContent='Please choose a valid exam date.'; return; }
+    var prev={name:name,photo:photo,target:target,tdate:tdate,goal:goal};
+    name=v; photo=draft; target=nt; tdate=(nt==='none')?'':nd; goal=GOALS[selG.value]?selG.value:'q20';
+    if(!save()){ name=prev.name; photo=prev.photo; target=prev.target; tdate=prev.tdate; goal=prev.goal; perr.textContent='Could not save (browser storage is full). Try a smaller photo.'; return; }
     paint(); closeProfile();
   }
-  /* ---- photo picker: crop to square + shrink so it stays tiny in storage ---- */
   $('mpUpload').addEventListener('click',function(){ $('mpFile').value=''; $('mpFile').click(); });
   $('mpRemovePhoto').addEventListener('click',function(){ draft=''; perr.textContent=''; modalAv(); });
   pin.addEventListener('input',function(){ if(!draft) modalAv(); });
@@ -14253,9 +14440,6 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     };
     r.readAsDataURL(f);
   });
-  chip.addEventListener('click',openProfile);
-  card.addEventListener('click',function(){ var c=$('mmClose'); if(c) c.click(); setTimeout(openProfile,180); });
-  $('mpCancel').addEventListener('click',closeProfile);
   $('mpWelcome').addEventListener('click',function(){
     closeProfile();
     try{ sessionStorage.removeItem('medora.entered'); }catch(e){}
@@ -14264,10 +14448,29 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     if(name) showHello(); else showAsk();
     gate.scrollTop=0;
   });
+  chip.addEventListener('click',openProfile);
+  card.addEventListener('click',function(){ var c=$('mmClose'); if(c) c.click(); setTimeout(openProfile,180); });
+  $('mpCancel').addEventListener('click',closeProfile);
   $('mpSave').addEventListener('click',saveProfile);
   pin.addEventListener('keydown',function(e){ if(e.key==='Enter') saveProfile(); });
   ov.addEventListener('click',function(e){ if(e.target===ov) closeProfile(); });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('show')) closeProfile(); });
+})();
+</script>
+<script>
+/* MEDORA unstick safety net: never leave the page scroll-locked or covered by a stale overlay */
+(function(){
+  function unstick(){
+    try{
+      var b=document.body, mm=document.getElementById('mobileMenu'), hl=document.getElementById('hlPanel');
+      var mmOpen=!!(mm&&mm.classList.contains('open')), hlOpen=!!(hl&&hl.classList.contains('open'));
+      if(!mmOpen){ b.classList.remove('mm-lock'); var o=document.getElementById('mmOverlay'); if(o) o.classList.remove('show'); }
+      if(!hlOpen){ b.classList.remove('hlp-lock'); var po=document.querySelector('.hlp-overlay'); if(po) po.classList.remove('show'); }
+    }catch(e){}
+  }
+  ['hashchange','pageshow','visibilitychange','resize','orientationchange','focus'].forEach(function(ev){ window.addEventListener(ev,unstick); });
+  document.addEventListener('visibilitychange',unstick);
+  setInterval(unstick,2500);
 })();
 </script>
 </body>
