@@ -2526,16 +2526,123 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 .hp-card:active{transform:none;box-shadow:none}
 @media(hover:none){.hp-card:hover{transform:none;box-shadow:none}}
 </style>
+<script>
+/* MEDORA welcome gate: decide before first paint so the site never flashes */
+(function(){try{var n=null;try{n=JSON.parse(localStorage.getItem('medora.profile')||'null');}catch(e){}
+var done=false;try{done=sessionStorage.getItem('medora.entered')==='1';}catch(e){}
+if(!(n&&n.name&&done)) document.documentElement.classList.add('mw-pending');}catch(e){}})();
+</script>
+<style id="medoraWelcomeCss">
+/* ===== Welcome gate + user profile ===== */
+.mw{display:none;position:fixed;inset:0;z-index:2000;align-items:flex-start;justify-content:center;padding:20px;
+  background:radial-gradient(900px 500px at 15% 10%,rgba(16,185,129,.22),transparent 60%),radial-gradient(800px 500px at 90% 90%,rgba(245,158,11,.16),transparent 60%),var(--bg-desk);
+  color:var(--text-main);font-family:'Plus Jakarta Sans',system-ui,sans-serif;overflow:auto;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(20px,env(safe-area-inset-bottom))}
+html.mw-pending .mw{display:flex}
+html.mw-pending body{overflow:hidden}
+.mw.leaving{opacity:0;transform:scale(1.02);transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+.mw-card{margin:auto;width:100%;max-width:440px;text-align:center;background:var(--bg-surface);border:1px solid var(--border);border-radius:24px;padding:36px 28px 28px;box-shadow:var(--shadow);animation:mwIn .5s ease both}
+@keyframes mwIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.mw-logo{width:64px;height:64px;margin:0 auto 18px;border-radius:18px;background:linear-gradient(135deg,var(--brand-emerald),var(--brand-teal));display:grid;place-items:center;color:#fff;box-shadow:0 8px 24px rgba(16,185,129,.35)}
+.mw-logo svg{width:36px;height:36px}
+.mw-eyebrow{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-emerald);margin-bottom:10px}
+.mw h1{font-size:26px;line-height:1.25;font-weight:800;letter-spacing:-.02em}
+.mw h1 em{font-style:normal;color:var(--brand-emerald)}
+.mw-name{font-family:'Crimson Pro',Georgia,serif;font-size:34px;font-weight:700;margin:10px 0 4px;overflow-wrap:anywhere}
+.mw-sub{font-size:14px;color:var(--text-muted);line-height:1.55;margin:8px 0 20px}
+.mw-input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font:600 16px 'Plus Jakarta Sans',system-ui,sans-serif;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s}
+.mw-input:focus{border-color:var(--brand-emerald);box-shadow:0 0 0 3px var(--brand-emerald-dim)}
+.mw-err{min-height:18px;margin:8px 0 0;font-size:12.5px;color:var(--brand-gold)}
+.mw-btn{width:100%;margin-top:10px;padding:14px 18px;border:0;border-radius:14px;cursor:pointer;color:#fff;font:800 15px 'Plus Jakarta Sans',system-ui,sans-serif;background:linear-gradient(135deg,var(--brand-emerald),var(--brand-teal));box-shadow:0 8px 22px rgba(16,185,129,.3);transition:transform .15s,filter .15s}
+.mw-btn:hover{filter:brightness(1.07)}.mw-btn:active{transform:scale(.98)}
+.mw-link{margin-top:14px;background:none;border:0;color:var(--text-muted);font:600 12.5px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;text-decoration:underline}
+.mw-link:hover{color:var(--brand-emerald)}
+.mw-step[hidden]{display:none}
+.mw-vr,.mm-vr{display:inline-block !important;margin-left:0;letter-spacing:.05em}
+
+/* avatar */
+.mp-av{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand-emerald),var(--brand-teal));color:#fff;font:800 12px 'Plus Jakarta Sans',system-ui,sans-serif;text-transform:uppercase}
+.mp-av.lg{width:84px;height:84px;font-size:34px;margin:0 auto 10px;box-shadow:0 0 0 3px var(--brand-emerald-dim)}
+.mp-av.has-img{background-size:cover;background-position:center;background-repeat:no-repeat;color:transparent;font-size:0}
+.mp-photo-row{display:flex;justify-content:center;gap:8px;margin:0 0 14px}
+.mp-pbtn{padding:7px 12px;border-radius:999px;border:1px solid var(--border-focus);background:var(--brand-emerald-dim);color:var(--text-main);font:700 12.5px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}
+.mp-pbtn:hover{border-color:var(--brand-emerald)}
+.mp-pbtn.mp-rm{background:transparent;border-color:var(--border);color:var(--text-muted)}
+.mp-pbtn[hidden]{display:none}
+
+/* header chip (desktop) */
+.btn-profile{padding:5px 12px 5px 6px;gap:8px}
+.btn-profile .mp-nm{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:1320px){.btn-profile .mp-nm{display:none}.btn-profile{padding:5px}}
+@media (max-width:960px){.topbar .btn-profile{display:none !important}}
+
+/* mobile menu card */
+.mm-profile{flex:0 0 auto;min-height:68px;box-sizing:border-box;line-height:1.25;display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;padding:12px;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);cursor:pointer;text-align:left;font:inherit}
+.mm-profile .mp-av{flex:none;width:42px;height:42px;font-size:18px}
+.mm-profile b{display:block;font-size:14.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mm-profile small{display:block;font-size:12px;color:var(--text-muted);margin-top:2px}
+.mm-profile .mp-edit{margin-left:auto;font-size:12px;font-weight:700;color:var(--brand-emerald)}
+.mm-profile > span:nth-child(2){min-width:0;flex:1 1 auto}
+.mm-profile .mp-edit{flex:none}
+.mm-profile small{white-space:nowrap}
+
+/* profile modal */
+.mp-ov{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
+.mp-ov.show{display:flex}
+.mp-box{width:100%;max-width:380px;background:var(--bg-surface);color:var(--text-main);border:1px solid var(--border);border-radius:20px;padding:26px 22px 20px;text-align:center;box-shadow:var(--shadow);font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.mp-box h2{font-size:18px;font-weight:800}
+.mp-box p{font-size:13px;color:var(--text-muted);margin:4px 0 14px}
+.mp-row{display:flex;gap:8px;margin-top:10px}
+.mp-row .mw-btn{margin:0;padding:12px}
+.mp-welcome{margin-top:10px;width:100%}
+.mw-btn.alt{background:transparent;color:var(--text-main);border:1px solid var(--border);box-shadow:none}
+@media (prefers-reduced-motion:reduce){.mw-card{animation:none}.mw.leaving{transition:none}}
+@media print{.mw,.mp-ov,.btn-profile,.mm-profile{display:none !important}}
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
+<div class="mw" id="mwGate" role="dialog" aria-modal="true" aria-labelledby="mwTitle">
+  <div class="mw-card">
+    <div class="mw-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
+    <div class="mw-step" id="mwAsk" hidden>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.0</span></div>
+      <h1 id="mwTitle">What should we call you?</h1>
+      <p class="mw-sub">Tell us your name so MEDORA can greet you every time you study.</p>
+      <input class="mw-input" id="mwInput" type="text" maxlength="24" autocomplete="given-name" placeholder="Your name" aria-label="Your name">
+      <div class="mw-err" id="mwErr" role="alert"></div>
+      <button class="mw-btn" id="mwContinue" type="button">Continue</button>
+    </div>
+    <div class="mw-step" id="mwHello" hidden>
+      <div class="mw-eyebrow">MEDORA <span class="badge-tag mw-vr">vr.1.5.0</span></div>
+      <h1><span id="mwWelcome">Welcome back</span>, <em>Future Doctor</em></h1>
+      <div class="mw-name" id="mwName"></div>
+      <p class="mw-sub">Your chapters, notes and progress are ready. Let's make today count.</p>
+      <button class="mw-btn" id="mwEnter" type="button">Enter MEDORA &rarr;</button>
+      <button class="mw-link" id="mwChange" type="button">Not you? Change name</button>
+    </div>
+  </div>
+</div>
+<div class="mp-ov" id="mpOv" role="dialog" aria-modal="true" aria-label="Your profile">
+  <div class="mp-box">
+    <div class="mp-av lg" id="mpAvLg">?</div>
+    <div class="mp-photo-row"><button class="mp-pbtn" id="mpUpload" type="button">&#128247; Set photo</button><button class="mp-pbtn mp-rm" id="mpRemovePhoto" type="button" hidden>Remove</button></div>
+    <input type="file" id="mpFile" accept="image/*" hidden>
+    <h2>Your profile</h2>
+    <p>Future Doctor &middot; saved on this device</p>
+    <input class="mw-input" id="mpInput" type="text" maxlength="24" placeholder="Your name" aria-label="Your name">
+    <div class="mw-err" id="mpErr" role="alert"></div>
+    <div class="mp-row"><button class="mw-btn alt" id="mpCancel" type="button">Cancel</button><button class="mw-btn" id="mpSave" type="button">Save</button></div>
+    <button class="mw-btn alt mp-welcome" id="mpWelcome" type="button">&#8962; Back to Welcome Page</button>
+  </div>
+</div>
+
 <div class="bg-glow"></div>
 
 <header class="topbar">
   <div class="brand">
     <div class="brand-logo" role="img" aria-label="Medora logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
     <div class="brand-title"><span>MEDORA</span></div>
-    <span class="badge-tag">vr.1.4.2</span>
+    <span class="badge-tag">vr.1.5.0</span>
   </div>
   <div class="top-actions">
     <button type="button" class="btn-install btn-install-top" data-goto-footer><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10.5l5 5 5-5"/><path d="M4 20h16"/></svg><span>Download the app</span></button>
@@ -2547,6 +2654,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
     <button class="btn-ui" id="themeToggle" type="button" aria-label="Switch day or night theme" title="Switch day / night"><span class="theme-ico" id="themeIco" aria-hidden="true"></span><span class="lbl" id="themeLbl"> Day</span></button>
     <button class="btn-ui btn-pdf" id="pdfBtn" type="button" aria-label="Save as PDF" title="Save as PDF / Print" onclick="window.print()">🖨️<span class="lbl"> PDF</span></button>
     <button class="btn-ui btn-notes" id="notesBtn" type="button" aria-label="Highlights and notes" title="Highlights and notes" aria-controls="hlPanel"><span aria-hidden="true">🖍️</span><span class="lbl"> Notes</span><span class="nb-count" id="notesCount" hidden>0</span></button>
+    <button class="btn-ui btn-backup" id="backupBtn" type="button" aria-label="Backup and restore" title="Backup &amp; restore your data"><span aria-hidden="true">💾</span><span class="lbl"> Backup</span></button>
     <button class="btn-ui btn-hamburger" id="menuBtn" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
@@ -2558,7 +2666,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 <!-- HOME -->
 <section class="home" id="homeView">
   <div class="home-hero">
-    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.4.2">VR.1.4.2</b></h1>
+    <h1 class="hero-wordmark"><span>MEDORA</span><b class="wm-vr" aria-label="Version 1.5.0">VR.1.5.0</b></h1>
     <div class="hero-tag"><i></i><b>THE FUTURE OF MEDICAL LEARNING</b><i></i></div>
     <p class="hero-sub">Your interactive biology textbook and reader. Search any topic, track your progress and listen as you learn.</p>
     <div class="home-search">
@@ -2753,7 +2861,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
     <div class="sf-col sf-about">
       <div class="sf-brand">
         <div class="sf-logo" role="img" aria-label="Medora logo" style="color:var(--brand-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></div>
-        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.4.2</span></div>
+        <div class="sf-name">MEDORA<span class="sf-ver">vr.1.5.0</span></div>
       </div>
       <p class="sf-tag">Your study companion for NEET Biology: NCERT chapters with read-aloud, chapter quizzes and NEET UG practice questions in one place.</p>
       <div class="sf-chips"><span class="sf-chip">🎯 <b id="sfPyqCount">1050</b> PYQ questions</span><span class="sf-chip">🔊 Read aloud</span><span class="sf-chip">🌗 Light &amp; dark</span></div>
@@ -2794,7 +2902,7 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
     </nav>
   </div>
   <div class="sf-bottom">
-    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.4.2</div>
+    <div class="sf-copy">© <span id="sfYear">2026</span> MEDORA · vr.1.5.0</div>
     <div class="sf-love">Made with <span class="sf-heart" aria-label="love">❤</span> by <b>Abhinav Maurya</b></div>
     <button type="button" class="sf-top" data-sf="top" aria-label="Back to top">↑ Back to top</button>
   </div>
@@ -12406,7 +12514,9 @@ window.addEventListener("DOMContentLoaded", () => app.init());
       { ic: "🏠", t: "Go to Home", run: () => app.showHome() },
       { ic: "🌗", t: "Toggle day / night theme", run: () => app.toggleTheme() },
       { ic: "⬇️", t: "Get the app (install)", run: () => { const b = document.querySelector(".btn-install-top, .btn-dl-mobile"); if (b) b.click(); } },
-      { ic: "🖨️", t: "Save as PDF / Print", run: () => window.print() }
+      { ic: "🖨️", t: "Save as PDF / Print", run: () => window.print() },
+      { ic: "🖨️", t: "Print highlights & notes (PDF)", run: () => window.medoraPrintNotes && window.medoraPrintNotes() },
+      { ic: "💾", t: "Backup & restore data", run: () => window.medoraBackup && window.medoraBackup.open() }
     ];
     if (!home) a.splice(1, 0, { ic: "🎯", t: "Toggle focus reading mode", run: () => toggleFocus() });
     return a;
@@ -12946,7 +13056,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 <div class="mm-overlay" id="mmOverlay"></div>
 <aside class="mm-panel" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
   <div class="mm-head">
-    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA</div>
+    <div class="mm-title"><span class="brand-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.2 18V7.6l6.8 8.4 6.8-8.4V18"/></svg></span>MEDORA <span class="badge-tag mm-vr">vr.1.5.0</span></div>
     <button class="mm-close" id="mmClose" type="button" aria-label="Close menu">✕</button>
   </div>
   <button class="mm-item" data-mm="home" type="button"><span class="mm-ico">🏠</span>Home</button>
@@ -12968,6 +13078,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   <button class="mm-item" data-mm="focus" type="button"><span class="mm-ico">🧘</span>Focus reading mode</button>
   <div class="mm-size"><span class="mm-ico">🔠</span><b>Text size</b><button type="button" data-mm="fontdec" aria-label="Smaller text">A−</button><button type="button" data-mm="fontinc" aria-label="Larger text">A+</button></div>
   <button class="mm-item" data-mm="pdf" type="button"><span class="mm-ico">🖨️</span>Save as PDF / Print</button>
+  <button class="mm-item" data-mm="backup" type="button"><span class="mm-ico">💾</span>Backup &amp; restore</button>
   <button class="mm-item" data-mm="install" type="button"><span class="mm-ico">⬇️</span>Download the app</button>
 </aside>
 <script>
@@ -13039,12 +13150,16 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   </div>
   <div class="hlp-tools">
     <button type="button" class="hlp-copy" id="hlpCopy">📋 Copy all</button>
-    <div class="hlp-filter" id="hlpFilter" aria-label="Filter by color">
+    <div class="hlp-filter" id="hlpFilter" role="group" aria-label="Filter by color"><span class="hlp-flabel">Filter</span>
       <button type="button" class="hlp-fdot" data-c="0" style="--c:var(--hs0)" aria-label="Filter yellow"></button>
       <button type="button" class="hlp-fdot" data-c="1" style="--c:var(--hs1)" aria-label="Filter green"></button>
       <button type="button" class="hlp-fdot" data-c="2" style="--c:var(--hs2)" aria-label="Filter blue"></button>
       <button type="button" class="hlp-fdot" data-c="3" style="--c:var(--hs3)" aria-label="Filter pink"></button>
     </div>
+  </div>
+  <div class="hlp-printrow">
+    <select id="hlpPrintSel" aria-label="Chapter to print"></select>
+    <button type="button" class="hlp-print" id="hlpPrintBtn">🖨️ Print / PDF</button>
   </div>
   <div class="hlp-list" id="hlpList"></div>
 </aside>
@@ -13291,8 +13406,9 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   function chIndex(ch){ return app.books[ch.cls].indexOf(ch); }
   var COLORS=["Yellow","Green","Blue","Pink"];
   function renderPanel(){
+    fillPrintSel();
     var list=$("hlpList"), html="", shown=0, n=total(), chs=chapters();
-    $("hlpSub").textContent=n?(n+" highlight"+(n===1?"":"s")+" · saved in this browser"):"Saved in this browser";
+    $("hlpSub").textContent=n?(n+" highlight"+(n===1?"":"s")+(filterC!==null?" · "+COLORS[filterC].toLowerCase()+" only (tap the dot again to clear)":" · saved in this browser")):"Saved in this browser";
     $("hlpCopy").disabled=!n;
     $("hlpFilter").querySelectorAll(".hlp-fdot").forEach(function(b){ b.classList.toggle("on",filterC===parseInt(b.dataset.c,10)); });
     chs.forEach(function(ch){
@@ -13307,7 +13423,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
           '<div class="hlp-meta"><span>'+COLORS[h.c]+(h.k==='u'?' underline':'')+' · '+new Date(h.ts||Date.now()).toLocaleDateString(undefined,{day:"numeric",month:"short"})+'</span><button type="button" data-act="open">Open</button><button type="button" class="hlp-rm" data-act="del">Delete</button></div></div>';
       });
     });
-    if(!shown) html='<div class="hlp-empty">'+(n?'No highlights in this color.':'No highlights yet.<br>Open a chapter, select any text and pick a color. Add a note and press Enter.')+'</div>';
+    if(!shown) html='<div class="hlp-empty"><span class="hlp-eico" aria-hidden="true">🖍️</span>'+(n?'No highlights in this color.':'No highlights yet.<br>Open a chapter, select any text and pick a color. Add a note and press Enter.')+'</div>';
     list.innerHTML=html;
   }
   function openPanel(){ hideBar(); renderPanel(); panel.classList.add("open"); pov.classList.add("show"); document.body.classList.add("hlp-lock"); panel.setAttribute("aria-hidden","false"); }
@@ -13357,6 +13473,49 @@ window.addEventListener("DOMContentLoaded", () => app.init());
     var b=this, old="📋 Copy all";
     copyText(exportText()).then(function(){ b.textContent="✓ Copied"; },function(){ b.textContent="Copy failed"; }).then(function(){ setTimeout(function(){ b.textContent=old; },1600); });
   });
+
+  /* ---------- print / save as PDF, by chapter ---------- */
+  var PCOL=["#fde68a","#bbf7d0","#bfdbfe","#fbcfe8"], PUL=["#d97706","#16a34a","#2563eb","#db2777"];
+  function withHl(){ return chapters().filter(function(c){ return (data[c.key]||[]).length; }); }
+  function fillPrintSel(){
+    var sel=$("hlpPrintSel"), btn=$("hlpPrintBtn"); if(!sel||!btn) return;
+    var old=sel.value, list=withHl(), h='';
+    if(list.length>1) h+='<option value="__all">All chapters ('+total()+')</option>';
+    list.forEach(function(c){ h+='<option value="'+esc(String(c.key))+'">Class '+c.cls+' · '+esc(c.title)+' ('+data[c.key].length+')</option>'; });
+    sel.innerHTML=h||'<option value="">No highlights yet</option>';
+    if(old&&sel.querySelector('option[value="'+old.replace(/"/g,'\\"')+'"]')) sel.value=old;
+    sel.disabled=btn.disabled=!list.length;
+  }
+  function buildPrint(key){
+    var list=withHl().filter(function(c){ return key==null||String(c.key)===String(key); });
+    var el=$("hlPrint"); if(!el){ el=document.createElement("div"); el.id="hlPrint"; document.body.appendChild(el); }
+    var n=0, h='<header class="hlpr-head"><h1>MEDORA — Highlights &amp; notes</h1><p>'+
+      (list.length===1?('Class '+list[0].cls+' · '+esc(list[0].title)):'All chapters')+' · printed '+
+      new Date().toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"})+'</p></header>';
+    list.forEach(function(ch){
+      var items=(data[ch.key]||[]).slice().sort(function(a,b){return a.s-b.s;});
+      h+='<section class="hlpr-ch"><h2>Class '+ch.cls+' · '+esc(ch.title)+'<small>'+items.length+' highlight'+(items.length===1?'':'s')+'</small></h2>';
+      items.forEach(function(x){
+        n++; var c=(x.c>=0&&x.c<=3)?x.c:0, u=x.k==='u';
+        h+='<div class="hlpr-it"><div class="hlpr-q"><span style="'+(u?'text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:'+PUL[c]:'background:'+PCOL[c])+'">'+esc(String(x.t).replace(/\s+/g,' '))+'</span></div>'+
+          (x.n?'<div class="hlpr-n"><b>Note:</b> '+esc(String(x.n)).replace(/\n/g,'<br>')+'</div>':'')+'</div>';
+      });
+      h+='</section>';
+    });
+    el.innerHTML=h; return n;
+  }
+  function cleanPrint(){ document.body.classList.remove("print-notes"); var el=$("hlPrint"); if(el) el.innerHTML=""; }
+  function doPrint(key){
+    if(!buildPrint(key==="__all"?null:key)) { cleanPrint(); return; }
+    closePanel(); document.body.classList.add("print-notes");
+    setTimeout(function(){ try{ window.print(); }catch(e){ cleanPrint(); } },180);
+    setTimeout(cleanPrint,120000);
+  }
+  window.addEventListener("afterprint",cleanPrint);
+  try{ var pmq=window.matchMedia("print"); var pl=function(e){ if(!e.matches) cleanPrint(); }; pmq.addEventListener?pmq.addEventListener("change",pl):pmq.addListener(pl); }catch(e){}
+  var pdfB=$("pdfBtn"); if(pdfB) pdfB.addEventListener("click",cleanPrint,true);
+  $("hlpPrintBtn").addEventListener("click",function(){ doPrint($("hlpPrintSel").value||"__all"); });
+  window.medoraPrintNotes=function(){ if(total()) doPrint("__all"); else openPanel(); };
 
   /* ---------- hook into chapter loading ---------- */
   var _lc=app.loadChapter;
@@ -13832,6 +13991,283 @@ window.addEventListener("DOMContentLoaded", () => app.init());
   window.addEventListener("beforeunload", e => { if (screen === "exam" && A && !paused && document.body.classList.contains("is-mock")) { commitTime(); save(); e.preventDefault(); e.returnValue = ""; } });
 
   if (location.hash === "#mock" && document.readyState !== "loading") app.route();
+})();
+</script>
+
+<style id="backupCss">
+.bk-ov{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:16px}
+.bk-ov.show{display:flex}
+.bk{width:100%;max-width:460px;max-height:90vh;overflow:auto;background:var(--bg-surface);color:var(--text-main);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:20px;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.bk h2{font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.bk h2 button{background:none;border:0;color:var(--text-muted);font-size:18px;cursor:pointer}
+.bk p{font-size:13px;color:var(--text-muted);line-height:1.55;margin:6px 0 12px}
+.bk-box{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.bk-box b{font-size:14px;display:block;margin-bottom:2px}
+.bk-stat{font-size:12px;color:var(--text-muted);margin:6px 0 10px}
+.bk-btn{width:100%;padding:11px 14px;border-radius:11px;border:0;font:700 13.5px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;background:linear-gradient(135deg,var(--brand-emerald),var(--brand-teal));color:#fff}
+.bk-btn.alt{background:transparent;color:var(--text-main);border:1px solid var(--border-focus)}
+.bk-btn:active{transform:scale(.98)}
+.bk-msg{font-size:12.5px;margin-top:10px;min-height:16px;color:var(--brand-gold);line-height:1.5}
+.bk-msg.ok{color:var(--brand-emerald)}
+@media (max-width:960px){.topbar .btn-backup{display:none !important}}
+</style>
+<script>
+(function(){
+  var PREFIX=/^(medora|biosphere)/i, META='medora.backup.meta';
+  function appKeys(){ var k=[]; try{ for(var i=0;i<localStorage.length;i++){ var n=localStorage.key(i); if(PREFIX.test(n)&&n!==META) k.push(n); } }catch(e){} return k; }
+  function snapshot(){ var d={}; appKeys().forEach(function(k){ try{ d[k]=localStorage.getItem(k); }catch(e){} }); return d; }
+  function meta(){ try{ return JSON.parse(localStorage.getItem(META)||'{}')||{}; }catch(e){ return {}; } }
+  function setMeta(o){ try{ localStorage.setItem(META,JSON.stringify(o)); }catch(e){} }
+  function kb(o){ return (new Blob([JSON.stringify(o)]).size/1024).toFixed(1); }
+  function fmt(t){ try{ return new Date(t).toLocaleString(); }catch(e){ return ''; } }
+
+  var ov=document.createElement('div'); ov.className='bk-ov'; ov.id='bkOv'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Backup and restore');
+  ov.innerHTML='<div class="bk"><h2>💾 Backup &amp; restore <button type="button" id="bkClose" aria-label="Close">✕</button></h2>'+
+   '<p>Your progress, bookmarks, highlights, notes and mock-test results live only in this browser. Save a backup file so clearing browser data or switching device never loses them.</p>'+
+   '<div class="bk-box"><b>⬇️ Export backup</b><div class="bk-stat" id="bkStat"></div><button class="bk-btn" id="bkExport" type="button">Download backup (.json)</button></div>'+
+   '<div class="bk-box"><b>⬆️ Restore from backup</b><div class="bk-stat">Choose a MEDORA backup file. This replaces the data currently saved in this browser.</div><button class="bk-btn alt" id="bkImport" type="button">Choose backup file…</button><input type="file" id="bkFile" accept="application/json,.json" hidden></div>'+
+   '<div class="bk-msg" id="bkMsg" role="status" aria-live="polite"></div></div>';
+  document.body.appendChild(ov);
+  var $=function(id){return document.getElementById(id);};
+  function msg(t,ok){ var m=$('bkMsg'); m.textContent=t; m.className='bk-msg'+(ok?' ok':''); }
+  function refresh(){ var d=snapshot(), n=Object.keys(d).length, m=meta();
+    $('bkStat').textContent=n+' data group'+(n===1?'':'s')+' · '+kb(d)+' KB'+(m.last?' · last backup: '+fmt(m.last):' · no backup yet'); }
+  function open(){ refresh(); msg(''); ov.classList.add('show'); }
+  function close(){ ov.classList.remove('show'); }
+  window.medoraBackup={open:open,close:close};
+
+  $('bkClose').addEventListener('click',close);
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('show')) close(); });
+
+  $('bkExport').addEventListener('click',function(){
+    var d=snapshot();
+    if(!Object.keys(d).length){ msg('Nothing to back up yet — read a chapter or take a quiz first.'); return; }
+    var now=new Date();
+    var payload={app:'MEDORA',format:1,version:'vr.1.5.0',exportedAt:now.toISOString(),data:d};
+    var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+    var a=document.createElement('a'), p=function(x){return String(x).padStart(2,'0');};
+    a.href=URL.createObjectURL(blob);
+    a.download='medora-backup-'+now.getFullYear()+p(now.getMonth()+1)+p(now.getDate())+'-'+p(now.getHours())+p(now.getMinutes())+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },4000);
+    setMeta({last:now.getTime()}); refresh(); msg('Backup downloaded. Keep the file somewhere safe (Drive, WhatsApp to yourself, email).',true);
+  });
+
+  $('bkImport').addEventListener('click',function(){ $('bkFile').value=''; $('bkFile').click(); });
+  $('bkFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f) return;
+    if(f.size>20*1024*1024){ msg('That file is too large to be a MEDORA backup.'); return; }
+    var r=new FileReader();
+    r.onerror=function(){ msg('Could not read that file.'); };
+    r.onload=function(){
+      var j; try{ j=JSON.parse(r.result); }catch(e){ msg('This is not a valid JSON file.'); return; }
+      if(!j||j.app!=='MEDORA'||!j.data||typeof j.data!=='object'){ msg('This does not look like a MEDORA backup file.'); return; }
+      var keys=Object.keys(j.data).filter(function(k){ return PREFIX.test(k)&&k!==META&&typeof j.data[k]==='string'; });
+      if(!keys.length){ msg('The backup contains no MEDORA data.'); return; }
+      var when=j.exportedAt?fmt(j.exportedAt):'unknown date';
+      if(!confirm('Restore '+keys.length+' data group'+(keys.length===1?'':'s')+' from the backup made on '+when+'?\n\nThis will replace the notes, bookmarks and progress currently saved in this browser.')) return;
+      try{
+        appKeys().forEach(function(k){ localStorage.removeItem(k); });
+        keys.forEach(function(k){ localStorage.setItem(k,j.data[k]); });
+        setMeta({last:Date.now()});
+      }catch(e){ msg('Restore failed (browser storage is full or blocked).'); return; }
+      msg('Restored! Reloading…',true);
+      setTimeout(function(){ location.reload(); },700);
+    };
+    r.readAsText(f);
+  });
+
+  $('backupBtn')&&$('backupBtn').addEventListener('click',open);
+  var mm=document.querySelector('#mobileMenu [data-mm="backup"]');
+  if(mm) mm.addEventListener('click',function(){ var c=$('mmClose'); if(c) c.click(); open(); });
+})();
+</script>
+<style id="printNotesCss">
+.hlp-printrow{display:flex;gap:8px;padding:0 16px 10px}
+.hlp-printrow select{flex:1;min-width:0;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-main);font:600 12.5px 'Plus Jakarta Sans',system-ui,sans-serif}
+.hlp-print{flex:none;padding:8px 12px;border-radius:10px;border:1px solid var(--border-focus);background:var(--brand-emerald-dim);color:var(--text-main);font:700 12.5px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.hlp-print:disabled,.hlp-printrow select:disabled{opacity:.5;cursor:not-allowed}
+#hlPrint{display:none}
+@media print{
+  body.print-notes{display:block !important;background:#fff !important;color:#111 !important}
+  body.print-notes > *:not(#hlPrint){display:none !important}
+  body.print-notes #hlPrint{display:block !important;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#111;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #hlPrint .hlpr-head{border-bottom:2px solid #1b6851;margin-bottom:14px;padding-bottom:8px}
+  #hlPrint h1{font-size:20px;margin:0;color:#1b6851}
+  #hlPrint .hlpr-head p{margin:4px 0 0;font-size:12px;color:#555}
+  #hlPrint .hlpr-ch{margin-bottom:18px}
+  #hlPrint h2{font-size:15px;margin:0 0 8px;padding:5px 0;border-bottom:1px solid #ccc;break-after:avoid;page-break-after:avoid}
+  #hlPrint h2 small{font-weight:500;color:#666;font-size:11px;margin-left:8px}
+  #hlPrint .hlpr-it{break-inside:avoid;page-break-inside:avoid;margin:0 0 9px;padding-left:10px;border-left:3px solid #d1d5db}
+  #hlPrint .hlpr-q{font-family:'Crimson Pro',Georgia,serif;font-size:14px;line-height:1.55}
+  #hlPrint .hlpr-q span{padding:1px 2px;border-radius:2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  #hlPrint .hlpr-n{font-size:12px;color:#333;margin-top:3px;line-height:1.5}
+}
+</style>
+<style id="hlpPolish">
+/* ===== Highlights & notes panel: desktop + mobile polish ===== */
+.hlp{height:100vh;height:100dvh;padding-right:env(safe-area-inset-right,0px);overscroll-behavior:contain}
+.hlp-head{padding:16px 16px 6px}
+.hlp-head p{line-height:1.4}
+.hlp-tools{border-bottom:0;padding:8px 16px 10px;gap:10px}
+.hlp-copy{display:inline-flex;align-items:center;gap:6px;min-height:40px}
+.hlp-filter{gap:8px}
+.hlp-flabel{font-size:11.5px;font-weight:700;color:var(--text-muted);margin-right:2px}
+.hlp-fdot{width:24px;height:24px;transition:opacity .15s,transform .15s}
+.hlp-fdot:hover{opacity:1;transform:scale(1.1)}
+.hlp-printrow{padding:0 16px 12px;border-bottom:1px solid var(--border);align-items:stretch}
+.hlp-printrow select{min-height:40px;text-overflow:ellipsis}
+.hlp-print{min-height:40px;display:inline-flex;align-items:center}
+.hlp-print:hover:not(:disabled),.hlp-copy:hover:not(:disabled){filter:brightness(1.07)}
+.hlp-list{padding:0 16px calc(24px + env(safe-area-inset-bottom,0px));scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--brand-emerald) 45%,transparent) transparent}
+.hlp-list::-webkit-scrollbar{width:6px}
+.hlp-list::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--brand-emerald) 45%,transparent);border-radius:99px}
+.hlp-ch{position:sticky;top:0;z-index:2;margin:0;padding:14px 0 8px;background:var(--bg-surface);line-height:1.35}
+.hlp-item{transition:border-color .15s,box-shadow .15s}
+.hlp-item:hover{border-color:var(--border-focus)}
+.hlp-quote{font-weight:600;line-height:1.55;overflow-wrap:anywhere}
+.hlp-quote:hover{color:var(--brand-emerald)}
+.hlp-nt{overflow-wrap:anywhere}
+.hlp-meta{flex-wrap:wrap;row-gap:0}
+.hlp-meta button{padding:6px 4px;min-height:32px}
+.hlp-meta .hlp-rm{margin-left:auto}
+.hlp-empty{padding:56px 18px}
+.hlp-eico{display:block;font-size:34px;margin-bottom:10px;opacity:.9}
+@media (min-width:961px){ .hlp{width:min(94vw,460px)} .hlp-head{padding:20px 20px 6px} .hlp-tools{padding:10px 20px 10px} .hlp-printrow{padding:0 20px 14px} .hlp-list{padding-left:20px;padding-right:20px} }
+@media (pointer:coarse){
+  .hlp-x{width:42px;height:42px}
+  .hlp-copy,.hlp-print,.hlp-printrow select{min-height:44px}
+  .hlp-printrow select{font-size:16px}
+  .hlp-fdot{width:30px;height:30px}
+  .hlp-filter{gap:10px}
+  .hlp-meta button{padding:10px 8px;min-height:44px}
+  .hlp-meta .hlp-rm{padding-right:2px}
+  .hlp-item{padding:12px 14px}
+}
+@media (max-width:420px){
+  .hlp{width:100vw;border-radius:0;border-left:0}
+  .hlp-head,.hlp-tools,.hlp-printrow,.hlp-list{padding-left:14px;padding-right:14px}
+  .hlp-head h2{font-size:17px}
+  .hlp-print{padding:8px 12px}
+  .hlp-flabel{display:none}
+}
+@media (max-height:520px){
+  .hlp-head{padding-top:8px}.hlp-tools{padding-top:4px;padding-bottom:6px}.hlp-printrow{padding-bottom:8px}.hlp-empty{padding:24px 12px}
+}
+@media (max-height:520px){
+  .hlp-head h2{font-size:16px}.hlp-head p{display:none}.hlp-x{width:34px;height:34px}
+  .hlp-tools{gap:8px;padding-top:2px}.hlp-copy,.hlp-print,.hlp-printrow select{min-height:36px}
+  .hlp-fdot{width:24px;height:24px}.hlp-meta button{padding:6px 6px;min-height:34px}.hlp-ch{padding:8px 0 6px}
+}
+@media (prefers-reduced-motion:reduce){.hlp-item,.hlp-fdot{transition:none}}
+</style>
+<script>
+(function(){
+  var KEY='medora.profile', $=function(id){return document.getElementById(id);};
+  function raw(){ try{ return JSON.parse(localStorage.getItem(KEY)||'null')||{}; }catch(e){ return {}; } }
+  function load(){ var o=raw(); return (typeof o.name==='string'&&o.name.trim())?o.name.trim():''; }
+  function loadPhoto(){ var o=raw(); return (typeof o.photo==='string'&&o.photo.indexOf('data:image/')===0)?o.photo:''; }
+  var photo=loadPhoto(), draft='';
+  function save(n){ try{ localStorage.setItem(KEY,JSON.stringify({name:n,photo:photo})); return true; }catch(e){ return false; } }
+  function clean(v){ return String(v||'').replace(/\s+/g,' ').trim().slice(0,24); }
+  function initial(n){ return (n.charAt(0)||'?'); }
+  var name=load(), firstTime=!name;
+
+  var gate=$('mwGate'), ask=$('mwAsk'), hello=$('mwHello'), inp=$('mwInput'), err=$('mwErr');
+
+  /* ---- header chip (desktop) ---- */
+  var chip=document.createElement('button');
+  chip.type='button'; chip.id='profileBtn'; chip.className='btn-ui btn-profile'; chip.setAttribute('aria-label','Your profile'); chip.title='Your profile';
+  chip.innerHTML='<span class="mp-av" id="mpAvTop"></span><span class="mp-nm" id="mpNmTop"></span>';
+  var menuBtn=$('menuBtn'); if(menuBtn&&menuBtn.parentNode) menuBtn.parentNode.insertBefore(chip,menuBtn);
+
+  /* ---- mobile menu card ---- */
+  var mmHead=document.querySelector('#mobileMenu .mm-head'), card=document.createElement('button');
+  card.type='button'; card.className='mm-profile'; card.id='mmProfile';
+  card.innerHTML='<span class="mp-av" id="mpAvMm"></span><span><b id="mpNmMm"></b><small>Future Doctor</small></span><span class="mp-edit">Edit</span>';
+  if(mmHead&&mmHead.parentNode) mmHead.parentNode.insertBefore(card,mmHead.nextSibling);
+
+  function paint(){
+    var a=initial(name);
+    function setAv(e,img){ if(!e) return; if(img){ e.style.backgroundImage='url("'+img+'")'; e.classList.add('has-img'); e.textContent=''; } else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=a; } }
+    setAv($('mpAvTop'),photo); setAv($('mpAvMm'),photo);
+    ['mpNmTop','mpNmMm'].forEach(function(i){ var e=$(i); if(e) e.textContent=name||'Guest'; });
+    $('mwName').textContent=name;
+    chip.title='Your profile: '+name;
+  }
+
+  /* ---- welcome gate ---- */
+  function showAsk(){ ask.hidden=false; hello.hidden=true; inp.value=name; err.textContent=''; setTimeout(function(){ try{inp.focus();}catch(e){} },50); }
+  function showHello(){ ask.hidden=true; hello.hidden=false; $('mwWelcome').textContent=firstTime?'Welcome':'Welcome back'; paint(); setTimeout(function(){ try{$('mwEnter').focus();}catch(e){} },50); }
+  function submitName(){
+    var v=clean(inp.value);
+    if(v.length<2){ err.textContent='Please enter at least 2 characters.'; return; }
+    name=v; save(name); showHello();
+  }
+  function enter(){
+    try{ sessionStorage.setItem('medora.entered','1'); }catch(e){}
+    gate.classList.add('leaving');
+    setTimeout(function(){ document.documentElement.classList.remove('mw-pending'); gate.classList.remove('leaving'); },400);
+  }
+  $('mwContinue').addEventListener('click',submitName);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Enter') submitName(); });
+  $('mwEnter').addEventListener('click',enter);
+  $('mwChange').addEventListener('click',function(){ firstTime=true; showAsk(); });
+
+  paint();
+  if(document.documentElement.classList.contains('mw-pending')){ name?showHello():showAsk(); }
+
+  /* ---- profile modal ---- */
+  var ov=$('mpOv'), pin=$('mpInput'), perr=$('mpErr');
+  function modalAv(){ var e=$('mpAvLg'); if(draft){ e.style.backgroundImage='url("'+draft+'")'; e.classList.add('has-img'); e.textContent=''; } else { e.style.backgroundImage=''; e.classList.remove('has-img'); e.textContent=initial(clean(pin.value)||name); } $('mpRemovePhoto').hidden=!draft; $('mpUpload').innerHTML=draft?'&#128247; Change photo':'&#128247; Set photo'; }
+  function openProfile(){ pin.value=name; perr.textContent=''; draft=photo; paint(); modalAv(); ov.classList.add('show'); setTimeout(function(){ try{pin.focus();pin.select();}catch(e){} },50); }
+  function closeProfile(){ ov.classList.remove('show'); }
+  function saveProfile(){
+    var v=clean(pin.value);
+    if(v.length<2){ perr.textContent='Please enter at least 2 characters.'; return; }
+    var prev=photo; name=v; photo=draft;
+    if(!save(name)){ photo=prev; perr.textContent='Could not save the photo (browser storage is full). Try a smaller image.'; return; }
+    paint(); closeProfile();
+  }
+  /* ---- photo picker: crop to square + shrink so it stays tiny in storage ---- */
+  $('mpUpload').addEventListener('click',function(){ $('mpFile').value=''; $('mpFile').click(); });
+  $('mpRemovePhoto').addEventListener('click',function(){ draft=''; perr.textContent=''; modalAv(); });
+  pin.addEventListener('input',function(){ if(!draft) modalAv(); });
+  $('mpFile').addEventListener('change',function(){
+    var f=this.files&&this.files[0]; if(!f) return;
+    if(!/^image\//.test(f.type)){ perr.textContent='Please choose an image file.'; return; }
+    if(f.size>15*1024*1024){ perr.textContent='That image is too large (max 15 MB).'; return; }
+    var r=new FileReader();
+    r.onerror=function(){ perr.textContent='Could not read that image.'; };
+    r.onload=function(){
+      var im=new Image();
+      im.onerror=function(){ perr.textContent='That image format is not supported.'; };
+      im.onload=function(){
+        var S=256, c=document.createElement('canvas'); c.width=c.height=S;
+        var w=im.naturalWidth, h=im.naturalHeight, m=Math.min(w,h), sx=(w-m)/2, sy=(h-m)/2, x=c.getContext('2d');
+        x.fillStyle='#fff'; x.fillRect(0,0,S,S); x.drawImage(im,sx,sy,m,m,0,0,S,S);
+        try{ draft=c.toDataURL('image/jpeg',0.85); perr.textContent=''; modalAv(); }catch(e){ perr.textContent='Could not process that image.'; }
+      };
+      im.src=r.result;
+    };
+    r.readAsDataURL(f);
+  });
+  chip.addEventListener('click',openProfile);
+  card.addEventListener('click',function(){ var c=$('mmClose'); if(c) c.click(); setTimeout(openProfile,180); });
+  $('mpCancel').addEventListener('click',closeProfile);
+  $('mpWelcome').addEventListener('click',function(){
+    closeProfile();
+    try{ sessionStorage.removeItem('medora.entered'); }catch(e){}
+    firstTime=false; gate.classList.remove('leaving');
+    document.documentElement.classList.add('mw-pending');
+    if(name) showHello(); else showAsk();
+    gate.scrollTop=0;
+  });
+  $('mpSave').addEventListener('click',saveProfile);
+  pin.addEventListener('keydown',function(e){ if(e.key==='Enter') saveProfile(); });
+  ov.addEventListener('click',function(e){ if(e.target===ov) closeProfile(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ov.classList.contains('show')) closeProfile(); });
 })();
 </script>
 </body>
