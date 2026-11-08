@@ -1,9 +1,9 @@
 {
   "notifications": [
     {
-      "id": "HD",
-      "title": "HAPPY DIWALI",
-      "message": "HAPPY DIWALI Future Doctor it's Your Time Do it.",
+      "id": "NMT",
+      "title": "New Upate NEET Mock Test",
+      "message": "Let,s check out where you are ...",
       "type": "success",
       "date": "2026-11-08"
     }
