@@ -1,0 +1,11 @@
+{
+  "notifications": [
+    {
+      "id": "2026-11-08-welcome",
+      "title": "Notifications are live",
+      "message": "Edit this file and push it to GitHub to send an update to every MEDORA user.",
+      "type": "success",
+      "date": "2026-11-08"
+    }
+  ]
+}
