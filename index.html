@@ -2519,6 +2519,13 @@ body.is-mock #mockApp { display: flex; flex-direction: column; }
 #homeView .hero-cta{margin-top:26px!important}
 @media(max-width:640px){#homeView .hero-wordmark{letter-spacing:.03em!important;gap:10px!important}}
 </style>
+<style id="no-touch-bubble">
+.rip,.ripple{display:none!important}
+.hp-card,.hp-card *{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+.hp-card{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.hp-card:active{transform:none;box-shadow:none}
+@media(hover:none){.hp-card:hover{transform:none;box-shadow:none}}
+</style>
 </head>
 
 <body data-theme="parchment" class="is-home">
