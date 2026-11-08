@@ -14771,7 +14771,7 @@ window.addEventListener("DOMContentLoaded", () => app.init());
 <script id="medoraNotifJs">
 /* MEDORA notifications: reads notifications.json (push the file to GitHub to publish) */
 (function(){ try{
-  var SRC=window.MEDORA_NOTIF_URL||'notifications.json', RK='medora.notif.read', CK='medora.notif.cache';
+  var SRC=window.MEDORA_NOTIF_URL||'notifications.json', RK='medora.notif.read', LK='medora.notif.last3', KEEP=3;
   var list=[], newSet={}, toasted={}, tt=null;
   function $(i){return document.getElementById(i);}
   function jget(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
@@ -14827,12 +14827,18 @@ window.addEventListener("DOMContentLoaded", () => app.init());
       var x=el('button','nf-x','\u2715'); x.type='button'; x.setAttribute('aria-label','Dismiss'); x.onclick=function(e){ e.stopPropagation(); markRead([n.id]); hideToast(); draw(); }; t.appendChild(x);
       t.onclick=function(){ openP(); }; var bb=document.querySelector('.nf-banner'); t.style.top=(bb?Math.round(bb.getBoundingClientRect().bottom)+10:76)+'px'; document.body.appendChild(t); tt=setTimeout(hideToast,12000); }
   }
-  function apply(d){ list=norm(d); draw(); surface(); }
+  /* keep only the latest 3 notifications, stored on this device (works offline, survives removal from the JSON) */
+  function apply(d){
+    var seen={}, all=[];
+    norm(d).concat(norm(jget(LK,[]))).forEach(function(n){ if(!seen[n.id]){ seen[n.id]=1; all.push(n); } });
+    all.sort(function(x,y){return (Date.parse(y.date)||0)-(Date.parse(x.date)||0);});
+    list=all.slice(0,KEEP); jset(LK,list); draw(); surface();
+  }
   function load(){
     fetch(SRC+(SRC.indexOf('?')>-1?'&':'?')+'t='+Date.now(),{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(function(d){ jset(CK,d); apply(d); }).catch(function(){ if(!list.length) apply(jget(CK,[])); });
+      .then(apply).catch(function(){ if(!list.length) apply([]); });
   }
-  draw(); load(); setInterval(load,5*60*1000);
+  list=norm(jget(LK,[])).slice(0,KEEP); draw(); load(); setInterval(load,5*60*1000);
   document.addEventListener('visibilitychange',function(){ if(!document.hidden) load(); });
 }catch(e){ try{console.warn('notifications disabled',e);}catch(x){} } })();
 </script>
